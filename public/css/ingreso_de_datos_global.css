@@ -1,0 +1,554 @@
+/* =========================================
+   1. VARIABLES GLOBALES (DESIGN TOKENS)
+========================================= */
+:root {
+    --primary: #00C2E0;
+    --accent: #89D9E8;
+    --bg: #F0F4F8; /* Unificado */
+    --text-gray: #A0A0A0;
+    --shadow: 0 10px 30px rgba(0,0,0,0.05);
+    --bg-gray: #f2f2f2;
+    --card-shadow: 0px 10px 25px rgba(0, 0, 0, 0.08);
+    --input-bg: #d9e7e9;
+    --btn-save: #92e6eb; 
+    --btn-delete: #d9d9d9; 
+    --text-main: #333333;
+    --accent-blue: #00bcd4;
+    --bg-main: #f4f7f9;
+    --cyan-primary: #97e9f0;
+    --text-dark: #333;
+    --text-muted: #8e9aaf;
+    --success: #4caf50;
+    --info: #00bcd4;
+    --diab-dark: #1E293B;
+    --card-radius: 30px;
+}
+
+/* =========================================
+   2. ESTILOS BASE Y RESET
+========================================= */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    font-family: 'Open Sans', sans-serif; 
+    background-color: var(--bg); 
+    min-height: 100vh; 
+    display: flex; 
+    flex-direction: column; 
+    color: var(--diab-dark);
+}
+
+h1 { 
+    font-size: clamp(1.8rem, 4vw, 2.5rem); 
+    font-weight: 700; 
+    margin-bottom: 30px; 
+}
+
+/* =========================================
+   3. NAVBAR (HEADER)
+========================================= */
+.navbar {
+    background-color: white;
+    padding: 8px 30px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-content {
+    max-width: 1550px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-small { 
+    font-weight: 800; 
+    font-size: 1.6rem; 
+    letter-spacing: -1px; 
+    margin: 0; 
+    text-decoration: none; 
+    color: inherit;      
+    display: inline-block; 
+}
+
+.logo-small span { color: var(--primary); }
+
+.logo-small:hover {
+    text-decoration: none; 
+    opacity: 0.8;         
+}
+
+.nav-search input {
+    background: var(--bg);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    width: 250px;
+    outline: none;
+}
+
+.nav-menu { 
+    display: flex; 
+    gap: 30px; 
+}
+
+.nav-item {
+    text-decoration: none;
+    color: grey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.65rem;
+    transition: 0.3s;
+}
+
+.nav-item i { 
+    font-size: 1.2rem; 
+    margin-bottom: 2px; 
+}
+
+.nav-item.active { 
+    color: var(--primary); 
+    border-bottom: 2px solid var(--primary); 
+}
+
+/* --- SECCIÓN USUARIO NAV --- */
+.user-section { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+
+.user-card {
+    background: #F8F9FA;
+    padding: 5px 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-text { text-align: right; }
+.user-name { display: block; font-size: 0.8rem; font-weight: bold; }
+.user-email { font-size: 0.65rem; opacity: 0.8; color: #64748b; }
+
+.user-avatar { 
+    width: 38px; 
+    height: 38px; 
+    border-radius: 20%; 
+    overflow: hidden;
+    background-color: #333; 
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* =========================================
+   4. CONTENEDOR PRINCIPAL Y TARJETAS SUPERIORES
+========================================= */
+.container {
+    width: 95%; 
+    max-width: 1100px; 
+    background-color: #ffffff;
+    border-radius: var(--card-radius); 
+    padding: 40px; 
+    position: relative;
+    box-shadow: var(--card-shadow); 
+    margin: 25px auto;
+}
+
+.categories { 
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 40px; 
+    flex-wrap: wrap; 
+}
+
+.card {
+    flex: 1; 
+    min-width: 150px; 
+    height: 100px; 
+    border-radius: 20px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    color: white; 
+    font-weight: 600; 
+    font-size: 1rem; 
+    font-family: inherit; 
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5); 
+    background-size: cover;
+    background-position: center; 
+    border: 2px solid transparent; 
+    transition: all 0.3s ease; 
+    cursor: pointer;
+    appearance: none; 
+    -webkit-appearance: none; 
+    box-shadow: none;
+}
+
+.card:nth-child(1) { background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=300&q=80'); }
+.card:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=300&q=80'); }
+.card:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=300&q=80'); }
+.card:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80'); }
+
+.card:hover { transform: translateY(-2px); opacity: 0.9; }
+
+/* =========================================
+   5. LAYOUTS COMUNES (FORMULARIOS Y GRUPOS)
+========================================= */
+.main-content {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 50px;
+}
+
+.form-section { 
+    flex: 1 1 400px; 
+}
+
+/* Layouts específicos de secciones (Síntomas, Nutrición, Movimiento) */
+.symptoms-layout, .nutrition-layout, .movement-layout {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.symptoms-layout { gap: 40px; }
+.nutrition-layout { gap: 60px; align-items: start; }
+.movement-layout { gap: 50px; align-items: start; }
+
+.symptom-group, .nutrition-group, .movement-group {
+    margin-bottom: 20px;
+}
+
+.symptom-group { flex: 1 1 45%; min-width: 250px; }
+.nutrition-group { flex: 1 1 45%; min-width: 300px; margin-bottom: 10px; }
+.movement-group { min-width: 300px; }
+
+/* Títulos de sección */
+.symptom-group h3, .nutrition-group h3, .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 20px; /* Unificado */
+    color: #333;
+}
+
+.nutrition-group h3 { margin-bottom: 15px; }
+
+/* Grupos internos (Movimiento) */
+.group-time-intensity { flex: 1 1 35%; }
+.group-activity-type { flex: 1 1 55%; }
+
+/* =========================================
+   6. ELEMENTOS DE FORMULARIO (INPUTS, SELECTS, CHECKBOXES)
+========================================= */
+.input-group { margin-bottom: 30px; }
+.input-group label { display: block; font-weight: 600; margin-bottom: 12px; }
+
+/* Selectores */
+select {
+    width: 100%; 
+    padding: 15px; 
+    border: none; 
+    background-color: var(--input-bg);
+    border-radius: 15px; 
+    font-family: inherit; 
+    color: #555; 
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat; 
+    background-position: right 15px center; 
+    background-size: 15px;
+}
+
+.double-select { display: flex; gap: 20px; }
+.double-select select { flex: 1; }
+
+/* Input Range */
+input[type="range"] {
+    -webkit-appearance: none; 
+    appearance: none; 
+    width: 100%; 
+    height: 12px;
+    background: var(--input-bg); 
+    border-radius: 10px; 
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    width: 24px; 
+    height: 24px;
+    background: var(--accent-blue); 
+    border: 4px solid white; 
+    border-radius: 50%;
+    cursor: pointer; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Pill Input (Text inputs redondeados) */
+.pill-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #bbb; 
+    border-radius: 25px; 
+    font-family: inherit; /* Cambiado a inherit para usar Open Sans global */
+    font-size: 0.9rem;
+    color: #555;
+    outline: none; 
+    background-color: white;
+    transition: border 0.3s;
+    margin-bottom: 10px;
+}
+
+.pill-input:focus { border-color: var(--accent-blue); }
+.pill-input::placeholder { color: #aaa; font-style: italic; }
+
+/* Checkboxes (Unificado para todas las vistas) */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #555;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.checkbox-item input[type="checkbox"] {
+    appearance: none; 
+    -webkit-appearance: none;
+    width: 24px; /* Tamaño unificado */
+    height: 24px;
+    border: 2px solid #aaa; 
+    border-radius: 6px; 
+    margin-right: 15px;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.checkbox-item input[type="checkbox"]:checked {
+    background-color: var(--accent-blue); 
+    border-color: var(--accent-blue);
+}
+
+.checkbox-item input[type="checkbox"]:checked::after {
+    content: '✔';
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* =========================================
+   7. PANELES ESPECÍFICOS Y COMPONENTES
+========================================= */
+
+/* Timing Panel (Panel derecho de Medición) */
+.timing-panel {
+    flex: 1 1 300px; 
+    background: #ffffff; 
+    border-radius: 30px; 
+    padding: 40px 30px;  
+    box-shadow: 0px 8px 30px rgba(0,0,0,0.05); 
+    text-align: center; 
+    height: fit-content; 
+}
+
+.timing-panel h3 { margin-bottom: 30px; font-size: 1.5rem; font-weight: 700; }
+
+.timing-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+    gap: 20px; 
+}
+
+.time-btn {
+    background-color: #d8edf3; 
+    border: none; 
+    border-radius: 20px; 
+    padding: 20px 15px;  
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 10px;              
+    cursor: pointer; 
+    width: 100%; 
+    transition: transform 0.2s ease, background-color 0.2s; 
+    font-family: inherit;
+}
+
+.time-btn span { font-size: 0.9rem; color: #333; font-weight: 500; text-align: left; }
+.time-btn img { width: 32px; height: 32px; object-fit: contain; opacity: 0.7; }
+.time-btn:hover { background-color: #c5e5ee; }
+
+/* Movimiento: Grid e Iconos */
+.time-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap; 
+}
+
+.time-row label { font-weight: 600; width: 60px; color: #555; flex-shrink: 0; }
+.time-row .pill-input { flex-grow: 1; margin-bottom: 0; } /* Ajuste para el row */
+
+.intensity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+    column-gap: 20px;
+    row-gap: 10px;
+}
+
+.activity-block { margin-bottom: 25px; }
+.activity-label span { font-size: 0.95rem; color: #444; }
+.activity-label small { color: #999; font-weight: 400; font-size: 0.85rem; margin-left: 5px; }
+
+.activity-icons {
+    margin-left: 35px; 
+    margin-top: 10px;
+    display: flex;
+    gap: 30px; 
+    flex-wrap: wrap;
+}
+
+.activity-icons img { height: 24px; width: auto; opacity: 0.7; transition: opacity 0.3s; }
+.activity-icons img:hover { opacity: 1; }
+
+/* =========================================
+   8. BOTONES DE ACCIÓN (GUARDAR/BORRAR GLOBALES)
+========================================= */
+.form-actions {
+    width: 100%; 
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px; /* Unificado */
+    flex-wrap: wrap; 
+}
+
+.btn-borrar, .btn-guardar {
+    padding: 15px 0;
+    width: 100%; 
+    max-width: 250px; 
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn-borrar {
+    background-color: var(--btn-delete);
+    color: #888;
+}
+
+.btn-guardar {
+    background-color: var(--btn-save);
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.btn-borrar:hover, .btn-guardar:hover { 
+    opacity: 0.9; 
+    transform: translateY(-1px); 
+}
+
+/* =========================================
+   9. FOOTER
+========================================= */
+.site-footer {
+    padding: 2rem;
+    border-top: 1px solid #eee;
+    background: white;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #A0A0A0;
+}
+
+.footer-content .links a { margin-right: 15px; text-decoration: none; color: #A0A0A0; }
+.social-icons i { margin-left: 15px; font-size: 1.2rem; cursor: pointer; color: #A0A0A0; }
+
+/* =========================================
+   10. MEDIA QUERIES (MÓVIL)
+========================================= */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 15px; 
+    }
+    
+    .navbar-content {
+        justify-content: space-between; 
+    }
+
+    .nav-menu {
+        position: fixed;      
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 10px 0 15px 0; 
+        z-index: 2000;        
+        justify-content: space-around; 
+        gap: 0;               
+        border-top: 1px solid #eee;
+    }
+
+    .nav-item {
+        font-size: 0.7rem;    
+        flex: 1;              
+        padding: 5px;
+        position: relative;
+    }
+
+    .nav-item i {
+        font-size: 1.4rem;    
+        margin-bottom: 4px;
+        color: var(--text-gray);
+    }
+
+    .nav-item.active {
+        color: var(--primary);
+        font-weight: 700;
+    }
+    
+    .nav-item.active i {
+        color: var(--primary);
+        transform: translateY(-2px);
+    }
+    
+    .user-card {
+        padding: 0;           
+        background: transparent;
+    }
+    
+    .user-avatar {
+        width: 32px; height: 32px; 
+    }
+
+    body {
+        padding-bottom: 80px; 
+    }
+}

@@ -1,0 +1,277 @@
+:root {
+    --bg-main: #f4f7f9;
+    --cyan-primary: #97e9f0;
+    --text-dark: #333;
+    --text-muted: #8e9aaf;
+    --success: #4caf50;
+    --info: #00bcd4;
+    --primary: #00C2E0;
+    --accent: #89D9E8;
+    --bg: #F0F4F8;
+    --text-gray: #A0A0A0;
+    --diab-dark: #1E293B;
+    --card-radius: 30px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+    font-family: 'Open Sans', sans-serif; 
+    background-color: var(--bg); 
+    min-height: 100vh; 
+    display: flex; 
+    flex-direction: column; 
+    color: var(--diab-dark);
+}
+/* --- HEADER --- */
+.navbar {
+    background-color : white;
+    padding: 8px 30px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.navbar-content {
+    max-width: 1550px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.logo-small { font-weight: 800; font-size: 1.6rem; letter-spacing: -1px; margin: 0; }
+.logo-small span { color: var(--primary); }
+.logo-small {
+    text-decoration: none; 
+    color: inherit;      
+    display: inline-block; 
+}
+
+.logo-small:hover {
+    text-decoration: none; 
+    opacity: 0.8;         
+}
+
+.nav-search input {
+    background: #F0F4F8;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    width: 250px;
+    outline: none;
+}
+.nav-menu { display: flex; gap: 30px; }
+.nav-item {
+    text-decoration: none;
+    color: grey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.65rem;
+    transition: 0.3s;
+}
+.nav-item i { font-size: 1.2rem; margin-bottom: 2px; }
+.nav-item.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+.user-section { display: flex; align-items: center; gap: 15px; }
+.user-card {
+    background: #F8F9FA;
+    padding: 5px 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.user-text { text-align: right; }
+.user-name { display: block; font-size: 0.8rem; font-weight: bold; }
+.user-email { font-size: 0.65rem; opacity: 0.8; color: #64748b; }
+.user-avatar { 
+    width: 38px; height: 38px; 
+    border-radius: 20%; overflow: hidden;
+    background-color: #333; 
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Contenedor Principal */
+.dashboard-wrapper {
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* Tarjetas */
+.stat-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 20px;
+    padding: 20px;
+    height: 100%;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.02);
+}
+
+.val-big { font-size: 3rem; font-weight: 800; line-height: 1; }
+.val-med { font-size: 1.8rem; font-weight: 700; }
+.unit-text { color: #a0aec0; font-weight: 600; margin-top: 5px; }
+.label-text { color: #cbd5e0; font-weight: 500; }
+.label-title { font-size: 0.9rem; font-weight: 700; color: #444; margin-bottom: 10px; }
+
+/* Iconos circulares */
+.icon-circle {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+.icon-circle.check { background: var(--success); }
+.icon-circle.info { background: var(--info); }
+
+.arrow-up { color: var(--success); font-size: 2rem; }
+
+/* Gráficos simulados */
+.donut-chart {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 10px solid #a0f0f5;
+    border-top-color: #ff5252;
+}
+
+/* Botones */
+.btn-cyan-solid {
+    background-color: var(--cyan-primary);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 40px;
+    font-weight: 700;
+    color: #444;
+}
+
+.btn-cyan-outline {
+    background: transparent;
+    border: 2px solid var(--cyan-primary);
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: #444;
+    font-weight: 600;
+}
+
+/* Sección Inferior */
+.metrics-section {
+    background: #fafafa;
+    border-radius: 20px;
+}
+
+.chart-container-large {
+    height: 250px;
+    position: relative;
+    border-left: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.insulina-bars {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+}
+
+.bar {
+    width: 10px;
+    background: var(--cyan-primary);
+    border-radius: 2px 2px 0 0;
+}
+/* --- FOOTER ORIGINAL --- */
+.site-footer {
+    padding: 2rem;
+    border-top: 1px solid #eee;
+    background: white;
+    margin-top: auto;
+}
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #A0A0A0;
+}
+.footer-content .links a { margin-right: 15px; text-decoration: none; color: #A0A0A0; }
+.social-icons i { margin-left: 15px; font-size: 1.2rem; cursor: pointer; color: #A0A0A0; }
+
+@media (max-width: 768px) {
+
+    /* Limpia superior*/
+    .navbar {
+        padding: 10px 15px; /* Reducimos padding lateral */
+    }
+    
+    .navbar-content {
+        /* Mantenemos logo a la izq y usuario a la derecha */
+        justify-content: space-between; 
+    }
+
+    /* 2. Transformamos el Menú en una Barra Inferior */
+    .nav-menu {
+        position: fixed;      /* Lo sacamos del flujo normal y lo fijamos */
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 10px 0 15px 0; /* Padding extra abajo para iPhones modernos */
+        z-index: 2000;        /* Por encima de todo */
+        justify-content: space-around; /* Distribución uniforme */
+        gap: 0;               /* Quitamos el gap original */
+        border-top: 1px solid #eee;
+    }
+
+    /* 3. Estilizamos los Ítems de la barra inferior */
+    .nav-item {
+        font-size: 0.7rem;    /* Texto pequeñito */
+        flex: 1;              /* Que ocupen el mismo ancho */
+        padding: 5px;
+
+        position: relative;
+    }
+
+    .nav-item i {
+        font-size: 1.4rem;    /* Iconos más grandes para el dedo */
+        margin-bottom: 4px;
+        color: var(--text-gray);
+    }
+
+    /* Estado Activo en Móvil (Color + pequeña animación) */
+    .nav-item.active {
+        color: var(--primary);
+        font-weight: 700;
+    }
+    
+    .nav-item.active i {
+        color: var(--primary);
+        transform: translateY(-2px);
+    }
+    
+    .user-card {
+        padding: 0;           /* Quitamos padding extra */
+        background: transparent;
+    }
+    
+    .user-avatar {
+        width: 32px; height: 32px; /* Avatar un pelín más chico */
+    }
+
+    /* 6. IMPORTANTE: Espacio al final de la web */
+    /* Para que la barra inferior no tape el último contenido */
+    body {
+        padding-bottom: 80px; 
+    }
+}

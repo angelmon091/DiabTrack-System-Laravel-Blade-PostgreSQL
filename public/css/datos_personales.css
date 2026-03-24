@@ -1,0 +1,194 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'OpenSans', sans-serif;
+    background-color: #F8F9FA;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.brand-section {
+    max-width: 450px;
+}
+
+.logo {
+    font-size: 4rem;
+    font-weight: 700;
+}
+
+.logo span {
+    color: #00C2E0;
+}
+
+.slogan {
+    color: #888;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.description {
+    color: #555;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.login-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 40px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #f0f0f0;
+}
+
+.personal-form {
+    width: 100%;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.field-label-top, 
+.field-label {
+    font-size: 0.8rem;
+    color: #A0A0A0;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.input-group input,
+.select-wrapper select, 
+.full-select, 
+.full-input,
+select option {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #F0F7F8;
+    border: 1px solid #BCE7EF;
+    border-radius: 12px;
+    outline: none;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #666666; 
+}
+
+.input-group input:focus,
+.select-wrapper select:focus, 
+.full-select:focus, 
+.full-input:focus {
+    border-color: #00C2E0;
+}
+
+.date-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.select-wrapper {
+    flex: 1;
+    text-align: center;
+}
+
+.select-wrapper label {
+    font-size: 0.75rem;
+    color: #A0A0A0;
+}
+
+.gender-section { 
+    margin-bottom: 25px; 
+}
+
+.radio-group { 
+    display: flex; 
+    gap: 40px; 
+    margin-top: 5px; 
+}
+
+.custom-radio {
+    font-size: 0.85rem;
+    color: #666666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #64E0E7;    
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(100, 224, 231, 0.3);
+    font-size: 1.1rem;
+    font-family: inherit;
+    transition: transform 0.2s, opacity 0.2s;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.site-footer {
+    padding: 2rem;
+    border-top: 1px solid #eee;
+    background: white;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #A0A0A0;
+}
+
+.footer-content .links a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #A0A0A0;
+}
+
+.social-icons i {
+    margin-left: 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #A0A0A0;
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .brand-section {
+        margin-bottom: 3rem;
+    }
+}

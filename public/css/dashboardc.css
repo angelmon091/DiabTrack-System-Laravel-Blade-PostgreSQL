@@ -1,0 +1,342 @@
+/* =========================================
+   VARIABLES
+========================================= */
+:root {
+    --primary: #00C2E0;
+    --accent: #89D9E8;
+    --bg: #F0F4F8;
+    --text-gray: #A0A0A0;
+    --diab-dark: #1E293B;
+    --card-radius: 30px;
+}
+
+/* =========================================
+   BASE
+========================================= */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    font-family: 'Open Sans', sans-serif; 
+    background-color: var(--bg); 
+    color: var(--diab-dark);
+    min-height: 100vh; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+/* =========================================
+   HEADER / NAVBAR
+========================================= */
+.navbar {
+    background-color: white;
+    padding: 8px 30px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-content {
+    max-width: 1550px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-small { 
+    font-weight: 800; 
+    font-size: 1.6rem; 
+    letter-spacing: -1px; 
+    margin: 0; 
+    text-decoration: none; 
+    color: inherit;      
+    display: inline-block; 
+}
+
+.logo-small span { 
+    color: var(--primary); 
+}
+
+.logo-small:hover {
+    opacity: 0.8;         
+}
+
+.nav-search input {
+    background: #F0F4F8;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    width: 250px;
+    outline: none;
+}
+
+.nav-menu { 
+    display: flex; 
+    gap: 30px; 
+}
+
+.nav-item {
+    text-decoration: none;
+    color: grey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.65rem;
+    transition: 0.3s ease;
+}
+
+.nav-item i { 
+    font-size: 1.2rem; 
+    margin-bottom: 2px; 
+}
+
+.nav-item.active { 
+    color: var(--primary); 
+    border-bottom: 2px solid var(--primary); 
+}
+
+.user-section { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+
+.user-card {
+    background: #F8F9FA;
+    padding: 5px 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-text { 
+    text-align: right; 
+}
+
+.user-name { 
+    display: block; 
+    font-size: 0.8rem; 
+    font-weight: bold; 
+}
+
+.user-email { 
+    font-size: 0.65rem; 
+    opacity: 0.8; 
+    color: #64748b; 
+}
+
+.user-avatar { 
+    width: 38px; 
+    height: 38px; 
+    border-radius: 20%; 
+    overflow: hidden;
+    background-color: #333; 
+}
+
+.user-avatar img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+/* =========================================
+   DASHBOARD COMPONENTS (GLASS-CARDS)
+========================================= */
+.glass-card {
+    background: #ffffff;
+    border-radius: var(--card-radius);
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s ease;
+}
+
+.action-item:hover { 
+    background: #f8fafd; 
+    transform: translateX(5px); 
+}
+
+.action-icon {
+    width: 40px; 
+    height: 40px;
+    border-radius: 12px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    color: white; 
+    font-size: 1rem;
+}
+
+.orange { background: #FF9F43; }
+.blue { background: #00CFE8; }
+.green { background: #28C76F; }
+.gray { background: #82868B; }
+
+/* =========================================
+   GLUCOSA HERO SECTION
+========================================= */
+.glucosa-hero {
+    min-height: 250px;
+    background: linear-gradient(135deg, #ffffff 0%, #f9fdfd 100%);
+}
+
+.vital-trend-pill {
+    background: #DCFCE7;
+    color: #15803D;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* =========================================
+   PROGRESS BARS & ACTIVITY ICONS
+========================================= */
+.progress-container {
+    height: 12px;
+    background: #f0f2f5;
+    border-radius: 10px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.progress-bar-custom {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+}
+
+.act-icon {
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.fire { 
+    background: #fee2e2; 
+    color: #ef4444; 
+}
+
+.move { 
+    background: #fef3c7; 
+    color: #f59e0b; 
+}
+
+.feet { 
+    background: #dbeafe; 
+    color: #3b82f6; 
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+.site-footer {
+    padding: 2rem;
+    border-top: 1px solid #eee;
+    background: white;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+.footer-content .links a { 
+    margin-right: 15px; 
+    text-decoration: none; 
+    color: var(--text-gray); 
+}
+
+.social-icons i { 
+    margin-left: 15px; 
+    font-size: 1.2rem; 
+    cursor: pointer; 
+    color: var(--text-gray); 
+}
+
+/* =========================================
+   MEDIA QUERIES (MOBILE)
+========================================= */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 80px; 
+    }
+
+    .navbar {
+        padding: 10px 15px; 
+    }
+    
+    .navbar-content {
+        justify-content: space-between; 
+    }
+
+    .nav-menu {
+        position: fixed;      
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 10px 0 15px 0; 
+        z-index: 2000;        
+        justify-content: space-around; 
+        gap: 0;               
+        border-top: 1px solid #eee;
+    }
+
+    .nav-item {
+        font-size: 0.7rem;    
+        flex: 1;              
+        padding: 5px;
+        position: relative;
+    }
+
+    .nav-item i {
+        font-size: 1.4rem;    
+        margin-bottom: 4px;
+        color: var(--text-gray);
+    }
+
+    .nav-item.active {
+        color: var(--primary);
+        font-weight: 700;
+    }
+    
+    .nav-item.active i {
+        color: var(--primary);
+        transform: translateY(-2px);
+    }
+    
+    .user-card {
+        padding: 0;           
+        background: transparent;
+    }
+    
+    .user-avatar {
+        width: 32px; 
+        height: 32px; 
+    }
+}

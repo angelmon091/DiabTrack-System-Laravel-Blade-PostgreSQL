@@ -1,0 +1,100 @@
+/* =========================================
+   VARIABLES
+========================================= */
+:root {
+    --primary: #4ed9e6;
+    --primary-hover: #3bc2cf;
+}
+
+body {
+    font-family: 'Open Sans', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* =========================================
+   NAVBAR CUSTOMIZATION
+========================================= */
+.navbar-nav .nav-link {
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary) !important;
+}
+
+.bg-md-transparent {
+    background-color: transparent !important;
+}
+
+/* =========================================
+   HERO SECTION
+========================================= */
+.hero {
+    min-height: 90vh; 
+    /* El degradado negro (rgba) asegura que el texto blanco siempre se lea bien */
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), 
+                url('https://www.accu-chek.com.mx/sites/g/files/iut326/f/article_images/rdc_blog_nota01_03.png') no-repeat center center;
+    background-size: cover;
+    padding-top: 80px; 
+    color: white;
+}
+
+/* FIX: El !important asegura que no se ponga blanco en dispositivos móviles */
+.hero-title span {
+    color: var(--primary) !important;
+}
+
+.btn-acceder {
+    background-color: var(--primary);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-acceder:hover {
+    background-color: var(--primary-hover);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   FEATURES CUSTOMIZATION
+========================================= */
+.features-title {
+    color: #7abcc7;
+}
+
+.service-item img {
+    max-width: 120px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.service-item:hover img {
+    opacity: 1;
+}
+
+/* =========================================
+   FOOTER CUSTOMIZATION
+========================================= */
+.site-footer a {
+    transition: color 0.3s ease;
+}
+
+.site-footer a:hover {
+    color: var(--primary) !important;
+}
+
+/* =========================================
+   MEDIA QUERIES EXTRAS
+========================================= */
+@media (max-width: 768px) {
+    #menuPrincipal {
+        background-color: rgba(0, 0, 0, 0.85);
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 15px;
+    }
+    .hero-title span {
+    color: var(--primary) !important;
+    }
+
+}
