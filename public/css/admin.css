@@ -1,0 +1,167 @@
+/* =========================================
+   ADMIN SPECIFIC STYLES
+   Dependencies: design-system.css
+========================================= */
+
+/* Layout Structure */
+.admin-wrapper {
+    display: flex;
+    flex: 1;
+    background-color: var(--diab-bg);
+}
+
+.admin-sidebar {
+    width: 280px;
+    background: var(--diab-white);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: sticky;
+    top: 72px; /* Navbar height */
+    height: calc(100vh - 72px);
+    transition: var(--diab-transition);
+}
+
+.admin-main {
+    flex: 1;
+    padding: 2rem 3rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Sidebar Navigation */
+.admin-nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.875rem 1.25rem;
+    color: var(--diab-text-secondary);
+    text-decoration: none;
+    border-radius: var(--diab-radius-sm);
+    font-weight: 500;
+    transition: var(--diab-transition);
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.admin-nav-item i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.admin-nav-item:hover {
+    background: var(--diab-bg);
+    color: var(--diab-primary);
+    transform: translateX(4px);
+}
+
+.admin-nav-item.active {
+    background: var(--diab-primary-light);
+    color: var(--diab-primary);
+    font-weight: 600;
+}
+
+.admin-nav-item.active i {
+    opacity: 1;
+}
+
+/* Admin Cards & Components */
+.admin-card {
+    background: var(--diab-white);
+    border-radius: var(--diab-radius);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: var(--diab-shadow);
+    padding: 2.5rem;
+    transition: var(--diab-transition);
+}
+
+/* Data Tables */
+.custom-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.custom-table th {
+    background: var(--diab-bg) !important;
+    color: var(--diab-text-secondary);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.03);
+}
+
+.custom-table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    color: var(--diab-text);
+    vertical-align: middle;
+}
+
+.custom-table tr:hover td {
+    background-color: rgba(0, 180, 216, 0.02);
+}
+
+/* Admin Buttons & Actions */
+.btn-action {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: var(--diab-transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: white;
+}
+
+.btn-action:hover {
+    background: var(--diab-bg);
+    transform: scale(1.1);
+    box-shadow: var(--diab-shadow);
+}
+
+/* Badges */
+.badge-role {
+    padding: 0.5em 1em;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Overrides */
+@media (max-width: 992px) {
+    .admin-wrapper {
+        flex-direction: column;
+    }
+    
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        gap: 1rem;
+    }
+    
+    .admin-nav-item {
+        padding: 0.625rem 1rem;
+        white-space: nowrap;
+    }
+    
+    .admin-main {
+        padding: 1.5rem;
+    }
+}

@@ -1,0 +1,228 @@
+/* =========================================
+   DIABTRACK DESIGN SYSTEM v1.0
+   Unified Visual Standard for App & Admin
+========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Colors */
+    --diab-primary: #00B4D8;
+    --diab-primary-hover: #0096C7;
+    --diab-primary-light: rgba(0, 180, 216, 0.1);
+    --diab-secondary: #48CAE4;
+    --diab-accent: #90E0EF;
+    --diab-bg: #F8FAFC;
+    --diab-card-bg: #FFFFFF;
+    --diab-text: #0F172A;
+    --diab-text-secondary: #64748B;
+    --diab-text-muted: #94A3B8;
+    --diab-white: #FFFFFF;
+
+    /* Semantic Colors */
+    --diab-success: #28C76F;
+    --diab-success-light: rgba(40, 199, 111, 0.1);
+    --diab-danger: #EA5455;
+    --diab-danger-light: rgba(234, 84, 85, 0.1);
+    --diab-warning: #FF9F43;
+    --diab-warning-light: rgba(255, 159, 67, 0.1);
+    --diab-info: #00CFE8;
+    --diab-info-light: rgba(0, 207, 232, 0.1);
+
+    /* Spacing & Layout */
+    --diab-radius: 24px;
+    --diab-radius-sm: 12px;
+    --diab-radius-lg: 32px;
+    --diab-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --diab-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --diab-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--diab-bg);
+    color: var(--diab-text);
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+}
+
+/* Typography Helpers */
+.text-diab-primary {
+    color: var(--diab-primary) !important;
+}
+
+.text-diab-secondary {
+    color: var(--diab-text-secondary) !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+/* Unified Card System */
+.diab-card {
+    background: var(--diab-card-bg);
+    border-radius: var(--diab-radius);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: var(--diab-shadow);
+    transition: var(--diab-transition);
+    overflow: hidden;
+}
+
+.diab-card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--diab-shadow-hover);
+    border-color: var(--diab-primary-light);
+}
+
+/* Logo System */
+.diab-logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -1.2px;
+    color: var(--diab-text);
+    display: flex;
+    align-items: center;
+    text-decoration: none !important;
+    transition: var(--diab-transition);
+    user-select: none;
+}
+
+.diab-logo span {
+    color: var(--diab-primary);
+    margin: 0 1px;
+    /* Precision spacing for 'ia' */
+}
+
+.diab-logo:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
+/* Admin Specific UI refinement */
+.admin-title-section {
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+/* Dashboard Metrics & Admin Cards */
+.admin-card-metrics {
+    padding: 3rem 2rem !important;
+    border-radius: 28px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.admin-card-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    transition: var(--diab-transition);
+    background: var(--diab-bg);
+}
+
+.admin-card-metrics:hover .admin-card-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--diab-primary-light);
+}
+
+/* Utils */
+.fw-extrabold {
+    font-weight: 800 !important;
+}
+
+.extra-small {
+    font-size: 0.7rem !important;
+}
+
+/* Button System */
+.btn-diab-primary {
+    background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--diab-radius-sm);
+    padding: 10px 24px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(0, 180, 216, 0.2);
+    transition: var(--diab-transition);
+}
+
+.btn-diab-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 180, 216, 0.3);
+    color: white;
+    filter: brightness(1.05);
+}
+
+.btn-diab-secondary {
+    background: var(--diab-white);
+    color: var(--diab-text);
+    border: 1px solid var(--diab-primary-light);
+    border-radius: var(--diab-radius-sm);
+    padding: 10px 24px;
+    font-weight: 600;
+    transition: var(--diab-transition);
+}
+
+.btn-diab-secondary:hover {
+    background: var(--diab-bg);
+    border-color: var(--diab-primary);
+}
+
+/* Form Elements */
+.diab-input {
+    background: var(--diab-bg);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--diab-radius-sm);
+    padding: 12px 16px;
+    transition: var(--diab-transition);
+}
+
+.diab-input:focus {
+    background: white;
+    border-color: var(--diab-primary);
+    box-shadow: 0 0 0 4px var(--diab-primary-light);
+    outline: none;
+}
+
+/* Glassmorphism Accents */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}

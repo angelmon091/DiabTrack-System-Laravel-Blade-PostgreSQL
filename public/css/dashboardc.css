@@ -1,342 +1,230 @@
 /* =========================================
-   VARIABLES
+   DASHBOARD SPECIFIC STYLES
+   Dependencies: design-system.css
 ========================================= */
-:root {
-    --primary: #00C2E0;
-    --accent: #89D9E8;
-    --bg: #F0F4F8;
-    --text-gray: #A0A0A0;
-    --diab-dark: #1E293B;
-    --card-radius: 30px;
+
+/* Overrides & Specifics */
+.logo-small h2 {
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: -1px;
 }
 
-/* =========================================
-   BASE
-========================================= */
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-}
-
-body { 
-    font-family: 'Open Sans', sans-serif; 
-    background-color: var(--bg); 
-    color: var(--diab-dark);
-    min-height: 100vh; 
-    display: flex; 
-    flex-direction: column; 
-}
-
-/* =========================================
-   HEADER / NAVBAR
-========================================= */
-.navbar {
-    background-color: white;
-    padding: 8px 30px;
-    border-bottom: 1px solid #eee;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.navbar-content {
-    max-width: 1550px;
-    margin: 0 auto;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logo-small { 
-    font-weight: 800; 
-    font-size: 1.6rem; 
-    letter-spacing: -1px; 
-    margin: 0; 
-    text-decoration: none; 
-    color: inherit;      
-    display: inline-block; 
-}
-
-.logo-small span { 
-    color: var(--primary); 
-}
-
-.logo-small:hover {
-    opacity: 0.8;         
-}
-
+/* Updated Navbar for User Dashboard */
 .nav-search input {
-    background: #F0F4F8;
-    border: none;
+    background: var(--diab-bg);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     padding: 10px 20px;
-    border-radius: 20px;
-    width: 250px;
-    outline: none;
+    border-radius: 50px;
+    width: 280px;
+    transition: var(--diab-transition);
 }
 
-.nav-menu { 
-    display: flex; 
-    gap: 30px; 
+.nav-search input:focus {
+    background: white;
+    border-color: var(--diab-primary);
+    box-shadow: 0 0 0 4px var(--diab-primary-light);
+}
+
+.nav-menu {
+    display: flex;
+    gap: 25px;
 }
 
 .nav-item {
     text-decoration: none;
-    color: grey;
+    color: var(--diab-text-secondary);
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 0.65rem;
-    transition: 0.3s ease;
+    font-size: 0.7rem;
+    font-weight: 500;
+    transition: var(--diab-transition);
+    padding: 5px 10px;
 }
 
-.nav-item i { 
-    font-size: 1.2rem; 
-    margin-bottom: 2px; 
+.nav-item i {
+    font-size: 1.3rem;
+    margin-bottom: 2px;
 }
 
-.nav-item.active { 
-    color: var(--primary); 
-    border-bottom: 2px solid var(--primary); 
+.nav-item:hover {
+    color: var(--diab-primary);
 }
 
-.user-section { 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
+.nav-item.active {
+    color: var(--diab-primary);
+    position: relative;
 }
 
-.user-card {
-    background: #F8F9FA;
-    padding: 5px 12px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: var(--diab-primary);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
-.user-text { 
-    text-align: right; 
-}
-
-.user-name { 
-    display: block; 
-    font-size: 0.8rem; 
-    font-weight: bold; 
-}
-
-.user-email { 
-    font-size: 0.65rem; 
-    opacity: 0.8; 
-    color: #64748b; 
-}
-
-.user-avatar { 
-    width: 38px; 
-    height: 38px; 
-    border-radius: 20%; 
-    overflow: hidden;
-    background-color: #333; 
-}
-
-.user-avatar img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-}
-
-/* =========================================
-   DASHBOARD COMPONENTS (GLASS-CARDS)
-========================================= */
-.glass-card {
-    background: #ffffff;
-    border-radius: var(--card-radius);
-    border: 1px solid rgba(0,0,0,0.04);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.02);
-}
-
-.action-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    border-radius: 18px;
-    text-decoration: none;
-    color: inherit;
-    transition: 0.3s ease;
-}
-
-.action-item:hover { 
-    background: #f8fafd; 
-    transform: translateX(5px); 
-}
-
-.action-icon {
-    width: 40px; 
-    height: 40px;
-    border-radius: 12px;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    color: white; 
-    font-size: 1rem;
-}
-
-.orange { background: #FF9F43; }
-.blue { background: #00CFE8; }
-.green { background: #28C76F; }
-.gray { background: #82868B; }
-
-/* =========================================
-   GLUCOSA HERO SECTION
-========================================= */
+/* Glucosa Hero Section */
 .glucosa-hero {
-    min-height: 250px;
-    background: linear-gradient(135deg, #ffffff 0%, #f9fdfd 100%);
+    min-height: 280px;
+    background: linear-gradient(135deg, var(--diab-white) 0%, #f0f9ff 100%);
+    position: relative;
+    z-index: 1;
+}
+
+.glucosa-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at top right, var(--diab-primary-light), transparent);
+    z-index: -1;
 }
 
 .vital-trend-pill {
-    background: #DCFCE7;
-    color: #15803D;
+    background: var(--diab-success-light);
+    color: var(--diab-success);
     padding: 8px 18px;
     border-radius: 50px;
     font-size: 0.85rem;
     font-weight: 700;
 }
 
-/* =========================================
-   PROGRESS BARS & ACTIVITY ICONS
-========================================= */
+/* Metrics & Action Items */
+.action-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 18px;
+    text-decoration: none;
+    color: var(--diab-text);
+    background: var(--diab-bg);
+    margin-bottom: 12px;
+    transition: var(--diab-transition);
+    border: 1px solid transparent;
+}
+
+.action-item:hover {
+    background: var(--diab-white);
+    transform: translateX(8px);
+    border-color: var(--diab-primary-light);
+    box-shadow: var(--diab-shadow);
+}
+
+.action-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-right: 15px;
+}
+
+.orange { background: var(--diab-warning); }
+.blue { background: var(--diab-info); }
+.green { background: var(--diab-success); }
+.gray { background: var(--diab-text-secondary); }
+
+/* Progress Bars & Activity */
 .progress-container {
-    height: 12px;
-    background: #f0f2f5;
-    border-radius: 10px;
-    width: 100%;
+    height: 10px;
+    background: var(--diab-bg);
+    border-radius: 20px;
     overflow: hidden;
 }
 
 .progress-bar-custom {
     height: 100%;
-    border-radius: 10px;
-    transition: width 1s ease-in-out;
+    border-radius: 20px;
+    transition: width 0.8s ease-out;
 }
 
 .act-icon {
-    width: 40px; 
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: center;
     font-size: 1.1rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-.fire { 
-    background: #fee2e2; 
-    color: #ef4444; 
-}
-
-.move { 
-    background: #fef3c7; 
-    color: #f59e0b; 
-}
-
-.feet { 
-    background: #dbeafe; 
-    color: #3b82f6; 
-}
-
-/* =========================================
-   FOOTER
-========================================= */
-.site-footer {
-    padding: 2rem;
-    border-top: 1px solid #eee;
-    background: white;
-    margin-top: auto;
-}
-
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    color: var(--text-gray);
-}
-
-.footer-content .links a { 
-    margin-right: 15px; 
-    text-decoration: none; 
-    color: var(--text-gray); 
-}
-
-.social-icons i { 
-    margin-left: 15px; 
-    font-size: 1.2rem; 
-    cursor: pointer; 
-    color: var(--text-gray); 
-}
+.fire { background: var(--diab-danger-light); color: var(--diab-danger); }
+.move { background: var(--diab-warning-light); color: var(--diab-warning); }
+.feet { background: var(--diab-info-light); color: var(--diab-info); }
 
 /* =========================================
    MEDIA QUERIES (MOBILE)
 ========================================= */
+@media (max-width: 991px) {
+    .nav-search { display: none; }
+}
+
 @media (max-width: 768px) {
     body {
-        padding-bottom: 80px; 
+        padding-bottom: 85px;
     }
 
     .navbar {
-        padding: 10px 15px; 
+        background: rgba(255, 255, 255, 0.9);
     }
     
-    .navbar-content {
-        justify-content: space-between; 
-    }
-
     .nav-menu {
-        position: fixed;      
+        position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
         background: white;
-        padding: 10px 0 15px 0; 
-        z-index: 2000;        
-        justify-content: space-around; 
-        gap: 0;               
-        border-top: 1px solid #eee;
+        padding: 12px 0 25px 0;
+        z-index: 2000;
+        justify-content: space-around;
+        gap: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05);
+        border-radius: 24px 24px 0 0;
     }
 
     .nav-item {
-        font-size: 0.7rem;    
-        flex: 1;              
-        padding: 5px;
-        position: relative;
+        font-size: 0.65rem;
+        flex: 1;
+        padding: 0;
     }
 
     .nav-item i {
-        font-size: 1.4rem;    
+        font-size: 1.5rem;
         margin-bottom: 4px;
-        color: var(--text-gray);
+        color: var(--diab-text-muted);
     }
 
     .nav-item.active {
-        color: var(--primary);
+        color: var(--diab-primary);
         font-weight: 700;
+    }
+
+    .nav-item.active::after {
+        display: none;
     }
     
     .nav-item.active i {
-        color: var(--primary);
-        transform: translateY(-2px);
+        color: var(--diab-primary);
+        transform: translateY(-3px);
     }
-    
-    .user-card {
-        padding: 0;           
-        background: transparent;
+
+    .glucosa-hero {
+        min-height: auto;
+        padding: 2rem 1rem !important;
     }
-    
-    .user-avatar {
-        width: 32px; 
-        height: 32px; 
+
+    .diab-card {
+        border-radius: 20px;
     }
 }
