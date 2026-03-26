@@ -27,7 +27,7 @@
                     <i class="fa-solid fa-house"></i>
                     <span>Inicio</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ route('visualizacion') }}" class="nav-item {{ request()->routeIs('visualizacion') ? 'active' : '' }}">
                     <i class="fa-solid fa-chart-column"></i>
                     <span>Resumen</span>
                 </a>
