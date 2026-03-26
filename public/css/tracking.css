@@ -1,0 +1,459 @@
+/* =========================================
+   TRACKING PAGES — Unified Design
+   Dependencies: design-system.css, dashboardc.css
+   Replaces: ingreso_de_datos_global.css
+========================================= */
+
+/* ── Page Container ── */
+.tracking-container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.tracking-header {
+    margin-bottom: 2rem;
+}
+
+.tracking-header h1 {
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--diab-text);
+    margin-bottom: 0;
+}
+
+.tracking-header .tracking-subtitle {
+    color: var(--diab-text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+/* ── Category Navigation Tabs ── */
+.tracking-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.tracking-tab {
+    flex: 1;
+    min-width: 140px;
+    height: 90px;
+    border-radius: var(--diab-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    background-size: cover;
+    background-position: center;
+    border: 3px solid transparent;
+    transition: var(--diab-transition);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.tracking-tab:nth-child(1) {
+    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+        url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=300&q=80');
+}
+.tracking-tab:nth-child(2) {
+    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+        url('https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=300&q=80');
+}
+.tracking-tab:nth-child(3) {
+    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+        url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=300&q=80');
+}
+.tracking-tab:nth-child(4) {
+    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+        url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80');
+}
+
+.tracking-tab:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--diab-shadow-hover);
+    color: white;
+}
+
+.tracking-tab.active {
+    border-color: var(--diab-primary);
+    box-shadow: 0 0 0 3px var(--diab-primary-light), var(--diab-shadow-hover);
+    transform: translateY(-2px);
+}
+
+/* ── Form Layout ── */
+.tracking-form-layout {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.tracking-form-main {
+    flex: 1 1 450px;
+}
+
+.tracking-form-aside {
+    flex: 1 1 300px;
+    max-width: 400px;
+}
+
+/* ── Form Groups ── */
+.tracking-field {
+    margin-bottom: 1.75rem;
+}
+
+.tracking-field > label,
+.tracking-field-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--diab-text);
+    margin-bottom: 0.75rem;
+}
+
+.tracking-field > label strong {
+    color: var(--diab-primary);
+    font-weight: 800;
+}
+
+/* ── Input Styles (unified with design-system) ── */
+.tracking-input {
+    width: 100%;
+    padding: 12px 18px;
+    background: var(--diab-bg);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--diab-radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--diab-text);
+    transition: var(--diab-transition);
+    outline: none;
+}
+
+.tracking-input:focus {
+    background: white;
+    border-color: var(--diab-primary);
+    box-shadow: 0 0 0 4px var(--diab-primary-light);
+}
+
+.tracking-input::placeholder {
+    color: var(--diab-text-muted);
+}
+
+/* Select Dropdown */
+.tracking-select {
+    width: 100%;
+    padding: 12px 18px;
+    background: var(--diab-bg);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--diab-radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--diab-text);
+    transition: var(--diab-transition);
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+.tracking-select:focus {
+    background-color: white;
+    border-color: var(--diab-primary);
+    box-shadow: 0 0 0 4px var(--diab-primary-light);
+}
+
+/* Range Slider */
+.tracking-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--diab-bg);
+    border-radius: 20px;
+    outline: none;
+    border: 1px solid rgba(0,0,0,0.04);
+    margin-top: 0.5rem;
+}
+
+.tracking-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    background: var(--diab-primary);
+    border: 3px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 180, 216, 0.3);
+    transition: transform 0.2s;
+}
+
+.tracking-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.tracking-range::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: var(--diab-primary);
+    border: 3px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 180, 216, 0.3);
+}
+
+/* ── Selector Buttons (moments, intensity, energy, meal type) ── */
+.selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+}
+
+.selector-btn {
+    background: var(--diab-bg);
+    border: 2px solid transparent;
+    border-radius: var(--diab-radius-sm);
+    padding: 14px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: var(--diab-transition);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--diab-text-secondary);
+}
+
+.selector-btn img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    opacity: 0.7;
+}
+
+.selector-btn .selector-emoji {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.selector-btn:hover {
+    background: var(--diab-primary-light);
+    border-color: var(--diab-primary-light);
+    color: var(--diab-text);
+}
+
+.selector-btn.active {
+    background: var(--diab-primary-light);
+    border-color: var(--diab-primary);
+    color: var(--diab-primary);
+    font-weight: 600;
+}
+
+.selector-btn.active img {
+    opacity: 1;
+}
+
+/* ── Side Panel ── */
+.tracking-panel {
+    background: white;
+    border-radius: var(--diab-radius);
+    padding: 2rem 1.5rem;
+    box-shadow: var(--diab-shadow);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    height: fit-content;
+}
+
+.tracking-panel h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--diab-text);
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+/* ── Checkboxes ── */
+.tracking-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--diab-text);
+    cursor: pointer;
+    font-weight: 500;
+    padding: 6px 0;
+}
+
+.tracking-checkbox input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--diab-text-muted);
+    border-radius: 8px;
+    margin-right: 12px;
+    background: white;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--diab-transition);
+    flex-shrink: 0;
+}
+
+.tracking-checkbox input[type="checkbox"]:checked {
+    background: var(--diab-primary);
+    border-color: var(--diab-primary);
+}
+
+.tracking-checkbox input[type="checkbox"]:checked::after {
+    content: '✔';
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.tracking-checkbox input[type="checkbox"]:hover {
+    border-color: var(--diab-primary);
+}
+
+/* ── Symptom Groups ── */
+.tracking-symptoms-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    width: 100%;
+}
+
+.symptom-category {
+    flex: 1 1 45%;
+    min-width: 260px;
+}
+
+.symptom-category h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--diab-text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.symptom-category h3 .cat-icon {
+    font-size: 1.3rem;
+}
+
+/* ── Action Buttons ── */
+.tracking-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn-track-reset {
+    padding: 14px 0;
+    width: 100%;
+    max-width: 220px;
+    background: var(--diab-bg);
+    color: var(--diab-text-secondary);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: var(--diab-radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: var(--diab-transition);
+}
+
+.btn-track-reset:hover {
+    background: white;
+    border-color: var(--diab-text-muted);
+    color: var(--diab-text);
+}
+
+.btn-track-save {
+    padding: 14px 0;
+    width: 100%;
+    max-width: 220px;
+    background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--diab-radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: var(--diab-transition);
+    box-shadow: 0 4px 6px -1px rgba(0, 180, 216, 0.2);
+}
+
+.btn-track-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 180, 216, 0.3);
+    filter: brightness(1.05);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .tracking-container {
+        padding: 0 1rem;
+    }
+
+    .tracking-tabs {
+        gap: 8px;
+    }
+
+    .tracking-tab {
+        min-width: 100px;
+        height: 70px;
+        font-size: 0.8rem;
+        border-radius: 16px;
+    }
+
+    .tracking-form-layout {
+        flex-direction: column;
+    }
+
+    .tracking-form-aside {
+        max-width: 100%;
+    }
+
+    .tracking-panel {
+        border-radius: 20px;
+    }
+
+    .selector-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 8px;
+    }
+
+    .selector-btn {
+        padding: 10px 8px;
+        font-size: 0.8rem;
+    }
+
+    .tracking-actions {
+        gap: 0.75rem;
+    }
+
+    .btn-track-reset,
+    .btn-track-save {
+        max-width: 160px;
+        padding: 12px 0;
+        font-size: 0.9rem;
+    }
+}

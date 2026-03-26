@@ -27,11 +27,11 @@
                     <i class="fa-solid fa-house"></i>
                     <span>Inicio</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ route('dashboard') }}" class="nav-item">
                     <i class="fa-solid fa-chart-column"></i>
                     <span>Resumen</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ route('tracking.vital.create') }}" class="nav-item {{ request()->routeIs('tracking.*') ? 'active' : '' }}">
                     <i class="fa-solid fa-plus"></i>
                     <span>Nuevo</span>
                 </a>

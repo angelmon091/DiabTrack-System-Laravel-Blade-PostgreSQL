@@ -58,4 +58,26 @@ class User extends Authenticatable
     {
         return $this->roles()->where('name', $role)->exists();
     }
+
+    public function symptoms(): BelongsToMany
+    {
+        return $this->belongsToMany(Symptom::class, 'symptom_user')
+            ->withPivot('logged_at')
+            ->withTimestamps();
+    }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public function nutritionLogs()
+    {
+        return $this->hasMany(NutritionLog::class);
+    }
+
+    public function vitalSigns()
+    {
+        return $this->hasMany(VitalSign::class);
+    }
 }

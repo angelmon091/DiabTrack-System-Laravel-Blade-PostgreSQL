@@ -5,6 +5,9 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Tracking\VitalSignController;
+use App\Http\Controllers\Tracking\ActivityLogController;
+use App\Http\Controllers\Tracking\NutritionLogController;
+use App\Http\Controllers\Tracking\SymptomLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +28,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('tracking')->name('tracking.')->group(function () {
         Route::get('/vitals', [VitalSignController::class, 'create'])->name('vital.create');
         Route::post('/vitals', [VitalSignController::class, 'store'])->name('vital.store');
+
+        Route::get('/activity', [ActivityLogController::class, 'create'])->name('activity.create');
+        Route::post('/activity', [ActivityLogController::class, 'store'])->name('activity.store');
+
+        Route::get('/nutrition', [NutritionLogController::class, 'create'])->name('nutrition.create');
+        Route::post('/nutrition', [NutritionLogController::class, 'store'])->name('nutrition.store');
+
+        Route::get('/symptoms', [SymptomLogController::class, 'create'])->name('symptom.create');
+        Route::post('/symptoms', [SymptomLogController::class, 'store'])->name('symptom.store');
     });
 });
 

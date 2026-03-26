@@ -1,16 +1,16 @@
 @props(['active' => 'signos'])
 
-<section class="categories">
-    <a href="{{ route('tracking.vital.create') }}" class="card {{ $active == 'signos' ? 'active-card' : '' }}">
+<section class="tracking-tabs">
+    <a href="{{ route('tracking.vital.create') }}" class="tracking-tab {{ $active == 'signos' ? 'active' : '' }}">
         {{ __('Signos Vitales') }}
     </a>
-    <a href="#" class="card {{ $active == 'sintomas' ? 'active-card' : '' }}">
+    <a href="{{ route('tracking.symptom.create') }}" class="tracking-tab {{ $active == 'sintomas' ? 'active' : '' }}">
         {{ __('Síntomas') }}
     </a>
-    <a href="#" class="card {{ $active == 'nutricion' ? 'active-card' : '' }}">
+    <a href="{{ route('tracking.nutrition.create') }}" class="tracking-tab {{ $active == 'nutricion' ? 'active' : '' }}">
         {{ __('Nutrición') }}
     </a>
-    <a href="#" class="card {{ $active == 'movimiento' ? 'active-card' : '' }}">
+    <a href="{{ route('tracking.activity.create') }}" class="tracking-tab {{ $active == 'movimiento' ? 'active' : '' }}">
         {{ __('Movimiento') }}
     </a>
 </section>

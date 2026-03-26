@@ -73,7 +73,7 @@
 /* Glucosa Hero Section */
 .glucosa-hero {
     min-height: 280px;
-    background: linear-gradient(135deg, var(--diab-white) 0%, #f0f9ff 100%);
+    background: linear-gradient(135deg, var(--diab-white) 0%, var(--hero-bg, #f0f9ff) 100%);
     position: relative;
     z-index: 1;
 }
@@ -82,7 +82,7 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(circle at top right, var(--diab-primary-light), transparent);
+    background: radial-gradient(circle at top right, var(--hero-radial, var(--diab-primary-light)), transparent);
     z-index: -1;
 }
 
