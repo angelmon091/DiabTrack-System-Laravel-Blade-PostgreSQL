@@ -5,6 +5,7 @@
 @section('content')
 <form action="{{ route('registro.sintomas.store') }}" method="POST" class="symptoms-layout">
     @csrf
+    @if(isset($logged_at)) <input type="hidden" name="logged_at" value="{{ $logged_at }}"> @endif
     
     @foreach($symptoms as $category => $categorySymptoms)
     <div class="symptom-group">
@@ -16,7 +17,7 @@
             default => $category
         } }}</h3>
         @foreach($categorySymptoms as $symptom)
-        <label class="checkbox-item"><input type="checkbox" name="symptoms[]" value="{{ $symptom->id }}"> {{ $symptom->name }}</label>
+        <label class="checkbox-item"><input type="checkbox" name="symptoms[]" value="{{ $symptom->id }}" {{ (isset($selectedSymptoms) && in_array($symptom->id, $selectedSymptoms)) ? 'checked' : '' }}> {{ $symptom->name }}</label>
         @endforeach
     </div>
     @endforeach

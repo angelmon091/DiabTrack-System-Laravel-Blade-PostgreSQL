@@ -126,10 +126,13 @@
                             <span class="val-pill" style="background:#fff3e0; color:#e65100;">{{ $nutri->carbs_grams }}g</span>
                             <small class="d-block text-muted">Carbohidratos</small>
                         </div>
-                        <form action="{{ route('registro.nutricion.destroy', $nutri->id) }}" method="POST" onsubmit="return confirm('¿Eliminar registro?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-delete"><i class="fa-solid fa-trash-can"></i></button>
-                        </form>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('registro.nutricion.edit', $nutri->id) }}" class="btn-delete" style="color:#ff9800; background: #fff3e0;" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="{{ route('registro.nutricion.destroy', $nutri->id) }}" method="POST" onsubmit="return confirm('¿Eliminar registro?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash-can"></i></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -147,7 +150,25 @@
                         <span class="text-muted small d-block">{{ $symptom->pivot->logged_at ? \Carbon\Carbon::parse($symptom->pivot->logged_at)->format('d M Y, H:i') : '' }}</span>
                         <strong class="d-block">{{ $symptom->name }}</strong>
                     </div>
-                    <span class="badge rounded-pill bg-light text-dark p-2 px-3">{{ $symptom->category }}</span>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge rounded-pill bg-light text-dark p-2 px-3">{{ match($symptom->category) {
+                            'physical' => 'Físico',
+                            'nocturnal' => 'Nocturno',
+                            'neurological' => 'Neurológico',
+                            'atypical' => 'Atípico',
+                            default => $symptom->category
+                        } }}</span>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('registro.sintomas.edit', ['symptom_id' => $symptom->id, 'logged_at' => $symptom->pivot->logged_at]) }}" class="btn-delete" style="color:#f44336; background: #ffebee;" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="{{ route('registro.sintomas.destroy') }}" method="POST" onsubmit="return confirm('¿Eliminar este síntoma del historial?')">
+                                @csrf @method('DELETE')
+                                <input type="hidden" name="symptom_id" value="{{ $symptom->id }}">
+                                <input type="hidden" name="logged_at" value="{{ $symptom->pivot->logged_at }}">
+                                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash-can"></i></button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             @endforeach
         @endif
@@ -169,10 +190,13 @@
                             <span class="val-pill" style="background:#e8f5e9; color:#1b5e20;">{{ $act->duration_minutes }} min</span>
                             <small class="d-block text-muted">{{ $act->intensity }}</small>
                         </div>
-                        <form action="{{ route('registro.movimiento.destroy', $act->id) }}" method="POST" onsubmit="return confirm('¿Eliminar registro?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-delete"><i class="fa-solid fa-trash-can"></i></button>
-                        </form>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('registro.movimiento.edit', $act->id) }}" class="btn-delete" style="color:#4caf50; background: #e8f5e9;" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="{{ route('registro.movimiento.destroy', $act->id) }}" method="POST" onsubmit="return confirm('¿Eliminar registro?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn-delete"><i class="fa-solid fa-trash-can"></i></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endforeach

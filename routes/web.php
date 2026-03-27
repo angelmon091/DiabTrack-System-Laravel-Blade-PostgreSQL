@@ -46,8 +46,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/signos/{id}', [TrackingController::class, 'updateSigno'])->name('signos.update');
         Route::delete('/signos/{id}', [TrackingController::class, 'destroySigno'])->name('signos.destroy');
         
+        Route::get('/nutricion/{id}/edit', [TrackingController::class, 'editNutricion'])->name('nutricion.edit');
+        Route::put('/nutricion/{id}', [TrackingController::class, 'updateNutricion'])->name('nutricion.update');
         Route::delete('/nutricion/{id}', [TrackingController::class, 'destroyNutricion'])->name('nutricion.destroy');
+
+        Route::get('/movimiento/{id}/edit', [TrackingController::class, 'editMovimiento'])->name('movimiento.edit');
+        Route::put('/movimiento/{id}', [TrackingController::class, 'updateMovimiento'])->name('movimiento.update');
         Route::delete('/movimiento/{id}', [TrackingController::class, 'destroyMovimiento'])->name('movimiento.destroy');
+        
+        Route::get('/sintomas/edit', [TrackingController::class, 'editSintoma'])->name('sintomas.edit');
+        Route::delete('/sintomas', [TrackingController::class, 'destroySintoma'])->name('sintomas.destroy');
     });
 
     Route::view('/vital_signs', 'signos.index')->name('vital_signs.index');

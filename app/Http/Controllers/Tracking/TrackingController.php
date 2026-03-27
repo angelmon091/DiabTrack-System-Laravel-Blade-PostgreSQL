@@ -88,16 +88,20 @@ class TrackingController extends Controller
 
     public function storeSintomas(Request $request)
     {
-        // For symptoms, we might receive an array of symptom IDs
-        $request->validate([
-            'symptoms' => 'array',
-        ]);
+        $request->validate(['symptoms' => 'array']);
+        $user = auth()->user();
+        $loggedAt = $request->logged_at ?? now();
 
-        if ($request->has('symptoms')) {
-            Auth::user()->symptoms()->attach($request->symptoms, ['logged_at' => now()]);
+        // If editing, we clear previous ones for this specific time first
+        if ($request->has('logged_at')) {
+            $user->symptoms()->wherePivot('logged_at', $request->logged_at)->detach();
         }
 
-        return redirect()->route('dashboard')->with('status', 'Sintomas registrados.');
+        if ($request->has('symptoms')) {
+            $user->symptoms()->attach($request->symptoms, ['logged_at' => $loggedAt]);
+        }
+
+        return redirect()->route('registro.historial')->with('status', 'Síntomas actualizados.');
     }
 
     public function storeNutricion(Request $request)
@@ -199,5 +203,75 @@ class TrackingController extends Controller
     {
         ActivityLog::where('user_id', auth()->id())->findOrFail($id)->delete();
         return back()->with('status', 'Registro de actividad eliminado.');
+    }
+
+    public function destroySintoma(Request $request)
+    {
+        $user = auth()->user();
+        $user->symptoms()->wherePivot('symptom_id', $request->symptom_id)
+             ->wherePivot('logged_at', $request->logged_at)
+             ->detach($request->symptom_id);
+             
+        return back()->with('status', 'Sintoma eliminado del historial.');
+    }
+
+    public function editSintoma(Request $request)
+    {
+        // To edit, we find all symptoms the user logged at that same 'logged_at' time
+        $user = auth()->user();
+        $logged_at = $request->logged_at;
+        $selectedSymptoms = $user->symptoms()->wherePivot('logged_at', $logged_at)->pluck('symptoms.id')->toArray();
+        
+        $symptoms = \App\Models\Symptom::all()->groupBy('category');
+        return view('tracking.sintomas', compact('symptoms', 'selectedSymptoms', 'logged_at'));
+    }
+
+    public function editNutricion($id)
+    {
+        $nutritionEntry = NutritionLog::where('user_id', auth()->id())->findOrFail($id);
+        return view('tracking.nutricion', compact('nutritionEntry'));
+    }
+
+    public function updateNutricion(Request $request, $id)
+    {
+        $log = NutritionLog::where('user_id', auth()->id())->findOrFail($id);
+        $request->validate(['meal_time' => 'required', 'carbs' => 'nullable|numeric']);
+
+        $log->update([
+            'meal_type' => implode(', ', $request->meal_type ?? []),
+            'carbs_grams' => $request->carbs,
+            'consumed_at' => $request->meal_time,
+            'food_categories' => $request->foods ?? [],
+            'medication_taken' => implode(', ', $request->medication ?? []),
+            'medication_dose' => $request->medication_amount,
+        ]);
+
+        return redirect()->route('registro.historial')->with('status', 'Nutrición actualizada.');
+    }
+
+    public function editMovimiento($id)
+    {
+        $activityEntry = ActivityLog::where('user_id', auth()->id())->findOrFail($id);
+        return view('tracking.movimiento', compact('activityEntry'));
+    }
+
+    public function updateMovimiento(Request $request, $id)
+    {
+        $log = ActivityLog::where('user_id', auth()->id())->findOrFail($id);
+        $request->validate(['start_time' => 'required', 'end_time' => 'required']);
+
+        $start = \Carbon\Carbon::parse($request->start_time);
+        $end = \Carbon\Carbon::parse($request->end_time);
+        $duration = $start->diffInMinutes($end);
+
+        $log->update([
+            'activity_type' => implode(', ', $request->activities ?? []),
+            'intensity' => $request->intensity,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'duration_minutes' => $duration,
+        ]);
+
+        return redirect()->route('registro.historial')->with('status', 'Actividad actualizada.');
     }
 }
