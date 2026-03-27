@@ -28,7 +28,7 @@
                             <p class="mb-0 extra-small text-muted">Análisis de tendencias</p>
                         </div>
                     </a>
-                    <a href="#" class="action-item diab-card-hover">
+                    <a href="{{ route('registro.signos') }}" class="action-item diab-card-hover">
                         <div class="action-icon green"><i class="fa-solid fa-plus"></i></div>
                         <div class="ms-3">
                             <strong class="d-block">Registrar</strong>
@@ -62,13 +62,20 @@
             <div class="diab-card glucosa-hero p-4 p-md-5 mb-4 animate-fade-in" style="animation-delay: 0.2s;">
                 <div class="row align-items-center">
                     <div class="col-12 col-md-6 text-center text-md-start">
-                        <span class="text-diab-text-secondary fw-bold small mb-2 d-block text-uppercase letter-spacing-1">Glucosa en Ayunas</span>
+                        <span class="text-diab-text-secondary fw-bold small mb-2 d-block text-uppercase letter-spacing-1">
+                            {{ $latestVitalSign?->measurement_moment ?? 'Glucosa en Ayunas' }}
+                        </span>
                         <div class="d-flex align-items-baseline justify-content-center justify-content-md-start">
-                            <h1 class="display-1 fw-extrabold mb-0 text-dark">98</h1>
+                            <h1 class="display-1 fw-extrabold mb-0 text-dark">{{ $latestVitalSign?->glucose_level ?? '--' }}</h1>
                             <span class="ms-2 fs-4 text-muted">mg/DL</span>
                         </div>
                         <div class="vital-trend-pill mt-3 d-inline-block shadow-sm">
-                            <i class="fa-solid fa-circle-check me-1"></i> En rango aceptable
+                            <i class="fa-solid fa-circle-check me-1"></i> 
+                            @if($latestVitalSign)
+                                {{ $latestVitalSign->glucose_level < 70 ? 'Bajo' : ($latestVitalSign->glucose_level > 140 ? 'Alto' : 'En rango aceptable') }}
+                            @else
+                                Sin registros hoy
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -89,7 +96,7 @@
                         <div class="stat-top mb-2 small fw-bold text-diab-text-secondary">
                             <i class="fa-solid fa-bread-slice text-diab-warning me-2"></i> Carbohidratos
                         </div>
-                        <h2 class="fw-extrabold mb-1">180g</h2>
+                        <h2 class="fw-extrabold mb-1">{{ $totalCarbsToday }}g</h2>
                         <p class="text-muted extra-small mb-0">Meta diaria: 200g</p>
                     </div>
                 </div>
@@ -134,16 +141,16 @@
                                 <div class="act-icon move me-3 shadow-sm"><i class="fa-solid fa-bolt"></i></div>
                                 <div>
                                     <strong class="d-block small">Actividad</strong>
-                                    <span class="text-muted extra-small">450 / 800kcal</span>
+                                    <span class="text-muted extra-small">{{ (int)($activityStats?->duration ?? 0) }} / 60 min</span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-9 col-md-8 px-md-4">
                             <div class="progress-container shadow-sm border-0">
-                                <div class="progress-bar-custom shadow" style="width: 50%; background-color: var(--diab-warning) !important;"></div>
+                                <div class="progress-bar-custom shadow" style="width: {{ min(100, (($activityStats?->duration ?? 0) / 60) * 100) }}%; background-color: var(--diab-warning) !important;"></div>
                             </div>
                         </div>
-                        <div class="col-3 col-md-1 text-end fw-bold small text-diab-warning">50%</div>
+                        <div class="col-3 col-md-1 text-end fw-bold small text-diab-warning">{{ (int)min(100, (($activityStats?->duration ?? 0) / 60) * 100) }}%</div>
                     </div>
                 </div>
 

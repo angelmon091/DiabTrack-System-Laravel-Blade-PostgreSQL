@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->roles()->where('name', $role)->exists();
     }
+
+    public function symptoms(): BelongsToMany
+    {
+        return $this->belongsToMany(Symptom::class, 'symptom_user')->withPivot('logged_at')->withTimestamps();
+    }
 }
