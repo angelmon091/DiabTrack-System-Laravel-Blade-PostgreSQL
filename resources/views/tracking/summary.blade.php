@@ -228,7 +228,7 @@
                                     <td class="text-muted">{{ $log->carbs_grams * 4 }} kcal</td>
                                     <td>
                                         @if($log->food_categories)
-                                            @foreach(json_decode($log->food_categories) as $cat)
+                                            @foreach($log->food_categories as $cat)
                                                 <span class="badge bg-light text-dark border extra-small">{{ $cat }}</span>
                                             @endforeach
                                         @endif
