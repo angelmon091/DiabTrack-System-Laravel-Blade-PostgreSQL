@@ -26,13 +26,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Tracking Routes
     Route::prefix('tracking')->name('tracking.')->group(function () {
+        Route::get('/summary', [DashboardController::class, 'summary'])->name('summary');
+
         Route::get('/vitals', [VitalSignController::class, 'create'])->name('vital.create');
         Route::post('/vitals', [VitalSignController::class, 'store'])->name('vital.store');
 
         Route::get('/activity', [ActivityLogController::class, 'create'])->name('activity.create');
         Route::post('/activity', [ActivityLogController::class, 'store'])->name('activity.store');
 
-        Route::get('/nutrition', [NutritionLogController::class, 'create'])->name('nutrition.create');
+        Route::get('/nutrition', [NutritionLogController::class, 'index'])->name('nutrition.index');
+        Route::get('/nutrition/create', [NutritionLogController::class, 'create'])->name('nutrition.create');
         Route::post('/nutrition', [NutritionLogController::class, 'store'])->name('nutrition.store');
 
         Route::get('/symptoms', [SymptomLogController::class, 'create'])->name('symptom.create');

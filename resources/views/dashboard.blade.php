@@ -14,14 +14,14 @@
                     </div>
 
                     <div class="d-flex flex-column gap-2">
-                        <a href="{{ route('tracking.nutrition.create') }}" class="action-item diab-card-hover">
+                        <a href="{{ route('tracking.nutrition.index') }}" class="action-item diab-card-hover">
                             <div class="action-icon orange"><i class="fa-solid fa-robot"></i></div>
                             <div class="ms-3">
                                 <strong class="d-block">Nutrición IA</strong>
                                 <p class="mb-0 extra-small text-muted">Planificación de comidas</p>
                             </div>
                         </a>
-                        <a href="#" class="action-item diab-card-hover">
+                        <a href="{{ route('tracking.summary') }}" class="action-item diab-card-hover">
                             <div class="action-icon blue"><i class="fa-solid fa-chart-line"></i></div>
                             <div class="ms-3">
                                 <strong class="d-block">Gráficos</strong>

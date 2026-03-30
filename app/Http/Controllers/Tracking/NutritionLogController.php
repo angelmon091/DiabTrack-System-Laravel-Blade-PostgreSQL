@@ -5,10 +5,24 @@ namespace App\Http\Controllers\Tracking;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tracking\NutritionLogRequest;
 use App\Models\NutritionLog;
+use App\Services\DashboardMetricsService;
 use Illuminate\Support\Facades\Auth;
 
 class NutritionLogController extends Controller
 {
+    protected $metricsService;
+
+    public function __construct(DashboardMetricsService $metricsService)
+    {
+        $this->metricsService = $metricsService;
+    }
+
+    public function index()
+    {
+        $metrics = $this->metricsService->getDashboardMetrics(Auth::id());
+        return view('tracking.nutrition.index', $metrics);
+    }
+
     public function create()
     {
         return view('tracking.nutrition.create');

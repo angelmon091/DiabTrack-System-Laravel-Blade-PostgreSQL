@@ -53,4 +53,43 @@ class DashboardController extends Controller
 
         return view('dashboard', $metrics);
     }
+
+    /**
+     * Muestra una previsualización detallada de todos los datos y métricas (Vista Resumen).
+     *
+     * @return \Illuminate\View\View
+     */
+    public function summary()
+    {
+        $user = auth()->user();
+        $metrics = $this->metricsService->getDashboardMetrics($user->id);
+
+        // Obtener registros históricos para la vista detallada
+        $vitalsHistory = \App\Models\VitalSign::where('user_id', $user->id)
+            ->latest()
+            ->take(20)
+            ->get();
+
+        $nutritionHistory = \App\Models\NutritionLog::where('user_id', $user->id)
+            ->latest()
+            ->take(20)
+            ->get();
+
+        $activityHistory = \App\Models\ActivityLog::where('user_id', $user->id)
+            ->latest()
+            ->take(20)
+            ->get();
+
+        $symptomsHistory = \Illuminate\Support\Facades\DB::table('symptom_user')
+            ->join('symptoms', 'symptom_user.symptom_id', '=', 'symptoms.id')
+            ->where('symptom_user.user_id', $user->id)
+            ->select('symptoms.name', 'symptoms.category', 'symptom_user.logged_at')
+            ->latest('symptom_user.logged_at')
+            ->take(30)
+            ->get();
+
+        return view('tracking.summary', array_merge($metrics, compact(
+            'vitalsHistory', 'nutritionHistory', 'activityHistory', 'symptomsHistory'
+        )));
+    }
 }

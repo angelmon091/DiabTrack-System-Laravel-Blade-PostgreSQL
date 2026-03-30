@@ -29,11 +29,11 @@
                         <i class="fa-solid fa-house"></i>
                         <span>Inicio</span>
                     </a>
-                    <a href="{{ route('dashboard') }}" class="nav-item">
+                    <a href="{{ route('tracking.summary') }}" class="nav-item {{ request()->routeIs('tracking.summary') ? 'active' : '' }}">
                         <i class="fa-solid fa-chart-column"></i>
                         <span>Resumen</span>
                     </a>
-                    <a href="{{ route('tracking.vital.create') }}" class="nav-item {{ request()->routeIs('tracking.*') ? 'active' : '' }}">
+                    <a href="{{ route('tracking.vital.create') }}" class="nav-item {{ request()->routeIs('tracking.vital.create') ? 'active' : '' }}">
                         <i class="fa-solid fa-plus"></i>
                         <span>Nuevo</span>
                     </a>
