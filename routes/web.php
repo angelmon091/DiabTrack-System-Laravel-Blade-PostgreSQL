@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
 
     // Tracking Routes
-    Route::prefix('tracking')->name('tracking.')->group(function () {
+    Route::prefix('tracking')->middleware('throttle:30,1')->name('tracking.')->group(function () {
         Route::get('/summary', [DashboardController::class, 'summary'])->name('summary');
 
         Route::get('/vitals', [VitalSignController::class, 'create'])->name('vital.create');

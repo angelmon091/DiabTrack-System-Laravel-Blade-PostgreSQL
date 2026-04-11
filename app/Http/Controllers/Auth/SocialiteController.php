@@ -24,7 +24,14 @@ class SocialiteController extends Controller
             abort(404);
         }
 
-        return Socialite::driver($provider)->redirect();
+        try {
+            return Socialite::driver($provider)->redirect();
+        } catch (\InvalidArgumentException $e) {
+            // Error de configuración (ej: falta el client_id)
+            return redirect()->route('login')->with('error', 'El servicio de ' . ucfirst($provider) . ' no está configurado correctamente en este momento.');
+        } catch (Exception $e) {
+            return redirect()->route('login')->with('error', 'No se pudo conectar con ' . ucfirst($provider) . '. Inténtalo de nuevo más tarde.');
+        }
     }
 
     /**

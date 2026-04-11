@@ -33,6 +33,8 @@ class DashboardMetricsService
     public function getDashboardMetrics($userId)
     {
         $today = Carbon::today();
+        $user = \App\Models\User::with('patientProfile')->findOrFail($userId);
+        $profile = $user->patientProfile;
 
         // 1. Signos Vitales (Glucosa y HbA1c)
         // Obtiene el registro de glucosa más reciente y el último valor de hemoglobina glicosilada
@@ -44,7 +46,8 @@ class DashboardMetricsService
         $carbsHoy = NutritionLog::where('user_id', $userId)->whereDate('created_at', $today)->sum('carbs_grams');
         $caloriasHoy = $carbsHoy * 4;
         
-        $metaCalorias = 2000;
+        // TODO: En el futuro permitir que el médico asigne estas metas en el perfil
+        $metaCalorias = 2000; 
         $metaCarbs = 200;
         $porcentajeCalorias = $metaCalorias > 0 ? min(round(($caloriasHoy / $metaCalorias) * 100), 100) : 0;
 
@@ -78,9 +81,12 @@ class DashboardMetricsService
             ->get();
 
         $medicionesRecientes = $medicionesGlucosaSemana->count();
-        // Define el rango saludable estándar entre 70 y 140 mg/dL
-        $medicionesEnRango = $medicionesGlucosaSemana->filter(function ($item) {
-            return $item->glucose_level >= 70 && $item->glucose_level <= 140;
+        // Rango saludable personalizado o estándar (70-140 mg/dL)
+        $minRango = $profile->target_glucose_min ?? 70;
+        $maxRango = $profile->target_glucose_max ?? 140;
+
+        $medicionesEnRango = $medicionesGlucosaSemana->filter(function ($item) use ($minRango, $maxRango) {
+            return $item->glucose_level >= $minRango && $item->glucose_level <= $maxRango;
         })->count();
         
         $tiempoEnRango = $medicionesRecientes > 0 ? round(($medicionesEnRango / $medicionesRecientes) * 100) : 0;

@@ -63,8 +63,10 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => $validated['password'], // Automagically hashed by model cast
-            'is_admin' => $request->has('is_admin'),
         ]);
+
+        $user->is_admin = $request->has('is_admin');
+        $user->save();
 
         if (isset($validated['roles'])) {
             $user->roles()->sync($validated['roles']);
@@ -134,5 +136,8 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado exitosamente.');
+    }
+}
+ess', 'Usuario eliminado exitosamente.');
     }
 }
