@@ -15,8 +15,8 @@ if [ "$DB_CONNECTION" = "mysql" ] || [ "$DB_CONNECTION" = "pgsql" ]; then
     max_tries=30
     count=0
     
-    # Generic PHP check using Laravel's config
-    until php -r "try { DB::connection()->getPdo(); exit(0); } catch (Exception \$e) { exit(1); }" > /dev/null 2>&1; do
+    # Use artisan to check connection - it handles DB_URL or HOST/PORT automatically
+    until php artisan db:monitor > /dev/null 2>&1; do
         sleep 2
         count=$((count + 1))
         if [ $count -gt $max_tries ]; then
