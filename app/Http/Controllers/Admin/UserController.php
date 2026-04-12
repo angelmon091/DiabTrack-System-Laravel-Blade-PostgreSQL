@@ -103,14 +103,22 @@ class UserController extends Controller
         $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'is_admin' => $request->has('is_admin'),
         ];
 
         if (!empty($validated['password'])) {
             $updateData['password'] = $validated['password'];
         }
 
-        $user->update($updateData);
+        $user->fill($updateData);
+
+        // Prevenir que el administrador se revoque a sí mismo los privilegios por accidente
+        if ($user->id === auth()->id() && !$request->has('is_admin')) {
+            $user->is_admin = true;
+        } else {
+            $user->is_admin = $request->has('is_admin');
+        }
+
+        $user->save();
 
         if (isset($validated['roles'])) {
             $user->roles()->sync($validated['roles']);

@@ -25,8 +25,8 @@ class AdminSeeder extends Seeder
             ['description' => 'Personal médico con acceso a información clínica y métricas de pacientes.']
         );
 
-        // 2. Hacer administrador al primer usuario (si existe)
-        $firstUser = User::first();
+        // 2. Hacer administrador al primer usuario rígidamente por orden de registro (ID más antiguo)
+        $firstUser = User::orderBy('id', 'asc')->first();
         
         if ($firstUser) {
             // Establecer is_admin = true
