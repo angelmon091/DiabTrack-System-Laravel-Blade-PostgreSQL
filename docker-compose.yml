@@ -22,7 +22,7 @@ services:
     volumes:
       - .:/var/www/html
       - /var/www/html/node_modules # Evitar sobreescribir con locales vacíos
-      - /var/www/html/vendor       # PROTEGER LAS LIBRERÍAS DE PHP
+      - /var/www/html/vendor # PROTEGER LAS LIBRERÍAS DE PHP
       - /var/www/html/public/build # Evitar sobreescribir assets compilados con locales
     depends_on:
       - db

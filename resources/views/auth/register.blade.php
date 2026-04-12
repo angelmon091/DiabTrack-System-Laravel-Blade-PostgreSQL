@@ -54,6 +54,20 @@
                 {{ __('Registrarse') }}
             </x-primary-button>
 
+            <div class="separator">
+                <span>{{ __('O') }}</span>
+            </div>
+
+            <div class="social-buttons">
+                <!-- Por ahora ocultamos Facebook hasta tener registrada la empresa -->
+                <a href="{{ route('socialite.redirect', 'facebook') }}" class="btn-social" style="display: none;">
+                    <i class="fa-brands fa-facebook" style="color: #1877F2;"></i> {{ __('Continuar con Facebook') }}
+                </a>
+                <a href="{{ route('socialite.redirect', 'google') }}" class="btn-social">
+                    <img src="{{ asset('img/medios/logos/google.png') }}" alt="Google"> {{ __('Continuar con Google') }}
+                </a>
+            </div>
+
             <p class="footer-link">
                 {{ __('¿Ya tienes una cuenta?') }} 
                 <a href="{{ route('login') }}">{{ __('Inicia Sesión') }}</a>

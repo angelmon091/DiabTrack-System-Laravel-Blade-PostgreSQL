@@ -47,7 +47,7 @@
     color: white;
     font-weight: 600;
     font-size: 0.95rem;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
     background-size: cover;
     background-position: center;
     border: 3px solid transparent;
@@ -57,19 +57,22 @@
 }
 
 .tracking-tab:nth-child(1) {
-    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
         url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=300&q=80');
 }
+
 .tracking-tab:nth-child(2) {
-    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
         url('https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=300&q=80');
 }
+
 .tracking-tab:nth-child(3) {
-    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
         url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=300&q=80');
 }
+
 .tracking-tab:nth-child(4) {
-    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
         url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80');
 }
 
@@ -106,7 +109,7 @@
     margin-bottom: 1.75rem;
 }
 
-.tracking-field > label,
+.tracking-field>label,
 .tracking-field-label {
     display: block;
     font-weight: 600;
@@ -115,7 +118,7 @@
     margin-bottom: 0.75rem;
 }
 
-.tracking-field > label strong {
+.tracking-field>label strong {
     color: var(--diab-primary);
     font-weight: 800;
 }
@@ -180,7 +183,7 @@
     background: var(--diab-bg);
     border-radius: 20px;
     outline: none;
-    border: 1px solid rgba(0,0,0,0.04);
+    border: 1px solid rgba(0, 0, 0, 0.04);
     margin-top: 0.5rem;
 }
 
@@ -386,7 +389,7 @@
     max-width: 220px;
     background: var(--diab-bg);
     color: var(--diab-text-secondary);
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: var(--diab-radius-sm);
     font-size: 1rem;
     font-weight: 600;
@@ -472,4 +475,16 @@
         padding: 12px 0;
         font-size: 0.9rem;
     }
+}
+
+.tracking-actions {
+    gap: 0.75rem;
+}
+
+.btn-track-reset,
+.btn-track-save {
+    max-width: 160px;
+    padding: 12px 0;
+    font-size: 0.9rem;
+}
 }

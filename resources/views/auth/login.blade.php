@@ -54,7 +54,8 @@
             </div>
 
             <div class="social-buttons">
-                <a href="{{ route('socialite.redirect', 'facebook') }}" class="btn-social">
+                <!-- Por ahora ocultamos Facebook hasta tener registrada la empresa -->
+                <a href="{{ route('socialite.redirect', 'facebook') }}" class="btn-social" style="display: none;">
                     <i class="fa-brands fa-facebook" style="color: #1877F2;"></i> {{ __('Continuar con Facebook') }}
                 </a>
                 <a href="{{ route('socialite.redirect', 'google') }}" class="btn-social">
