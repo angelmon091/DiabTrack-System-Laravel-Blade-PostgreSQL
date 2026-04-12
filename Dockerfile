@@ -47,8 +47,8 @@ COPY . .
 # Copy built assets from the assets stage
 COPY --from=assets /app/public/build ./public/build
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+# Install PHP dependencies (update to regenerate lock file with any new packages)
+RUN composer update --no-dev --optimize-autoloader --no-interaction --no-progress
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
