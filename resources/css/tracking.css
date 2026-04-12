@@ -244,7 +244,7 @@
     width: 28px;
     height: 28px;
     object-fit: contain;
-    opacity: 0.5;
+    opacity: 0.8;
     filter: grayscale(100%);
     display: block;
     margin: 0 auto;
