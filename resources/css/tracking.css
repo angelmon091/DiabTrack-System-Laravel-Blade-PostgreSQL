@@ -226,35 +226,42 @@
     border-radius: var(--diab-radius-sm);
     padding: 14px 10px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
     cursor: pointer;
     transition: var(--diab-transition);
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--diab-text-secondary);
-    line-height: 1;
+    line-height: 1.2;
+    text-align: center;
 }
 
 .selector-btn img {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
-    opacity: 0.7;
+    opacity: 0.5;
+    filter: grayscale(100%);
     display: block;
+    margin: 0 auto;
+    transition: var(--diab-transition);
 }
 
 .selector-btn .selector-emoji {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;
+    color: var(--diab-text-secondary);
+    transition: var(--diab-transition);
 }
 
 .selector-btn .selector-emoji i {
@@ -279,6 +286,19 @@
 }
 
 .selector-btn.active img {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+.selector-btn.active .selector-emoji {
+    color: var(--diab-primary);
+}
+
+/* Permitir que los íconos de intensidad mantengan su color, pero atenuarlos si no están activos */
+#intensity-grid .selector-btn:not(.active) .selector-emoji {
+    opacity: 0.5;
+}
+#intensity-grid .selector-btn.active .selector-emoji {
     opacity: 1;
 }
 
@@ -371,6 +391,7 @@
 
 .symptom-category h3 .cat-icon {
     font-size: 1.3rem;
+    color: var(--diab-primary);
 }
 
 /* ── Action Buttons ── */
