@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="DiabTrack - Gestiona tu salud y control de diabetes de manera efectiva. Registra glucosa, alimentación, actividad física y síntomas en un solo lugar.">
+    <meta name="keywords" content="diabetes, control de glucosa, salud, seguimiento médico, nutrición diabetes, signos vitales">
+    <meta name="author" content="DiabTrack">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
