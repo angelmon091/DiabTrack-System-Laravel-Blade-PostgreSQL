@@ -15,7 +15,7 @@
     <meta property="og:url" content="{{ config('app.url') }}">
     <meta property="og:title" content="DiabTrack - Tu Compañero en el Control de la Diabetes">
     <meta property="og:description" content="Gestiona tu salud de manera efectiva con DiabTrack. Registra signos vitales, alimentación y síntomas en un solo lugar.">
-    <meta property="og:image" content="{{ asset('img/medios/logos/logo-seo.png') }}">
+    <meta property="og:image" content="{{ asset('og-image.jpg') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">

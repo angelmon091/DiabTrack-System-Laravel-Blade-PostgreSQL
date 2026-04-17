@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    
+    <!-- Meta etiquetas para Redes Sociales -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ config('app.url') }}">
+    <meta property="og:title" content="DiabTrack - Dashboard de Salud">
+    <meta property="og:description" content="Gestiona tu salud de manera efectiva con DiabTrack. Registra signos vitales, alimentación y síntomas.">
+    <meta property="og:image" content="{{ asset('og-image.jpg') }}">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="DiabTrack - Tu Dashboard de Salud">
+    <meta property="twitter:image" content="{{ asset('og-image.jpg') }}">
+
     <title>@yield('title', 'DiabTrack - Dashboard')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
