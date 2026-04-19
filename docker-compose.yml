@@ -8,22 +8,22 @@ services:
     restart: unless-stopped
     tty: true
     environment:
-      APP_ENV: local
-      APP_DEBUG: "true"
-      APP_KEY: base64:uSu6S801reK56Y6GZ+SmuE8y9p9vK9Y6uSu6S801reK=
+      APP_ENV: ${APP_ENV:-local}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_KEY: ${APP_KEY}
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
-      DB_DATABASE: diabtrack
-      DB_USERNAME: diabuser
-      DB_PASSWORD: diabpassword
+      DB_DATABASE: ${DB_DATABASE:-diabtrack}
+      DB_USERNAME: ${DB_USERNAME:-diabuser}
+      DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "8081:80"
+      - "${APP_PORT:-80}:80"
     volumes:
       - .:/var/www/html
-      - /var/www/html/node_modules # Evitar sobreescribir con locales vacíos
-      - /var/www/html/vendor # PROTEGER LAS LIBRERÍAS DE PHP
-      - /var/www/html/public/build # Evitar sobreescribir assets compilados con locales
+      - /var/www/html/node_modules
+      - /var/www/html/vendor
+      - /var/www/html/public/build
     depends_on:
       - db
     networks:
@@ -34,12 +34,12 @@ services:
     container_name: diabtrack-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: diabtrack
-      MYSQL_USER: diabuser
-      MYSQL_PASSWORD: diabpassword
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ${DB_DATABASE:-diabtrack}
+      MYSQL_USER: ${DB_USERNAME:-diabuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "3306:3306"
+      - "${DB_PORT_EXTERNAL:-3306}:3306"
     volumes:
       - diabtrack-db-data:/var/lib/mysql
     networks:
