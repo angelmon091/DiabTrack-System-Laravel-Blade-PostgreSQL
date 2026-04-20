@@ -1,0 +1,22 @@
+{
+    "Verification link sent": "Se ha enviado un enlace de verificación",
+    "A new verification link has been sent to the email address you provided during registration.": "Se ha enviado un nuevo enlace de verificación a la dirección de correo electrónico que proporcionó durante el registro.",
+    "Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "¡Gracias por registrarte! Antes de comenzar, ¿podrías verificar tu dirección de correo electrónico haciendo clic en el enlace que acabamos de enviarte? Si no recibiste el correo, con gusto te enviaremos otro.",
+    "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "¿Olvidaste tu contraseña? No hay problema. Solo dinos tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña que te permitirá elegir una nueva.",
+    "Email Password Reset Link": "Enviar enlace para restablecer contraseña",
+    "Reset Password": "Restablecer Contraseña",
+    "Confirm Password": "Confirmar Contraseña",
+    "Log in": "Iniciar sesión",
+    "Register": "Registrarse",
+    "Name": "Nombre",
+    "Email": "Correo Electrónico",
+    "Password": "Contraseña",
+    "Confirm Password": "Confirmar Contraseña",
+    "Already registered?": "¿Ya estás registrado?",
+    "Remember me": "Recordarme",
+    "Forgot your password?": "¿Olvidaste tu contraseña?",
+    "verification-link-sent": "Se ha enviado un nuevo enlace de verificación.",
+    "password-updated": "Tu contraseña ha sido actualizada correctamente.",
+    "passwords.sent": "¡Te hemos enviado por correo el enlace para restablecer tu contraseña!",
+    "passwords.reset": "¡Tu contraseña ha sido restablecida!"
+}

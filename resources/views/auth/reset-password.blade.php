@@ -13,8 +13,8 @@
                 :value="old('email', $request->email)" 
                 placeholder="{{ __('Correo Electrónico') }}" 
                 required 
-                autofocus 
-                autocomplete="username"
+                readonly
+                class="bg-gray-100 cursor-not-allowed"
                 icon="fa-regular fa-envelope" 
             />
             <x-input-error :messages="$errors->get('email')" />
