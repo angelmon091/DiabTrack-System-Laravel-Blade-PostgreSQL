@@ -18,5 +18,12 @@
     "verification-link-sent": "Se ha enviado un nuevo enlace de verificación.",
     "password-updated": "Tu contraseña ha sido actualizada correctamente.",
     "passwords.sent": "¡Te hemos enviado por correo el enlace para restablecer tu contraseña!",
-    "passwords.reset": "¡Tu contraseña ha sido restablecida!"
+    "passwords.reset": "¡Tu contraseña ha sido restablecida!",
+    "auth.failed": "Estas credenciales no coinciden con nuestros registros.",
+    "auth.password": "La contraseña es incorrecta.",
+    "auth.throttle": "Demasiados intentos de acceso. Por favor intente de nuevo en :seconds segundos.",
+    "These credentials do not match our records.": "Estas credenciales no coinciden con nuestros registros.",
+    "These credentials do not match our records": "Estas credenciales no coinciden con nuestros registros",
+    "The provided password is incorrect.": "La contraseña proporcionada es incorrecta.",
+    "The selected email is invalid.": "El correo electrónico seleccionado es inválido."
 }
