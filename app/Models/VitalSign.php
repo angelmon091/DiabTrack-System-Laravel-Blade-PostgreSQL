@@ -32,6 +32,8 @@ class VitalSign extends Model
         'weight',
         'hba1c',
         'measurement_moment',
+        'stress_level',
+        'notes',
     ];
 
     /**

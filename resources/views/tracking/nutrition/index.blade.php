@@ -12,7 +12,7 @@
             box-shadow: 0 10px 20px rgba(0, 180, 216, 0.2);
         }
         .btn-ia:hover {
-            transform: translateY(-5px) scale(1.02);
+            transform: translateY(-2px) scale(1.01);
             box-shadow: 0 15px 30px rgba(0, 180, 216, 0.3);
         }
         .food-card {
@@ -22,8 +22,8 @@
         }
         .food-card:hover {
             border-color: var(--diab-primary);
-            transform: scale(1.05);
             z-index: 10;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .carrousel-container {
             overflow: hidden;
@@ -120,7 +120,7 @@
         <div class="row g-4">
             <!-- Calorías -->
             <div class="col-12 col-md-4">
-                <div class="diab-card metric-card p-4 h-100 diab-card-hover">
+                <div class="diab-card metric-card p-4 h-100">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div class="act-icon red shadow-sm"><i class="fa-solid fa-fire"></i></div>
                         <span class="badge {{ $porcentajeCalorias > 90 ? 'bg-danger' : 'bg-success' }} rounded-pill">{{ $porcentajeCalorias }}%</span>
@@ -138,7 +138,7 @@
 
             <!-- Carbohidratos -->
             <div class="col-12 col-md-4">
-                <div class="diab-card metric-card p-4 h-100 diab-card-hover">
+                <div class="diab-card metric-card p-4 h-100">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div class="act-icon orange shadow-sm"><i class="fa-solid fa-bread-slice"></i></div>
                         <span class="text-muted extra-small fw-bold">META: {{ $metaCarbs }}g</span>
@@ -157,7 +157,7 @@
 
             <!-- Proteínas/Info -->
             <div class="col-12 col-md-4">
-                <div class="diab-card metric-card p-4 h-100 diab-card-hover">
+                <div class="diab-card metric-card p-4 h-100">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div class="act-icon blue shadow-sm"><i class="fa-solid fa-circle-info"></i></div>
                     </div>

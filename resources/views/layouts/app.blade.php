@@ -64,7 +64,22 @@
                                 <span class="user-email text-muted extra-small" style="font-size: 0.7rem;">{{ auth()->user()->email }}</span>
                             </div>
                             <div class="user-avatar rounded-circle overflow-hidden shadow-sm" style="width: 36px; height: 36px;">
-                                <img src="{{ asset('img/medios/etc/yo.jpg') }}" alt="User" class="w-100 h-100 object-fit-cover">
+                                @php
+                                    $gender = strtolower(auth()->user()->patientProfile->gender ?? '');
+                                @endphp
+                                @if($gender === 'femenino')
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #FF6B6B, #C0392B);">
+                                        <i class="fa-solid fa-person-dress fs-5"></i>
+                                    </div>
+                                @elseif($gender === 'masculino')
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #4A90E2, #2980B9);">
+                                        <i class="fa-solid fa-user-tie fs-5"></i>
+                                    </div>
+                                @else
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white bg-secondary">
+                                        <i class="fa-solid fa-user fs-5"></i>
+                                    </div>
+                                @endif
                             </div>
                             <form method="POST" action="{{ route('logout') }}" class="ms-2 pe-2 border-start ps-2">
                                 @csrf
@@ -123,6 +138,14 @@
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
     @yield('scripts')
 </body>
 </html>

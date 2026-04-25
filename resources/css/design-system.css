@@ -135,10 +135,7 @@ body {
     border-left-width: 6px !important;
 }
 
-.stat-card:hover,
-.diab-card:hover,
 .diab-card-hover:hover {
-    transform: translateY(-3px);
     box-shadow: var(--diab-shadow-hover);
     border-color: rgba(255, 255, 255, 0.6) !important;
 }

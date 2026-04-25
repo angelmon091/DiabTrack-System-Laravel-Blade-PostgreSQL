@@ -92,7 +92,7 @@ body {
 }
 
 .btn-acceder:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 15px 30px -5px rgba(0, 180, 216, 0.5);
     color: white;
     filter: brightness(1.1);
@@ -122,7 +122,6 @@ body {
 }
 
 .service-item:hover {
-    transform: translateY(-12px);
     box-shadow: var(--diab-shadow-hover);
     background: white;
     border-color: var(--diab-primary-light);

@@ -144,7 +144,7 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-primary">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>Glucosa Promedio</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Promedio de tus niveles de azúcar en sangre registrados recientemente."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="El promedio de tus niveles de azúcar en la sangre en los últimos días."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ $avgGlucose ?: '--' }}</h2>
@@ -161,11 +161,11 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-success">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>Tiempo en Rango</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Porcentaje de mediciones entre 70-140 mg/dL. Meta ideal: >70%."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Mide cuántas veces tu azúcar salió normal (ni muy alta ni muy baja). Lo ideal es que al menos 7 de cada 10 veces estés en el nivel adecuado."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ $tiempoEnRango }}%</h2>
-                        <span class="text-muted extra-small">Meta: >70%</span>
+                        <span class="text-muted extra-small">Meta: 70% o más</span>
                     </div>
                     <div class="progress mt-3" style="height: 6px; border-radius: 10px;">
                         <div class="progress-bar bg-success" style="width: {{ $tiempoEnRango }}%"></div>
@@ -176,7 +176,7 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-primary">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>HbA1c Estimada</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Cálculo aproximado de tu hemoglobina glicosilada promedio de los últimos meses."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Un cálculo de cómo ha estado tu azúcar en los últimos 3 meses en promedio."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ $ultimaHba1c ? number_format($ultimaHba1c->hba1c, 1) : '--' }}</h2>
@@ -189,7 +189,7 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-secondary">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>Peso Actual</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Último registro de tu peso corporal en kilogramos."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Tu último peso registrado."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ $totalWeight }}</h2>
@@ -208,7 +208,7 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-info">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>Presión Media</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Promedio de tus mediciones de presión arterial sistólica/diastólica."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="El promedio de tu presión arterial (presión de la sangre)."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ $avgSystolic }}/{{ $avgDiastolic }}</h2>
@@ -221,7 +221,7 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-info">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>Frecuencia Cardiaca</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Promedio de tus pulsaciones por minuto (ritmo cardiaco)."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="El promedio de los latidos de tu corazón por minuto."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ $avgHeartRate }}</h2>
@@ -236,7 +236,7 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-warning">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>Carbs Totales</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Suma de todos los carbohidratos registrados durante el día de hoy."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="La cantidad total de carbohidratos (harinas, azúcares) que has comido hoy."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ number_format($nutritionHistory->sum('carbs_grams')) }}</h2>
@@ -249,7 +249,7 @@
                 <div class="stat-card p-4 h-100 shadow-sm border-start border-4 border-success">
                     <div class="extra-small fw-bold text-muted text-uppercase mb-2 letter-spacing-1 d-flex align-items-center justify-content-between">
                         <span>Actividad Total</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Tiempo acumulado de ejercicio y actividad física registrada hoy."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="El tiempo total que te has movido o hecho ejercicio hoy."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
                         <h2 class="fw-extrabold text-dark mb-0">{{ round($totalActivityMinutes / 60, 1) }}</h2>
@@ -268,7 +268,7 @@
                         <h5 class="fw-bold mb-0">Dinámica de Glucosa (30 días)</h5>
                         <div class="d-flex align-items-center gap-3">
                             <div class="badge bg-diab-primary-light text-diab-primary rounded-pill px-3 py-2">Tendencia Temporal</div>
-                            <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Gráfico lineal que muestra la tendencia de tus niveles de azúcar en sangre durante los últimos 30 días."></i>
+                            <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Este gráfico te muestra de forma fácil si tu azúcar ha subido o bajado en el último mes."></i>
                         </div>
                     </div>
                     <div style="height: 320px;">
@@ -280,7 +280,7 @@
                 <div class="diab-card p-4 p-md-5 h-100">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h5 class="fw-bold mb-0">Composición de Dieta</h5>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Distribución porcentual de los tipos de alimentos (carbohidratos, proteínas, grasas, etc.) que has consumido."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Te muestra visualmente qué tipo de comida estás comiendo más (ej. si comes más proteínas o más carbohidratos)."></i>
                     </div>
                     <div class="chart-container-sm mb-4">
                         <canvas id="dietCompositionChart"></canvas>
@@ -301,7 +301,7 @@
                 <div class="diab-card p-4 p-md-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h5 class="fw-bold mb-0">Frecuencia de Síntomas</h5>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Recuento de los síntomas más comunes que has reportado recientemente."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Cuáles han sido los síntomas o malestares que más has sentido últimamente."></i>
                     </div>
                     <div class="chart-container-sm">
                         <canvas id="symptomsFrequencyChart"></canvas>
@@ -312,7 +312,7 @@
                 <div class="diab-card p-4 p-md-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h5 class="fw-bold mb-0">Balance de Energía y Sueño</h5>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Visualización del equilibrio entre tu descanso, actividad física y niveles percibidos de energía."></i>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Te ayuda a ver cómo se relaciona lo que duermes y te mueves con tu nivel de energía en el día."></i>
                     </div>
                     <div class="chart-container-sm">
                         <canvas id="energySleepChart"></canvas>
@@ -326,7 +326,7 @@
             <div class="px-4 pt-4 px-md-5 pt-md-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="fw-bold mb-0">Explorador de Datos Históricos</h5>
-                    <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Tabla detallada con todos los registros cronológicos de salud para una revisión exhaustiva."></i>
+                    <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Aquí puedes ver una lista completa con todos los datos que has guardado."></i>
                 </div>
                 <ul class="nav nav-tabs nav-tabs-custom" id="historyTabs" role="tablist">
                     <li class="nav-item">

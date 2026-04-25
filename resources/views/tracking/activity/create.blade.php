@@ -9,8 +9,8 @@
 @section('content')
     <div class="tracking-container animate-fade-in">
         <div class="tracking-header">
-            <h1>{{ __('Registro de Datos') }}</h1>
-            <p class="tracking-subtitle">{{ __('Registra tu actividad física diaria') }}</p>
+            <h1>{{ __('Registro de Actividad Física') }}</h1>
+            <p class="tracking-subtitle">{{ __('Registra tu movimiento y nivel de energía diario') }}</p>
         </div>
 
         <x-tracking-nav active="movimiento" />
@@ -56,7 +56,10 @@
                     </div>
 
                     <div class="tracking-field" style="margin-bottom: 0;">
-                        <label>{{ __('Nivel de Energía') }}:</label>
+                        <label class="d-flex justify-content-between align-items-center w-100 mb-3">
+                            <span>{{ __('Nivel de Energía') }}:</span>
+                            <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="¿Cómo sentías tu cuerpo antes y durante el ejercicio? ¿Cansado o con mucha fuerza?"></i>
+                        </label>
                         <input type="hidden" name="energy_level" id="energy_level"
                             value="{{ old('energy_level', 'normal') }}">
                         <div class="selector-grid" id="energy-grid">
@@ -85,7 +88,10 @@
 
             <aside class="tracking-form-aside">
                 <div class="tracking-panel">
-                    <h3>{{ __('Intensidad') }}</h3>
+                    <h3 class="d-flex justify-content-between align-items-center w-100 mb-3">
+                        <span>{{ __('Intensidad') }}</span>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted fs-6" data-bs-toggle="tooltip" title="Baja: podías platicar. Media: podías platicar pero no cantar. Alta: te faltaba el aire al hablar."></i>
+                    </h3>
                     <input type="hidden" name="intensity" id="intensity" value="{{ old('intensity', 'media') }}">
 
                     <div class="selector-grid" id="intensity-grid">
@@ -110,11 +116,11 @@
                     <h3 class="mt-4">{{ __('Horario') }}</h3>
                     <div class="d-flex gap-3 mt-3">
                         <div style="flex:1;">
-                            <label class="tracking-field-label">{{ __('Inicio') }}</label>
+                            <label class="tracking-field-label">{{ __('Inicio') }} <span class="text-muted fw-normal" style="font-size: 0.75rem;">(Opcional)</span></label>
                             <input type="time" name="start_time" class="tracking-input" value="{{ old('start_time') }}">
                         </div>
                         <div style="flex:1;">
-                            <label class="tracking-field-label">{{ __('Fin') }}</label>
+                            <label class="tracking-field-label">{{ __('Fin') }} <span class="text-muted fw-normal" style="font-size: 0.75rem;">(Opcional)</span></label>
                             <input type="time" name="end_time" class="tracking-input" value="{{ old('end_time') }}">
                         </div>
                     </div>

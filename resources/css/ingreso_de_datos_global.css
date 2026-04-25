@@ -198,7 +198,7 @@ h1 {
 .card:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=300&q=80'); }
 .card:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80'); }
 
-.card:hover { transform: translateY(-2px); opacity: 0.9; }
+/* Hover en cards removido por comodidad visual */
 
 /* =========================================
    5. LAYOUTS COMUNES (FORMULARIOS Y GRUPOS)

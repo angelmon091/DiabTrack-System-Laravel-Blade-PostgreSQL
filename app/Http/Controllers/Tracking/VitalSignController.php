@@ -25,6 +25,8 @@ class VitalSignController extends Controller
             'weight' => $request->weight,
             'hba1c' => $request->hba1c,
             'measurement_moment' => $request->measurement_moment,
+            'stress_level' => $request->stress_level,
+            'notes' => $request->notes,
         ]);
 
         return redirect()->route('dashboard')->with('status', __('Registro de salud guardado con éxito.'));

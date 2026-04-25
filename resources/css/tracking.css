@@ -77,7 +77,6 @@
 }
 
 .tracking-tab:hover {
-    transform: translateY(-3px);
     box-shadow: var(--diab-shadow-hover);
     color: white;
 }
@@ -85,7 +84,6 @@
 .tracking-tab.active {
     border-color: var(--diab-primary);
     box-shadow: 0 0 0 3px var(--diab-primary-light), var(--diab-shadow-hover);
-    transform: translateY(-2px);
 }
 
 /* ── Form Layout ── */

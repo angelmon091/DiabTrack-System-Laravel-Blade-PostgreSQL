@@ -13,28 +13,28 @@
                     </div>
 
                     <div class="d-flex flex-column gap-2">
-                        <a href="{{ route('tracking.nutrition.index') }}" class="action-item diab-card-hover">
+                        <a href="{{ route('tracking.nutrition.index') }}" class="action-item">
                             <div class="action-icon orange"><i class="fa-solid fa-robot"></i></div>
                             <div class="ms-3">
                                 <strong class="d-block">Nutrición IA</strong>
                                 <p class="mb-0 extra-small text-muted">Planificación de comidas</p>
                             </div>
                         </a>
-                        <a href="{{ route('tracking.summary') }}" class="action-item diab-card-hover">
+                        <a href="{{ route('tracking.summary') }}" class="action-item">
                             <div class="action-icon blue"><i class="fa-solid fa-chart-line"></i></div>
                             <div class="ms-3">
                                 <strong class="d-block">Gráficos</strong>
                                 <p class="mb-0 extra-small text-muted">Análisis de tendencias</p>
                             </div>
                         </a>
-                        <a href="{{ route('tracking.vital.create') }}" class="action-item diab-card-hover">
+                        <a href="{{ route('tracking.vital.create') }}" class="action-item">
                             <div class="action-icon green"><i class="fa-solid fa-plus"></i></div>
                             <div class="ms-3">
                                 <strong class="d-block">Registrar</strong>
                                 <p class="mb-0 extra-small text-muted">Añadir entrada diaria</p>
                             </div>
                         </a>
-                        <a href="{{ route('profile.edit') }}" class="action-item diab-card-hover">
+                        <a href="{{ route('profile.edit') }}" class="action-item">
                             <div class="action-icon gray"><i class="fa-solid fa-sliders"></i></div>
                             <div class="ms-3">
                                 <strong class="d-block">Ajustes</strong>
@@ -157,7 +157,7 @@
                         <div class="diab-card glucosa-hero p-4 h-100 d-flex flex-column justify-content-center align-items-center animate-fade-in" 
                              style="--hero-bg: {{ $heroBg }}; --hero-radial: {{ $heroRadial }}; animation-delay: 0.2s;">
                             <div class="text-center w-100">
-                                <span class="text-diab-text-secondary fw-bold small mb-2 d-block text-uppercase letter-spacing-1">Glucosa en Ayunas</span>
+                                <span class="text-diab-text-secondary fw-bold small mb-2 d-block text-uppercase letter-spacing-1">Última Medición de Glucosa</span>
                                 <div class="d-flex align-items-baseline justify-content-center">
                                     <h1 class="display-3 fw-extrabold mb-0 text-dark">
                                         {{ $ultimaMedicion->glucose_level ?? '--' }}
@@ -208,8 +208,8 @@
                         <div class="diab-card p-4 h-100 animate-fade-in" style="animation-delay: 0.3s;">
                             <div class="d-flex flex-column h-100 justify-content-between">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
-                                        <span class="extra-small fw-bold text-muted text-uppercase letter-spacing-1 d-block mb-1">A1c Estimada</span>
+                                    <div data-bs-toggle="tooltip" title="Un cálculo de cómo ha estado tu azúcar en los últimos 3 meses.">
+                                        <span class="extra-small fw-bold text-muted text-uppercase letter-spacing-1 d-block mb-1">A1c Estimada <i class="fa-solid fa-circle-info ms-1 opacity-50"></i></span>
                                         <h3 class="fw-extrabold mb-0 text-dark">{{ $ultimaHba1c ? number_format($ultimaHba1c->hba1c, 1) . '%' : '--' }}</h3>
                                     </div>
                                     <div class="act-icon fire shadow-sm"><i class="fa-solid fa-dna"></i></div>
@@ -236,8 +236,8 @@
                         <div class="diab-card p-4 h-100 animate-fade-in" style="animation-delay: 0.4s;">
                             <div class="d-flex flex-column h-100 justify-content-between">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
-                                        <span class="extra-small fw-bold text-muted text-uppercase letter-spacing-1 d-block mb-1">Carbohidratos</span>
+                                    <div data-bs-toggle="tooltip" title="La cantidad total de carbohidratos que has comido hoy.">
+                                        <span class="extra-small fw-bold text-muted text-uppercase letter-spacing-1 d-block mb-1">Carbohidratos <i class="fa-solid fa-circle-info ms-1 opacity-50"></i></span>
                                         <h3 class="fw-extrabold mb-0 text-dark">{{ $carbsHoy }}g</h3>
                                     </div>
                                     <div class="act-icon move shadow-sm"><i class="fa-solid fa-bread-slice"></i></div>
@@ -264,8 +264,8 @@
                         <div class="diab-card p-4 h-100 animate-fade-in" style="animation-delay: 0.5s;">
                             <div class="d-flex flex-column h-100 justify-content-between">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
-                                        <span class="extra-small fw-bold text-muted text-uppercase letter-spacing-1 d-block mb-1">Tiempo en Rango</span>
+                                    <div data-bs-toggle="tooltip" title="Porcentaje de veces que tu azúcar estuvo normal (ni muy alta ni muy baja).">
+                                        <span class="extra-small fw-bold text-muted text-uppercase letter-spacing-1 d-block mb-1">Tiempo en Rango <i class="fa-solid fa-circle-info ms-1 opacity-50"></i></span>
                                         <h3 class="fw-extrabold mb-0 text-dark">{{ $tiempoEnRango }}%</h3>
                                     </div>
                                     <div class="act-icon feet shadow-sm"><i class="fa-solid fa-clock-rotate-left"></i></div>

@@ -9,8 +9,8 @@
 @section('content')
 <div class="tracking-container animate-fade-in">
     <div class="tracking-header">
-        <h1>{{ __('Registro de Datos') }}</h1>
-        <p class="tracking-subtitle">{{ __('Selecciona los síntomas que presentas hoy') }}</p>
+        <h1>{{ __('Registro de Síntomas') }}</h1>
+        <p class="tracking-subtitle">{{ __('Selecciona los síntomas que presentas hoy. Si te sientes bien, no es necesario marcar nada.') }}</p>
     </div>
 
     <x-tracking-nav active="sintomas" />

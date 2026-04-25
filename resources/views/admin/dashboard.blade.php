@@ -12,7 +12,7 @@
         <!-- Dashboard Card (Resumen) -->
         <div class="col-12 col-md-4">
             <a href="{{ route('admin.dashboard') }}" class="text-decoration-none h-100 d-block">
-                <div class="admin-card-metrics diab-card-hover animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="admin-card-metrics animate-fade-in" style="animation-delay: 0.1s;">
                     <div class="admin-card-icon-wrapper shadow-sm">
                         <i class="fa-solid fa-chart-pie text-diab-primary fs-3"></i>
                     </div>
@@ -25,7 +25,7 @@
         <!-- Users Card -->
         <div class="col-12 col-md-4">
             <a href="{{ route('admin.users.index') }}" class="text-decoration-none h-100 d-block">
-                <div class="admin-card-metrics diab-card-hover animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="admin-card-metrics animate-fade-in" style="animation-delay: 0.2s;">
                     <div class="admin-card-icon-wrapper shadow-sm">
                         <i class="fa-solid fa-users text-diab-primary fs-3"></i>
                     </div>
@@ -38,7 +38,7 @@
         <!-- Roles Card -->
         <div class="col-12 col-md-4">
             <a href="{{ route('admin.roles.index') }}" class="text-decoration-none h-100 d-block">
-                <div class="admin-card-metrics diab-card-hover animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="admin-card-metrics animate-fade-in" style="animation-delay: 0.3s;">
                     <div class="admin-card-icon-wrapper shadow-sm">
                         <i class="fa-solid fa-shield-halved text-diab-success fs-3"></i>
                     </div>

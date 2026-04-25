@@ -21,6 +21,8 @@ class VitalSignRequest extends FormRequest
             'weight' => ['nullable', 'numeric', 'min:20', 'max:350'],
             'hba1c' => ['nullable', 'numeric', 'min:3', 'max:15'],
             'measurement_moment' => ['required', 'string', 'in:Ayunas,Antes de Comer,Después de Comer,Al Dormir'],
+            'stress_level' => ['nullable', 'string', 'max:255'],
+            'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
