@@ -39,9 +39,15 @@
                     </div>
                     <div class="user-avatar rounded-circle overflow-hidden shadow-sm" style="width: 36px; height: 36px;">
                         @php
-                            $gender = strtolower(auth()->user()->patientProfile->gender ?? '');
+                            $user = auth()->user();
+                            $gender = strtolower($user->patientProfile->gender ?? '');
+                            $avatar = $user->avatar;
                         @endphp
-                        @if($gender === 'femenino')
+                        @if($avatar && str_starts_with($avatar, 'http'))
+                            <img src="{{ $avatar }}" alt="User" class="w-100 h-100 object-fit-cover">
+                        @elseif($avatar)
+                            <img src="{{ asset('storage/' . $avatar) }}" alt="User" class="w-100 h-100 object-fit-cover">
+                        @elseif($gender === 'femenino')
                             <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #FF6B6B, #C0392B);">
                                 <i class="fa-solid fa-person-dress fs-5"></i>
                             </div>

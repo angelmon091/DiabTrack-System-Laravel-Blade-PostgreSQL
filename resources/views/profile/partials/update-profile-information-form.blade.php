@@ -13,9 +13,43 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
+
+        <div class="mb-4 d-flex align-items-center gap-4">
+            <div class="user-avatar rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 80px; height: 80px;">
+                @php
+                    $gender = strtolower($user->patientProfile->gender ?? '');
+                    $avatar = $user->avatar;
+                @endphp
+                @if($avatar && str_starts_with($avatar, 'http'))
+                    <img src="{{ $avatar }}" alt="User" class="w-100 h-100 object-fit-cover">
+                @elseif($avatar)
+                    <img src="{{ asset('storage/' . $avatar) }}" alt="User" class="w-100 h-100 object-fit-cover">
+                @elseif($gender === 'femenino')
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #FF6B6B, #C0392B);">
+                        <i class="fa-solid fa-person-dress fs-1"></i>
+                    </div>
+                @elseif($gender === 'masculino')
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #4A90E2, #2980B9);">
+                        <i class="fa-solid fa-user-tie fs-1"></i>
+                    </div>
+                @else
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white bg-secondary">
+                        <i class="fa-solid fa-user fs-1"></i>
+                    </div>
+                @endif
+            </div>
+            <div class="flex-grow-1">
+                <label class="form-label small fw-bold text-muted text-uppercase" for="avatar">{{ __('Foto de Perfil') }}</label>
+                <input id="avatar" name="avatar" type="file" class="form-control diab-input" accept="image/jpeg, image/png, image/webp" />
+                <p class="text-muted extra-small mt-1 mb-0">Recomendado: 150x150. Max: 5MB.</p>
+                @if($errors->has('avatar'))
+                    <span class="text-danger extra-small">{{ $errors->first('avatar') }}</span>
+                @endif
+            </div>
+        </div>
 
         <div class="mb-4">
             <label class="form-label small fw-bold text-muted text-uppercase" for="name">{{ __('Nombre completo') }}</label>
