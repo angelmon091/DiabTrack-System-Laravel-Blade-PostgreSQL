@@ -13,6 +13,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\EmailChangeRequest;
 use App\Mail\VerifyEmailChange;
+use App\Mail\EmailChangeAlert;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -53,7 +54,12 @@ class ProfileController extends Controller
         $user->fill($request->except('email'));
 
         if ($oldEmail !== $newEmail) {
-            // Eliminar solicitudes previas del mismo usuario
+            // Validar contraseña obligatoriamente para cambio de email
+            if (!$request->current_password) {
+                return Redirect::route('profile.edit')->withErrors(['current_password' => 'Se requiere la contraseña actual para cambiar el correo electrónico.'])->withInput();
+            }
+
+            // Eliminar solicitudes previas
             EmailChangeRequest::where('user_id', $user->id)->delete();
 
             $token = Str::random(64);
@@ -61,10 +67,15 @@ class ProfileController extends Controller
                 'user_id' => $user->id,
                 'new_email' => $newEmail,
                 'token' => $token,
-                'expires_at' => now()->addHour(),
+                'expires_at' => now()->addMinutes(30),
             ]);
 
-            Mail::to($oldEmail)->send(new VerifyEmailChange($user, $token, $newEmail));
+            // Enviar alerta al correo ACTUAL
+            Mail::to($oldEmail)->send(new EmailChangeAlert($user, $newEmail));
+            
+            // Enviar verificación al NUEVO correo
+            Mail::to($newEmail)->send(new VerifyEmailChange($user, $token, $newEmail));
+            
             $status = 'email-change-requested';
         }
 

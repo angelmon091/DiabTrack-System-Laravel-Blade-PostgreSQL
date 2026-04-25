@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ResetPasswordNotification;
 
 /**
  * Modelo User
@@ -89,5 +90,13 @@ class User extends Authenticatable
     public function vitalSigns()
     {
         return $this->hasMany(VitalSign::class);
+    }
+
+    /**
+     * Envía la notificación de restablecimiento de contraseña.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

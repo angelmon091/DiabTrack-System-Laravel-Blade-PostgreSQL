@@ -66,6 +66,17 @@
                 <span class="text-danger extra-small">{{ $errors->first('email') }}</span>
             @endif
 
+            <div class="mt-4 pt-2 border-top" x-data="{ showPassword: false }" x-show="{{ old('email', $user->email) !== $user->email ? 'true' : 'false' }} || $errors->has('current_password')">
+                <label class="form-label small fw-bold text-muted text-uppercase" for="current_password">
+                    <i class="fa-solid fa-shield-halved me-1"></i> {{ __('Confirma con tu contraseña actual') }}
+                </label>
+                <input id="current_password" name="current_password" type="password" class="form-control diab-input" placeholder="Requerido para cambiar el correo" />
+                <p class="text-muted extra-small mt-1">Por seguridad, debes confirmar tu identidad para cambiar el correo principal.</p>
+                @if($errors->has('current_password'))
+                    <span class="text-danger extra-small d-block mt-1">{{ $errors->first('current_password') }}</span>
+                @endif
+            </div>
+
             @php
                 $pendingEmailChange = \App\Models\EmailChangeRequest::where('user_id', $user->id)->first();
             @endphp
@@ -73,8 +84,11 @@
                 <div class="mt-2 alert alert-info border-0 bg-info bg-opacity-10 py-2">
                     <p class="extra-small text-info mb-0 fw-medium">
                         <i class="fa-solid fa-clock-rotate-left me-1"></i>
-                        Tienes una solicitud pendiente para cambiar tu correo a <strong>{{ $pendingEmailChange->new_email }}</strong>.
-                        Por favor verifica tu bandeja de entrada en <strong>{{ $user->email }}</strong> para confirmar.
+                        Solicitud pendiente: <strong>{{ $pendingEmailChange->new_email }}</strong>.
+                        <br>
+                        1. Hemos avisado a tu correo actual por seguridad.
+                        <br>
+                        2. <strong>Confirma el cambio haciendo clic en el enlace enviado a {{ $pendingEmailChange->new_email }}</strong>.
                     </p>
                 </div>
             @endif
@@ -108,7 +122,7 @@
 
             @if (session('status') === 'email-change-requested')
                 <div class="small text-info fw-semibold animate-fade-in">
-                    <i class="fa-solid fa-paper-plane me-1"></i> {{ __('Verificación enviada a tu correo principal.') }}
+                    <i class="fa-solid fa-paper-plane me-1"></i> {{ __('Solicitud enviada. Revisa tu nuevo correo.') }}
                 </div>
             @endif
 

@@ -33,6 +33,7 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'avatar' => ['nullable', 'image', 'max:5120'],
+            'current_password' => ['nullable', 'string', 'current_password'],
         ];
     }
 }
