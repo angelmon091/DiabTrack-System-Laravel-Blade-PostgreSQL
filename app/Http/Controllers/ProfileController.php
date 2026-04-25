@@ -11,6 +11,10 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Models\EmailChangeRequest;
+use App\Mail\VerifyEmailChange;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 /**
  * Clase ProfileController
@@ -42,10 +46,26 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-        $user->fill($request->validated());
+        $oldEmail = $user->email;
+        $newEmail = $request->validated()['email'];
+        $status = 'profile-updated';
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
+        $user->fill($request->except('email'));
+
+        if ($oldEmail !== $newEmail) {
+            // Eliminar solicitudes previas del mismo usuario
+            EmailChangeRequest::where('user_id', $user->id)->delete();
+
+            $token = Str::random(64);
+            EmailChangeRequest::create([
+                'user_id' => $user->id,
+                'new_email' => $newEmail,
+                'token' => $token,
+                'expires_at' => now()->addHour(),
+            ]);
+
+            Mail::to($oldEmail)->send(new VerifyEmailChange($user, $token, $newEmail));
+            $status = 'email-change-requested';
         }
 
         if ($request->hasFile('avatar')) {
@@ -68,7 +88,30 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('status', $status);
+    }
+
+    /**
+     * Verifica y aplica el cambio de correo electrónico.
+     */
+    public function verifyEmail(Request $request, $token): RedirectResponse
+    {
+        $changeRequest = EmailChangeRequest::where('token', $token)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (!$changeRequest) {
+            return Redirect::route('profile.edit')->with('error', 'El enlace de verificación ha expirado o es inválido.');
+        }
+
+        $user = $changeRequest->user;
+        $user->email = $changeRequest->new_email;
+        $user->email_verified_at = now();
+        $user->save();
+
+        $changeRequest->delete();
+
+        return Redirect::route('profile.edit')->with('status', 'email-updated');
     }
 
     /**

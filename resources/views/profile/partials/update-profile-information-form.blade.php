@@ -66,6 +66,19 @@
                 <span class="text-danger extra-small">{{ $errors->first('email') }}</span>
             @endif
 
+            @php
+                $pendingEmailChange = \App\Models\EmailChangeRequest::where('user_id', $user->id)->first();
+            @endphp
+            @if($pendingEmailChange)
+                <div class="mt-2 alert alert-info border-0 bg-info bg-opacity-10 py-2">
+                    <p class="extra-small text-info mb-0 fw-medium">
+                        <i class="fa-solid fa-clock-rotate-left me-1"></i>
+                        Tienes una solicitud pendiente para cambiar tu correo a <strong>{{ $pendingEmailChange->new_email }}</strong>.
+                        Por favor verifica tu bandeja de entrada en <strong>{{ $user->email }}</strong> para confirmar.
+                    </p>
+                </div>
+            @endif
+
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div class="mt-2">
                     <p class="extra-small text-dark">
@@ -90,6 +103,24 @@
             @if (session('status') === 'profile-updated')
                 <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="small text-success fw-semibold animate-fade-in">
                     <i class="fa-solid fa-circle-check me-1"></i> {{ __('Perfil actualizado con éxito.') }}
+                </div>
+            @endif
+
+            @if (session('status') === 'email-change-requested')
+                <div class="small text-info fw-semibold animate-fade-in">
+                    <i class="fa-solid fa-paper-plane me-1"></i> {{ __('Verificación enviada a tu correo principal.') }}
+                </div>
+            @endif
+
+            @if (session('status') === 'email-updated')
+                <div class="small text-success fw-semibold animate-fade-in">
+                    <i class="fa-solid fa-check-double me-1"></i> {{ __('Correo electrónico actualizado correctamente.') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="small text-danger fw-semibold animate-fade-in">
+                    <i class="fa-solid fa-circle-xmark me-1"></i> {{ session('error') }}
                 </div>
             @endif
         </div>
