@@ -55,6 +55,57 @@ class User extends Authenticatable
         return $this->hasOne(PatientProfile::class);
     }
 
+    public function caregiverProfile()
+    {
+        return $this->hasOne(CaregiverProfile::class);
+    }
+
+    public function doctorProfile()
+    {
+        return $this->hasOne(DoctorProfile::class);
+    }
+
+    /**
+     * Pacientes vinculados a este cuidador/médico.
+     */
+    public function linkedPatients()
+    {
+        return $this->belongsToMany(User::class, 'patient_links', 'linked_user_id', 'patient_id')
+            ->wherePivot('status', 'active');
+    }
+
+    /**
+     * Cuidadores/médicos vinculados a este paciente.
+     */
+    public function linkedCarers()
+    {
+        return $this->belongsToMany(User::class, 'patient_links', 'patient_id', 'linked_user_id')
+            ->wherePivot('status', 'active');
+    }
+
+    public function isPatient(): bool
+    {
+        return $this->hasRole('paciente');
+    }
+
+    public function isCaregiver(): bool
+    {
+        return $this->hasRole('cuidador');
+    }
+
+    public function isDoctor(): bool
+    {
+        return $this->hasRole('médico');
+    }
+
+    /**
+     * Verifica si el usuario ya completó el onboarding.
+     */
+    public function hasCompletedOnboarding(): bool
+    {
+        return $this->roles()->exists();
+    }
+
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class)->withTimestamps();

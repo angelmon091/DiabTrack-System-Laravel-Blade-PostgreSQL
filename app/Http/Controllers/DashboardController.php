@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\DashboardMetricsService;
+use App\Models\PatientLink;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 /**
  * Clase DashboardController
@@ -43,7 +45,20 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
-        // Redirigir al proceso de configuración inicial si el perfil no existe
+        // Redirigir al proceso de configuración inicial si no tiene rol asignado
+        if (!$user->hasCompletedOnboarding()) {
+            return redirect()->route('onboarding.index');
+        }
+
+        // Redirigir al dashboard correcto según el rol
+        if (!$user->isPatient() && $user->isCaregiver()) {
+            return redirect()->route('caregiver.dashboard');
+        }
+        if (!$user->isPatient() && $user->isDoctor()) {
+            return redirect()->route('doctor.dashboard');
+        }
+
+        // Si es paciente pero no tiene perfil aún
         if (!$user->patientProfile) {
             return redirect()->route('onboarding.index');
         }
@@ -152,5 +167,32 @@ class DashboardController extends Controller
         return view('tracking.summary', array_merge($metrics, $extraMetrics, compact(
             'vitalsHistory', 'nutritionHistory', 'activityHistory', 'symptomsHistory'
         )));
+    }
+
+    /**
+     * Genera un código de invitación para vincular un cuidador o médico.
+     */
+    public function generateInviteCode(Request $request)
+    {
+        $user = auth()->user();
+
+        // Eliminar códigos previos pendientes del usuario
+        PatientLink::where('patient_id', $user->id)
+            ->where('status', 'pending')
+            ->delete();
+
+        $code = strtoupper(Str::random(6));
+
+        PatientLink::create([
+            'patient_id' => $user->id,
+            'role' => $request->input('role', 'caregiver'),
+            'invite_code' => $code,
+            'status' => 'pending',
+            'expires_at' => now()->addHours(24),
+        ]);
+
+        return redirect()->route('dashboard')
+            ->with('invite_code', $code)
+            ->with('status', 'Código de invitación generado. Compártelo con tu cuidador o médico.');
     }
 }

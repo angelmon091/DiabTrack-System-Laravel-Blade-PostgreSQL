@@ -330,3 +330,53 @@ body {
     border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
     padding: 1.5rem 2rem !important;
 }
+/* =========================================
+   GLOBAL RESPONSIVENESS
+   ========================================= */
+@media (max-width: 992px) {
+    :root {
+        --diab-radius: 20px;
+    }
+    
+    .container-fluid {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 3rem !important;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem !important;
+    }
+    
+    .diab-card, .stat-card {
+        padding: 1.5rem !important;
+    }
+    
+    .admin-card-metrics {
+        padding: 2rem 1rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-diab-primary, .btn-diab-secondary {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .diab-logo {
+        font-size: 1.3rem;
+    }
+    
+    h1, .fs-1 { font-size: calc(1.375rem + 1.5vw) !important; }
+    h2, .fs-2 { font-size: calc(1.325rem + 0.9vw) !important; }
+    h3, .fs-3 { font-size: calc(1.3rem + 0.6vw) !important; }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+}

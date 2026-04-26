@@ -1,29 +1,30 @@
 /* =========================================
    AUTH-GLOBAL.CSS — Unified Auth & Onboarding Design System
    ========================================= */
+@import 'design-system.css';
 
-/* ---------- CSS Variables ---------- */
+/* ---------- CSS Variables (Unified with Design System) ---------- */
 :root {
-    --auth-primary: #00C2E0;
-    --auth-primary-soft: #64E0E7;
-    --auth-primary-bg: #F0F7F8;
-    --auth-primary-border: #BCE7EF;
-    --auth-bg: #F8F9FA;
-    --auth-card-bg: #ffffff;
-    --auth-card-border: #f0f0f0;
-    --auth-text: #333333;
-    --auth-text-muted: #888888;
-    --auth-text-light: #A0A0A0;
-    --auth-text-input: #555555;
-    --auth-error: #e3342f;
-    --auth-success: #38c172;
-    --auth-radius-sm: 8px;
-    --auth-radius-md: 12px;
-    --auth-radius-lg: 40px;
-    --auth-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.04);
-    --auth-shadow-btn: 0 4px 12px rgba(100, 224, 231, 0.35);
-    --auth-font: 'Open Sans', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    --auth-transition: 0.25s ease;
+    --auth-primary: var(--diab-primary);
+    --auth-primary-soft: var(--diab-secondary);
+    --auth-primary-bg: var(--diab-primary-light);
+    --auth-primary-border: rgba(0, 180, 216, 0.2);
+    --auth-bg: var(--diab-bg);
+    --auth-card-bg: rgba(255, 255, 255, 0.85);
+    --auth-card-border: rgba(255, 255, 255, 0.6);
+    --auth-text: var(--diab-text);
+    --auth-text-muted: var(--diab-text-secondary);
+    --auth-text-light: #64748B;
+    --auth-text-input: #334155;
+    --auth-error: var(--diab-danger);
+    --auth-success: var(--diab-success);
+    --auth-radius-sm: var(--diab-radius-sm);
+    --auth-radius-md: 16px;
+    --auth-radius-lg: var(--diab-radius);
+    --auth-shadow-card: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+    --auth-shadow-btn: 0 4px 12px rgba(0, 180, 216, 0.2);
+    --auth-font: 'Inter', sans-serif;
+    --auth-transition: var(--diab-transition);
 }
 
 /* ---------- Reset (scoped to auth pages) ---------- */
@@ -35,13 +36,13 @@
 
 body {
     font-family: var(--auth-font);
-    background-color: var(--auth-bg);
+    background: linear-gradient(160deg, #f0f7ff 0%, #e8f4f8 50%, #f1f5f9 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     color: var(--auth-text);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ---------- Main Layout ---------- */
@@ -64,13 +65,15 @@ body {
 }
 
 .logo {
-    font-size: 4rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 0.5rem;
 }
 
 .logo span {
     color: var(--auth-primary);
+    margin: 0 1px;
 }
 
 .slogan {
@@ -88,15 +91,23 @@ body {
 /* ---------- Auth Card ---------- */
 .login-card {
     background: var(--auth-card-bg);
-    padding: 2.5rem;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 3rem;
     border-radius: var(--auth-radius-lg);
     box-shadow: var(--auth-shadow-card);
     width: 100%;
-    max-width: 420px;
+    max-width: 460px;
     border: 1px solid var(--auth-card-border);
+    margin-bottom: 3rem; /* Spacing for footer on mobile */
 }
 
 /* ---------- Shared Input styles ---------- */
+label {
+    color: var(--auth-text-light) !important;
+    font-weight: 600;
+}
+
 .input-group {
     position: relative;
     margin-bottom: 1rem;
@@ -143,7 +154,6 @@ select,
     background-repeat: no-repeat;
     background-position: right 14px center;
     background-size: 12px;
-    padding-right: 40px !important;
 }
 
 /* ---------- Icons in Input Group ---------- */
@@ -158,9 +168,7 @@ select,
     z-index: 2;
 }
 
-.input-group input {
-    padding-right: 42px; /* Ensure space for icons */
-}
+
 
 /* ---------- Input Group Container ---------- */
 .input-group-container {
@@ -273,28 +281,28 @@ select,
 .btn-primary {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, var(--auth-primary-soft), var(--auth-primary));
+    background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%);
     border: none;
     border-radius: var(--auth-radius-md);
     color: white;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
     box-shadow: var(--auth-shadow-btn);
     font-size: 1.05rem;
     font-family: var(--auth-font);
-    transition: transform var(--auth-transition), box-shadow var(--auth-transition), opacity var(--auth-transition);
+    transition: var(--auth-transition);
     margin-top: 0.75rem;
     letter-spacing: 0.2px;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(100, 224, 231, 0.45);
+    box-shadow: 0 10px 15px -3px rgba(0, 180, 216, 0.3);
+    filter: brightness(1.05);
 }
 
 .btn-primary:active {
     transform: translateY(0);
-    box-shadow: var(--auth-shadow-btn);
 }
 
 /* ---------- Separator ---------- */
@@ -317,14 +325,14 @@ select,
 
 .separator span {
     background: var(--auth-card-bg);
-    padding: 0 12px;
+    padding: 0 16px;
     position: relative;
     z-index: 2;
-    font-size: 0.75rem;
-    color: #ccc;
+    font-size: 0.85rem;
+    color: var(--auth-text-muted);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 /* ---------- Social Buttons ---------- */
@@ -513,55 +521,68 @@ select,
 @media (max-width: 900px) {
     .main-container {
         flex-direction: column;
-        text-align: center;
-        padding: 1.5rem;
+        justify-content: center;
+        padding: 3rem 1.5rem;
+        min-height: auto;
+        gap: 3rem;
     }
 
     .brand-section {
-        margin-bottom: 2rem;
+        margin-bottom: 0;
         max-width: 100%;
+    }
+
+    .logo {
+        font-size: 3rem;
     }
 
     .login-card {
         max-width: 100%;
+        padding: 2.5rem 1.5rem;
     }
 }
 
 @media (max-width: 480px) {
+    .main-container {
+        padding: 1.5rem 0.75rem;
+        gap: 2rem;
+    }
+
     .login-card {
-        padding: 2rem 1.5rem;
-        border-radius: 24px;
+        padding: 1.5rem 1rem;
+        border-radius: 20px;
     }
 
     .logo {
-        font-size: 2.8rem;
-    }
-
-    .slogan {
-        font-size: 1rem;
-    }
-
-    .date-row {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .radio-group {
-        gap: 1.5rem;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        gap: 12px;
+        font-size: 2.2rem;
         text-align: center;
     }
 
-    .footer-content .links a {
-        display: inline-block;
-        margin: 4px 8px;
+    .slogan {
+        font-size: 0.9rem;
+        text-align: center;
     }
 
-    .social-icons i {
-        margin: 0 8px;
+    .brand-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .description {
+        display: none; /* Hide description on very small screens to save space */
+    }
+
+    .btn-social {
+        padding: 12px 10px;
+        flex-direction: row; /* Back to row */
+        text-align: center !important;
+        gap: 10px;
+        font-size: 0.8rem;
+    }
+
+    .btn-social .admin-card-icon-wrapper {
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
     }
 }

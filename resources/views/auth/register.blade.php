@@ -12,7 +12,6 @@
                 required 
                 autofocus 
                 autocomplete="name"
-                icon="fa-regular fa-user" 
             />
             <x-input-error :messages="$errors->get('name')" />
             
@@ -24,7 +23,6 @@
                 placeholder="{{ __('Correo Electrónico') }}" 
                 required 
                 autocomplete="username"
-                icon="fa-regular fa-envelope" 
             />
             <x-input-error :messages="$errors->get('email')" />
 
@@ -35,7 +33,6 @@
                 placeholder="{{ __('Contraseña') }}" 
                 required 
                 autocomplete="new-password"
-                icon="fa-solid fa-lock" 
             />
             <x-input-error :messages="$errors->get('password')" />
 
@@ -46,7 +43,6 @@
                 placeholder="{{ __('Confirmar Contraseña') }}" 
                 required 
                 autocomplete="new-password"
-                icon="fa-solid fa-lock" 
             />
             <x-input-error :messages="$errors->get('password_confirmation')" />
             

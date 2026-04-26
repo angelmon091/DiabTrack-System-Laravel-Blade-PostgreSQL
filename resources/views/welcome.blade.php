@@ -36,11 +36,11 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-md navbar-dark position-absolute w-100 bg-transparent pt-4 z-3">
+    <nav class="navbar navbar-expand-lg navbar-dark position-absolute w-100 bg-transparent pt-4 z-3">
         <div class="container d-flex justify-content-between align-items-center">
-            <!--<a href="{{ url('/') }}" class="diab-logo text-white text-decoration-none">
+            <a href="{{ url('/') }}" class="diab-logo text-white text-decoration-none">
                 D<span>ia</span>bTrack
-            </a>-->
+            </a>
             
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
                 <span class="navbar-toggler-icon"></span>
@@ -77,9 +77,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-7 col-md-10 text-center text-md-start animate-fade-in">
-                        <h1 class="display-2 fw-extrabold mb-3 hero-title">D<span>ia</span>bTrack</h1>
-                        <p class="fs-3 mb-2 opacity-90 fw-medium">Monitorea tu salud, vive mejor</p>
-                        <p class="fs-5 mb-5 opacity-75">Control inteligente para una vida más saludable. Análisis con IA y monitoreo constante de tus signos vitales.</p>
+                        <h1 class="display-2 fw-extrabold mb-3 hero-title">Monitorea tu salud, <span class="text-diab-primary">vive mejor</span></h1>
+                        <p class="fs-4 mb-5 opacity-75">Control inteligente para una vida más saludable. Análisis con IA y monitoreo constante de tus signos vitales.</p>
                         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-md-start">
                             <a href="{{ route('register') }}" class="btn btn-acceder rounded-pill fw-bold shadow-lg">Comenzar ahora</a>
                             <a href="#" class="btn btn-outline-light rounded-pill px-5 py-3 fw-bold border-2">Saber más</a>

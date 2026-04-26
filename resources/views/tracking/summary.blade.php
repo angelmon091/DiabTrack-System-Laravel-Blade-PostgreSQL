@@ -358,6 +358,8 @@
                                         <th class="d-none d-md-table-cell">FC</th>
                                         <th>Peso</th>
                                         <th>Estado</th>
+                                        <th class="d-none d-lg-table-cell">Estrés</th>
+                                        <th class="d-none d-lg-table-cell">Notas</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -383,6 +385,23 @@
                                                 @endif
                                             @else
                                                 <span class="text-muted small">N/A</span>
+                                            @endif
+                                        </td>
+                                        <td class="d-none d-lg-table-cell">
+                                            @if($vital->stress_level)
+                                                <span class="badge bg-light text-dark border extra-small">
+                                                    <i class="fa-solid fa-face-{{ $vital->stress_level == 'Bajo' ? 'smile' : ($vital->stress_level == 'Medio' ? 'meh' : 'frown') }} me-1"></i>
+                                                    {{ $vital->stress_level }}
+                                                </span>
+                                            @else
+                                                --
+                                            @endif
+                                        </td>
+                                        <td class="d-none d-lg-table-cell">
+                                            @if($vital->notes)
+                                                <i class="fa-solid fa-note-sticky text-muted cursor-help" data-bs-toggle="tooltip" title="{{ $vital->notes }}"></i>
+                                            @else
+                                                --
                                             @endif
                                         </td>
                                     </tr>
@@ -509,11 +528,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const primaryColor = '#00B4D8';
-        const successColor = '#28C76F';
-        const dangerColor = '#EA5455';
-        const warningColor = '#FF9F43';
-        const infoColor = '#00CFE8';
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary').trim() || '#00B4D8';
+        const successColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-success').trim() || '#28C76F';
+        const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-danger').trim() || '#EA5455';
+        const warningColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-warning').trim() || '#FF9F43';
+        const infoColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-info').trim() || '#00CFE8';
 
         // Main Glucose Trend Chart (30 days logic simplified for view)
         const mainCtx = document.getElementById('mainDetailedChart');

@@ -15,7 +15,6 @@
                 required 
                 autofocus 
                 autocomplete="username"
-                icon="fa-regular fa-envelope" 
             />
             <x-input-error :messages="$errors->get('email')" />
 
@@ -26,7 +25,6 @@
                 placeholder="{{ __('Contraseña') }}" 
                 required 
                 autocomplete="current-password"
-                icon="fa-solid fa-lock" 
             />
             <x-input-error :messages="$errors->get('password')" />
             
