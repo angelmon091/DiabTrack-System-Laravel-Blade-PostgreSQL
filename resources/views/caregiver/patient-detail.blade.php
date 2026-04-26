@@ -48,8 +48,8 @@
             <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
                 <h6 class="fw-bold mb-3 text-diab-primary text-uppercase letter-spacing-1 small">Acciones Rápidas</h6>
                 <p class="extra-small text-muted mb-3">Registra las mediciones de salud de tu paciente ahora.</p>
-                <a href="{{ route('caregiver.patient.vital.create', $patient) }}" class="btn-diab-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                    <i class="fa-solid fa-plus-circle"></i> {{ __('Añadir Registro') }}
+                <a href="{{ route('caregiver.patient.vital.create', $patient) }}" class="btn-diab-primary w-100 d-flex align-items-center justify-content-center gap-2 text-decoration-none">
+                    {{ __('Añadir Registro') }}
                 </a>
             </div>
             
