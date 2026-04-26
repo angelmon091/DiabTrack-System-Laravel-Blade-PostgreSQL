@@ -19,10 +19,10 @@ services:
     container_name: diabtrack-db
     restart: always
     environment:
-      MYSQL_DATABASE: diabtrack
-      MYSQL_USER: diabuser
-      MYSQL_PASSWORD: Doblemago16.
-      MYSQL_ROOT_PASSWORD: a
+      MYSQL_DATABASE: ${DB_DATABASE:-diabtrack}
+      MYSQL_USER: ${DB_USERNAME:-diabuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
       - diabtrack-db-data:/var/lib/mysql
     networks:
