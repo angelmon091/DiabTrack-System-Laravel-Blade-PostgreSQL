@@ -32,9 +32,9 @@ fi
 echo "Running migrations..."
 php artisan migrate --force --no-interaction
 
-# Run seeders safely (Since we use firstOrCreate, it won't duplicate data)
-echo "Running seeders..."
-php artisan db:seed --force
+# Run seeders only if needed (Manual recommendation: run once during deployment)
+# echo "Running seeders..."
+# php artisan db:seed --force
 
 # Cache configuration for production performance
 php artisan config:cache

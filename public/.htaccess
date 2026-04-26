@@ -23,3 +23,15 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+<IfModule mod_headers.c>
+    # Proteger contra Clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    # Prevenir sniffing de MIME types
+    Header set X-Content-Type-Options "nosniff"
+    # Protección básica contra XSS
+    Header set X-XSS-Protection "1; mode=block"
+    # Referrer Policy
+    Header set Referrer-Policy "no-referrer-when-downgrade"
+    # HSTS (Solo si usas HTTPS - recomendado 1 año)
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>

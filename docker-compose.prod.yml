@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: diabtrack-app-prod
+    container_name: diabtrack-app
+    restart: always
+    env_file: .env
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - diabtrack-network
+
+  db:
+    image: mysql:8.0
+    container_name: diabtrack-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: diabtrack
+      MYSQL_USER: diabuser
+      MYSQL_PASSWORD: Doblemago16.
+      MYSQL_ROOT_PASSWORD: a
+    volumes:
+      - diabtrack-db-data:/var/lib/mysql
+    networks:
+      - diabtrack-network
+
+networks:
+  diabtrack-network:
+    driver: bridge
+
+volumes:
+  diabtrack-db-data:
