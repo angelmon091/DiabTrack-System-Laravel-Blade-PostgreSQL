@@ -251,6 +251,24 @@ body {
     border-color: var(--diab-primary);
 }
 
+.btn-diab-danger {
+    background: linear-gradient(135deg, var(--diab-danger) 0%, #C0392B 100%);
+    color: white;
+    border: none;
+    border-radius: var(--diab-radius-sm);
+    padding: 10px 24px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(234, 84, 85, 0.2);
+    transition: var(--diab-transition);
+}
+
+.btn-diab-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(234, 84, 85, 0.3);
+    color: white !important;
+    filter: brightness(1.1);
+}
+
 /* Form Elements */
 .diab-input {
     background: var(--diab-bg);

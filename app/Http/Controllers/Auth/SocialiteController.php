@@ -57,11 +57,11 @@ class SocialiteController extends Controller
             ->first();
 
         if ($user) {
-            // Update social ID and avatar if not set
-            // Security: We only merge if the account is already verified or if it was created via social
-            $userUpdateData = [
-                'avatar' => $socialUser->getAvatar(),
-            ];
+            // Update social ID and avatar if it's currently a social avatar or empty
+            $userUpdateData = [];
+            if (!$user->avatar || str_starts_with($user->avatar, 'http')) {
+                $userUpdateData['avatar'] = $socialUser->getAvatar();
+            }
 
             if (!$user->{$provider . '_id'}) {
                 $userUpdateData[$provider . '_id'] = $socialUser->getId();

@@ -82,28 +82,6 @@
                                 <button type="button" class="btn-action" title="Eliminar Usuario" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $user->id }}">
                                     <i class="fa-solid fa-trash text-diab-danger"></i>
                                 </button>
-                                
-                                <!-- Modal Eliminar -->
-                                <x-admin-modal id="deleteUserModal{{ $user->id }}" title="Confirmar Eliminación">
-                                    <div class="text-center p-3">
-                                        <div class="mb-4 text-diab-danger">
-                                            <i class="fa-solid fa-triangle-exclamation display-3 opacity-25"></i>
-                                        </div>
-                                        <h5 class="fw-bold mb-3">¿Eliminar a {{ $user->name }}?</h5>
-                                        <p class="text-muted">Esta acción es irreversible y se perderán todos los datos y registros asociados a este usuario permanentemente.</p>
-                                        
-                                        <div class="mt-5 d-flex justify-content-center gap-3">
-                                            <button type="button" class="btn btn-light px-4 border" data-bs-dismiss="modal">Cancelar</button>
-                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-diab-danger px-4 shadow-sm">
-                                                    Eliminar Definitivamente
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </x-admin-modal>
                             @endif
                         </div>
                     </td>
@@ -131,4 +109,32 @@
             {{ $users->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     @endif
+
+@push('modals')
+    <!-- Modales de Eliminación (Fuera de la tabla para evitar conflictos de z-index) -->
+    @foreach ($users as $user)
+        @if ($user->id !== auth()->id())
+            <x-admin-modal id="deleteUserModal{{ $user->id }}" title="Confirmar Eliminación">
+                <div class="text-center p-3">
+                    <div class="mb-4 text-diab-danger">
+                        <i class="fa-solid fa-triangle-exclamation display-3 opacity-25"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">¿Eliminar a {{ $user->name }}?</h5>
+                    <p class="text-muted">Esta acción es irreversible y se perderán todos los datos y registros asociados a este usuario permanentemente.</p>
+                    
+                    <div class="mt-5 d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-light px-4 border" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-diab-danger px-4 shadow-sm">
+                                Eliminar Definitivamente
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </x-admin-modal>
+        @endif
+    @endforeach
+@endpush
 @endsection

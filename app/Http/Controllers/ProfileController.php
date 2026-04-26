@@ -11,6 +11,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\JpegEncoder;
 use App\Models\EmailChangeRequest;
 use App\Mail\VerifyEmailChange;
 use App\Mail\EmailChangeAlert;
@@ -51,7 +52,7 @@ class ProfileController extends Controller
         $newEmail = $request->validated()['email'];
         $status = 'profile-updated';
 
-        $user->fill($request->except('email'));
+        $user->fill($request->except(['email', 'avatar']));
 
         if ($oldEmail !== $newEmail) {
             // Validar contraseña obligatoriamente para cambio de email
@@ -81,18 +82,26 @@ class ProfileController extends Controller
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
-            $filename = 'avatars/' . $user->id . '_' . time() . '.webp';
+            $filename = 'avatars/' . $user->id . '_' . time() . '.jpg';
             
             if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
                 Storage::disk('public')->delete($user->avatar);
             }
 
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($file);
-            
-            $encoded = $image->cover(150, 150)->toWebp(80);
-            
-            Storage::disk('public')->put($filename, $encoded->toString());
+            try {
+                if (function_exists('imagejpeg') && (function_exists('imagecreatefromjpeg') || function_exists('imagecreatefrompng') || function_exists('imagecreatefromwebp'))) {
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->decode($file);
+                    $encoded = $image->cover(150, 150)->encode(new JpegEncoder(80));
+                    Storage::disk('public')->put($filename, $encoded->toString());
+                } else {
+                    // Si no hay soporte completo para imágenes, guardar original
+                    Storage::disk('public')->putFileAs('avatars', $file, basename($filename));
+                }
+            } catch (\Throwable $e) {
+                // En caso de cualquier error (incluyendo Error), guardar original como fallback
+                Storage::disk('public')->putFileAs('avatars', $file, basename($filename));
+            }
             
             $user->avatar = $filename;
         }

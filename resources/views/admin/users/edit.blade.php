@@ -22,6 +22,7 @@
         </div>
     </div>
 
+@push('modals')
     <!-- Modal Eliminar -->
     @if ($user->id !== auth()->id())
         <x-admin-modal id="deleteUserModal" title="Confirmar Eliminación">
@@ -45,6 +46,7 @@
             </div>
         </x-admin-modal>
     @endif
+@endpush
 
     <div class="diab-card p-4 p-md-5 mx-auto animate-fade-in" style="max-width: 900px; animation-delay: 0.1s;">
         <form action="{{ route('admin.users.update', $user) }}" method="POST">
