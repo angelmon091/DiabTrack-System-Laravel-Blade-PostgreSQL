@@ -1,106 +1,101 @@
-# DiabTrack Health Management System
+# DiabTrack - Sistema de Gestión de Salud para la Diabetes
 
 [![Production](https://img.shields.io/badge/Production-diabtrack.app-blue?style=flat-square)](https://diabtrack.app)
 [![Framework](https://img.shields.io/badge/Framework-Laravel%2013-red?style=flat-square)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?style=flat-square)](https://php.net)
 [![Infrastructure](https://img.shields.io/badge/Infrastructure-Docker-2496ED?style=flat-square)](https://docker.com)
 
-DiabTrack es una plataforma de grado profesional diseñada para la gestión clínica y personal de la diabetes. El sistema integra el seguimiento de indicadores glucémicos, métricas nutricionales y actividad física en un entorno seguro y escalable.
+DiabTrack es una plataforma profesional diseñada para el monitoreo integral de la diabetes. Permite a pacientes, médicos y cuidadores gestionar indicadores glucémicos, nutrición, actividad física y signos vitales en un entorno seguro y centralizado.
 
 ---
 
-## 1. Descripción General
+## 🏗️ Arquitectura del Proyecto
 
-La plataforma ofrece una solución robusta para el monitoreo de pacientes, permitiendo la toma de decisiones basada en datos. Utiliza algoritmos de cálculo para proyectar tendencias de salud y proporciona una interfaz analítica para el control diario de la patología.
+DiabTrack utiliza una **Arquitectura Monolítica** basada en el patrón de diseño **MVC (Modelo-Vista-Controlador)**. Esta estructura permite un desarrollo cohesivo donde el frontend y el backend coexisten para facilitar el despliegue y la consistencia de los datos.
+
+### 🧩 El Patrón MVC en DiabTrack:
+
+*   **Modelos (`app/Models/`):** Gestionan la lógica de datos y las reglas de negocio. Representan las entidades del sistema como `User`, `PatientProfile`, `VitalSign`, `NutritionLog`, etc.
+*   **Vistas (`resources/views/`):** La interfaz de usuario construida con el motor de plantillas **Blade**. Está organizada por módulos (Admin, Paciente, Médico, Cuidador) para ofrecer una experiencia personalizada según el rol.
+*   **Controladores (`app/Http/Controllers/`):** Actúan como intermediarios, procesando las solicitudes del usuario, interactuando con los modelos y devolviendo las vistas correspondientes.
+
+### 🛠️ Capas Adicionales:
+*   **Service Layer (`app/Services/`):** Implementamos servicios como `DashboardMetricsService` para manejar cálculos complejos de salud fuera de los controladores, siguiendo el principio de responsabilidad única.
+*   **Middleware (`app/Http/Middleware/`):** Capas de seguridad y control de flujo que gestionan el acceso por roles y aseguran que el proceso de *onboarding* se complete.
 
 ---
 
-## 2. Stack Tecnológico
+## 🚀 Stack Tecnológico
 
-### Backend y Lógica de Negocio
+### Backend
 *   **Lenguaje:** PHP 8.3 con tipado estricto.
-*   **Framework:** Laravel 13.
-*   **Servicios Externos:** 
-    *   Resend API (Comunicaciones Transaccionales).
-    *   Google Socialite (OAuth 2.0).
-*   **Arquitectura:** Service Layer Pattern para el procesamiento de métricas.
+*   **Framework:** [Laravel 13](https://laravel.com).
+*   **Autenticación:** Laravel Breeze y Socialite (Google OAuth).
+*   **Comunicaciones:** Resend API para correos transaccionales.
 
 ### Frontend
-*   **Motor de Plantillas:** Blade.
-*   **Asset Bundler:** Vite.
-*   **Estilos:** Bootstrap 5.3 y Design System propietario basado en CSS3 Moderno.
-*   **Visualización:** Chart.js para análisis de tendencias.
+*   **Estilos:** [Tailwind CSS](https://tailwindcss.com) (Moderno, responsivo y optimizado).
+*   **Bundler:** [Vite](https://vitejs.dev) para una compilación ultra rápida de assets.
+*   **Plantillas:** Blade (Laravel native).
+*   **Gráficos:** Chart.js para visualización de tendencias glucémicas.
 
-### Infraestructura
-*   **Contenedores:** Docker y Docker Compose.
-*   **Base de Datos:** MySQL 8.0 con optimización de índices para series temporales de salud.
-
----
-
-## 3. Arquitectura y Funcionalidades Clave
-
-### Dashboard Analítico
-Procesamiento centralizado de datos a través de `DashboardMetricsService`, que calcula:
-*   Promedios de glucosa y estimación de Hemoglobina Glicosilada (A1c).
-*   Cumplimiento de metas nutricionales y físicas.
-*   Visualización de series temporales de signos vitales.
-
-### Gestión de Identidad
-*   Sistema de autenticación híbrido (Tradicional + Google OAuth).
-*   Control de acceso basado en roles (RBAC).
-
-### Optimización SEO y Producción
-*   Configuración nativa para el dominio **diabtrack.app**.
-*   Generación automática de sitemap y cumplimiento de protocolos `robots.txt`.
-*   Implementación de meta-etiquetas Open Graph y Twitter Cards.
+### Infraestructura y Base de Datos
+*   **Contenedores:** [Docker](https://www.docker.com) (Configuraciones para Desarrollo y Producción).
+*   **Base de Datos:** MySQL 8.0 optimizada con índices para series temporales de salud.
 
 ---
 
-## 4. Instalación y Despliegue
+## 🔑 Funcionalidades Principales
 
-### Requisitos Previos
-*   Docker Engine 24.0+
-*   Docker Compose 2.0+
-
-### Pasos de Instalación
-1.  Clonar el repositorio:
-    ```bash
-    git clone https://github.com/tu-usuario/diabtrack.git
-    ```
-2.  Configurar variables de entorno:
-    ```bash
-    cp .env.example .env
-    ```
-3.  Desplegar contenedores:
-    ```bash
-    docker-compose up -d
-    ```
-4.  Inicializar sistema:
-    ```bash
-    docker-compose exec app php artisan setup-project
-    ```
+*   **Multi-Rol:** Interfaces específicas para Pacientes, Médicos, Cuidadores y Administradores.
+*   **Seguimiento Integral:** Registro de glucosa, presión arterial, peso, estrés, nutrición y actividad física.
+*   **Análisis de Datos:** Cálculo automático de promedios, estimación de A1c y cumplimiento de metas.
+*   **Onboarding Guiado:** Proceso paso a paso para configurar perfiles de salud detallados.
 
 ---
 
-## 5. Pruebas y Calidad
-Para ejecutar la suite de pruebas automatizadas:
+## 🛠️ Instalación y Configuración
+
+### Requisitos
+*   Docker y Docker Compose instalados.
+
+### Pasos
+1. **Clonar el repo:**
+   ```bash
+   git clone https://github.com/tu-usuario/diabtracktest.git
+   cd diabtracktest
+   ```
+
+2. **Configurar el entorno:**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Levantar el proyecto con Docker:**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Instalación automática:**
+   ```bash
+   # Este comando ejecuta composer, npm, migraciones y generación de llaves
+   docker-compose exec app php artisan setup
+   ```
+
+---
+
+## 🧪 Pruebas
+Ejecuta la suite de pruebas para asegurar la integridad del sistema:
 ```bash
 docker-compose exec app php artisan test
 ```
 
 ---
 
-## 6. Seguridad
-La plataforma implementa múltiples capas de seguridad:
-*   Protección contra ataques CSRF y XSS.
-*   Encriptación de datos sensibles en tránsito (SSL/TLS).
-*   Sanitización estricta de entradas de usuario.
+## 🛡️ Seguridad
+*   Protección contra CSRF, XSS e inyección SQL nativa de Laravel.
+*   Gestión de permisos basada en roles (RBAC).
+*   Encriptación de datos sensibles.
 
 ---
-
-## 7. Contacto y Soporte
-*   **Dominio Oficial:** [https://diabtrack.app](https://diabtrack.app)
-*   **Mantenimiento:** Equipo de Desarrollo DiabTrack.
-
----
-© 2026 DiabTrack App. Todos los derechos reservados.
+© 2026 DiabTrack App. Desarrollo profesional para el control de la salud.
