@@ -41,10 +41,11 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Set the correct port for Render
-PORT=${PORT:-80}
-sed -ri -e "s!80!$PORT!g" /etc/apache2/ports.conf
-sed -ri -e "s!:80!:$PORT!g" /etc/apache2/sites-available/*.conf
+# Ensure RoadRunner binary is present
+if [ ! -f "rr" ]; then
+    echo "Installing RoadRunner binary..."
+    php artisan octane:install --server=roadrunner --no-interaction
+fi
 
 # Execute CMD from Dockerfile
 exec "$@"

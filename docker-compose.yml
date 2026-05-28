@@ -17,8 +17,9 @@ services:
       DB_DATABASE: ${DB_DATABASE:-diabtrack}
       DB_USERNAME: ${DB_USERNAME:-diabuser}
       DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
     ports:
-      - "${APP_PORT:-80}:80"
+      - "${APP_PORT:-80}:8000"
     volumes:
       - .:/var/www/html
       - /var/www/html/node_modules
@@ -27,6 +28,7 @@ services:
       - /var/www/html/public/build
     depends_on:
       - db
+      - redis
     networks:
       - diabtrack-network
 
@@ -43,6 +45,13 @@ services:
       - "127.0.0.1:${DB_PORT_EXTERNAL:-3306}:3306"
     volumes:
       - diabtrack-db-data:/var/lib/mysql
+    networks:
+      - diabtrack-network
+
+  redis:
+    image: redis:alpine
+    container_name: diabtrack-redis
+    restart: unless-stopped
     networks:
       - diabtrack-network
 
