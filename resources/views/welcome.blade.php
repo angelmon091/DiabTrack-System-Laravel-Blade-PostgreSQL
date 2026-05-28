@@ -81,7 +81,7 @@
                         <p class="fs-4 mb-5 opacity-75">Control inteligente para una vida más saludable. Análisis con IA y monitoreo constante de tus signos vitales.</p>
                         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-md-start">
                             <a href="{{ route('register') }}" class="btn btn-acceder rounded-pill fw-bold shadow-lg">Comenzar ahora</a>
-                            <a href="#" class="btn btn-outline-light rounded-pill px-5 py-3 fw-bold border-2">Saber más</a>
+                            <a href="#features" class="btn btn-outline-light rounded-pill px-5 py-3 fw-bold border-2">Saber más</a>
                 </div>
             </div>
 
