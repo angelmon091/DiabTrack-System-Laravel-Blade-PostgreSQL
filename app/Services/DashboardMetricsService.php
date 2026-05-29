@@ -32,10 +32,15 @@ class DashboardMetricsService
      */
     public function getDashboardMetrics($userId)
     {
-        return \Illuminate\Support\Facades\Cache::remember("dashboard_metrics_{$userId}", 300, function () use ($userId) {
+        return \Illuminate\Support\Facades\Cache::remember("dashboard_metrics_{$userId}_v2", 300, function () use ($userId) {
             $today = Carbon::today();
             $user = \App\Models\User::with('patientProfile')->findOrFail($userId);
             $profile = $user->patientProfile;
+
+            if (!$profile && $user->isPatient()) {
+                // Fallback si es paciente pero el perfil no existe por alguna razón
+                $profile = new \App\Models\PatientProfile(['user_id' => $userId]);
+            }
 
             // 1. Signos Vitales (Glucosa y HbA1c)
             $ultimaMedicion = VitalSign::where('user_id', $userId)->latest('created_at')->first();
@@ -75,8 +80,8 @@ class DashboardMetricsService
                 ->get();
 
             $medicionesRecientes = $medicionesGlucosaSemana->count();
-            $minRango = $profile->target_glucose_min ?? 70;
-            $maxRango = $profile->target_glucose_max ?? 140;
+            $minRango = $profile?->target_glucose_min ?? 70;
+            $maxRango = $profile?->target_glucose_max ?? 140;
 
             $medicionesEnRango = $medicionesGlucosaSemana->filter(function ($item) use ($minRango, $maxRango) {
                 return $item->glucose_level >= $minRango && $item->glucose_level <= $maxRango;
@@ -99,7 +104,7 @@ class DashboardMetricsService
                 
                 if ($registrosGlucosaAgrupados->has($dateString)) {
                     $avgGlucose = $registrosGlucosaAgrupados->get($dateString)->avg('glucose_level');
-                    $glucosaData[] = round($avgGlucose);
+                    $glucosaData[] = $avgGlucose ? round($avgGlucose) : null;
                 } else {
                     $glucosaData[] = null;
                 }
@@ -135,6 +140,13 @@ class DashboardMetricsService
                     $needsWeightUpdate = false;
                 }
             }
+
+            $needsWeightUpdate = $needsWeightUpdate ?? false;
+            $ultimoPesoValor = $ultimoPesoValor ?? null;
+            $porcentajeCalorias = $porcentajeCalorias ?? 0;
+            $porcentajeActividad = $porcentajeActividad ?? 0;
+            $porcentajePasos = $porcentajePasos ?? 0;
+            $tiempoEnRango = $tiempoEnRango ?? 0;
 
             return compact(
                 'ultimaMedicion', 'ultimaHba1c', 'carbsHoy', 'caloriasHoy',

@@ -85,7 +85,7 @@
                 <div class="col-12 col-md-3 animate-fade-in">
                     <div class="diab-card p-4 h-100 text-center">
                         <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1 mb-2">Glucosa Actual</h6>
-                        <h2 class="fw-extrabold mb-0 text-diab-primary">{{ $ultimaMedicion->glucose_level ?? '--' }}</h2>
+                        <h2 class="fw-extrabold mb-0 text-diab-primary">{{ $ultimaMedicion?->glucose_level ?? '--' }}</h2>
                         <span class="text-muted extra-small">mg/dL</span>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                 <div class="col-12 col-md-3 animate-fade-in" style="animation-delay: 0.2s;">
                     <div class="diab-card p-4 h-100 text-center">
                         <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1 mb-2">HbA1c Estimada</h6>
-                        <h2 class="fw-extrabold mb-0 text-diab-info">{{ $ultimaHba1c->hba1c ?? '--' }}%</h2>
+                        <h2 class="fw-extrabold mb-0 text-diab-info">{{ $ultimaHba1c?->hba1c ?? '--' }}%</h2>
                         <span class="text-muted extra-small">basado en promedios</span>
                     </div>
                 </div>

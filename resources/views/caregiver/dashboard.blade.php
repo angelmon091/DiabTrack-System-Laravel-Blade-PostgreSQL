@@ -108,7 +108,7 @@
                                     <div class="col-6">
                                         <div class="p-2 rounded-3 text-center bg-diab-primary-light">
                                             <span class="extra-small text-muted d-block">Glucosa</span>
-                                            <strong class="text-diab-primary">{{ $lastVital->glucose_level ?? '--' }} <small>mg/dL</small></strong>
+                                            <strong class="text-diab-primary">{{ $lastVital?->glucose_level ?? '--' }} <small>mg/dL</small></strong>
                                         </div>
                                     </div>
                                     <div class="col-6">

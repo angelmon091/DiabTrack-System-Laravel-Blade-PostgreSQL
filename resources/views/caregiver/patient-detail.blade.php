@@ -81,7 +81,7 @@
                         </div>
                         <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1">Glucosa Actual</h6>
                         <div class="d-flex align-items-baseline">
-                            <h2 class="fw-extrabold mb-0">{{ $ultimaMedicion->glucose_level ?? '--' }}</h2>
+                            <h2 class="fw-extrabold mb-0">{{ $ultimaMedicion?->glucose_level ?? '--' }}</h2>
                             <span class="ms-1 text-muted small">mg/dL</span>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                         </div>
                         <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1">HbA1c Estimada</h6>
                         <div class="d-flex align-items-baseline">
-                            <h2 class="fw-extrabold mb-0">{{ $ultimaHba1c->hba1c ?? '--' }}</h2>
+                            <h2 class="fw-extrabold mb-0">{{ $ultimaHba1c?->hba1c ?? '--' }}</h2>
                             <span class="ms-1 text-muted small">%</span>
                         </div>
                     </div>

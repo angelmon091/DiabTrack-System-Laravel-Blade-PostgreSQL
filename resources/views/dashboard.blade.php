@@ -195,7 +195,7 @@
                                 <span class="text-diab-text-secondary fw-bold small mb-2 d-block text-uppercase letter-spacing-1">Última Medición de Glucosa</span>
                                 <div class="d-flex align-items-baseline justify-content-center">
                                     <h1 class="display-3 fw-extrabold mb-0 text-dark">
-                                        {{ $ultimaMedicion->glucose_level ?? '--' }}
+                                        {{ $ultimaMedicion?->glucose_level ?? '--' }}
                                     </h1>
                                     <span class="ms-2 fs-5 text-muted">mg/dL</span>
                                 </div>
@@ -406,7 +406,7 @@
                         <div class="col-12 col-md-4">
                             <div class="p-3 rounded-4 bg-white shadow-sm border border-light h-100">
                                 <span class="extra-small text-muted d-block mb-1">Rango Glucosa</span>
-                                <strong class="text-dark">{{ $user->patientProfile->target_glucose_min ?? 70 }} - {{ $user->patientProfile->target_glucose_max ?? 140 }}</strong>
+                                <strong class="text-dark">{{ $user->patientProfile?->target_glucose_min ?? 70 }} - {{ $user->patientProfile?->target_glucose_max ?? 140 }}</strong>
                                 <span class="extra-small text-muted ms-1">mg/dL</span>
                                 <div class="progress mt-2" style="height: 4px;">
                                     <div class="progress-bar bg-success" style="width: 100%"></div>

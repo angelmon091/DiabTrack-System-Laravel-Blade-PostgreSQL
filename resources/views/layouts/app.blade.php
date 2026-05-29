@@ -66,7 +66,7 @@
                             <a href="{{ route('profile.edit') }}" class="user-avatar rounded-circle overflow-hidden shadow-sm d-block" style="width: 36px; height: 36px; cursor: pointer;">
                                 @php
                                     $user = auth()->user();
-                                    $gender = strtolower($user->patientProfile->gender ?? '');
+                                    $gender = strtolower($user->patientProfile?->gender ?? '');
                                     $avatar = $user->avatar;
                                 @endphp
                                 @if($avatar && str_starts_with($avatar, 'http'))

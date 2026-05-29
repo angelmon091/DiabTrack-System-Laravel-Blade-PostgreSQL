@@ -20,7 +20,7 @@
         <div class="mb-4 d-flex align-items-center gap-4">
             <div class="user-avatar rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 80px; height: 80px;">
                 @php
-                    $gender = strtolower($user->patientProfile->gender ?? '');
+                    $gender = strtolower($user->patientProfile?->gender ?? '');
                     $avatar = $user->avatar;
                 @endphp
                 @if($avatar && str_starts_with($avatar, 'http'))

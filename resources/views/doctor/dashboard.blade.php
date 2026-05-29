@@ -37,11 +37,11 @@
                 <div class="d-flex flex-column gap-2">
                     <div class="d-flex justify-content-between">
                         <span class="text-muted small">Especialidad:</span>
-                        <span class="fw-bold small">{{ auth()->user()->doctorProfile->specialty ?? '--' }}</span>
+                        <span class="fw-bold small">{{ auth()->user()->doctorProfile?->specialty ?? '--' }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span class="text-muted small">Cédula:</span>
-                        <span class="fw-bold small">{{ auth()->user()->doctorProfile->license_number ?? '--' }}</span>
+                        <span class="fw-bold small">{{ auth()->user()->doctorProfile?->license_number ?? '--' }}</span>
                     </div>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                                         <div class="col-4">
                                             <div class="p-2 rounded-3 text-center" style="background: rgba(0,194,224,0.08);">
                                                 <span class="extra-small text-muted d-block">Glucosa</span>
-                                                <strong class="text-diab-primary small">{{ $lastVital->glucose_level ?? '--' }}</strong>
+                                                <strong class="text-diab-primary small">{{ $lastVital?->glucose_level ?? '--' }}</strong>
                                             </div>
                                         </div>
                                         <div class="col-4">

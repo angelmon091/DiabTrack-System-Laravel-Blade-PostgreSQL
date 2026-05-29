@@ -141,11 +141,11 @@ class DashboardController extends Controller
 
         // Métricas adicionales para el resumen profundo
         $extraMetrics = [
-            'avgGlucose' => round($vitalsHistory->avg('glucose_level')),
-            'avgSystolic' => round($vitalsHistory->avg('systolic')),
-            'avgDiastolic' => round($vitalsHistory->avg('diastolic')),
-            'avgHeartRate' => round($vitalsHistory->avg('heart_rate')),
-            'totalWeight' => $user->patientProfile->weight ?? '--',
+            'avgGlucose' => $vitalsHistory->avg('glucose_level') ? round($vitalsHistory->avg('glucose_level')) : 0,
+            'avgSystolic' => $vitalsHistory->avg('systolic') ? round($vitalsHistory->avg('systolic')) : 0,
+            'avgDiastolic' => $vitalsHistory->avg('diastolic') ? round($vitalsHistory->avg('diastolic')) : 0,
+            'avgHeartRate' => $vitalsHistory->avg('heart_rate') ? round($vitalsHistory->avg('heart_rate')) : 0,
+            'totalWeight' => $user->patientProfile?->weight ?? '--',
             'weightCount' => $vitalsHistory->whereNotNull('weight')->count(),
             'symptomsCount' => $symptomsHistory->count(),
             'medicationCount' => $nutritionHistory->whereNotNull('medication_taken')->count(),
