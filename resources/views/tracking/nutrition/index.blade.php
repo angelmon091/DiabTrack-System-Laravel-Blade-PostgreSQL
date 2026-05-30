@@ -192,7 +192,7 @@
                 <div id="iaResult" class="d-none">
                     <div class="ia-recommendation-card p-4 shadow-sm mb-3">
                         <h6 class="fw-bold text-diab-primary mb-2">Estado Actual:</h6>
-                        <p class="small mb-3">Has consumido <strong>{{ $carbsHoy }}g</strong> de carbohidratos. Tu glucosa se mantiene en <strong>{{ $ultimaMedicion->glucose_level ?? '--' }} mg/dL</strong>.</p>
+                        <p class="small mb-3">Has consumido <strong>{{ $carbsHoy }}g</strong> de carbohidratos. Tu glucosa se mantiene en <strong>{{ $ultimaMedicion['glucose_level'] ?? '--' }} mg/dL</strong>.</p>
                         <hr class="opacity-10">
                         <h6 class="fw-bold text-success mb-2">Recomendación IA:</h6>
                         <p class="small mb-0" id="iaText"></p>

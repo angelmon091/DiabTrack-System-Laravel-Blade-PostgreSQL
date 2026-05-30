@@ -43,8 +43,17 @@ class DashboardMetricsService
             }
 
             // 1. Signos Vitales (Glucosa y HbA1c)
-            $ultimaMedicion = VitalSign::where('user_id', $userId)->latest('created_at')->first();
-            $ultimaHba1c = VitalSign::where('user_id', $userId)->whereNotNull('hba1c')->latest('created_at')->first();
+            $ultimaMedicionRaw = VitalSign::where('user_id', $userId)->latest('created_at')->first();
+            $ultimaMedicion = $ultimaMedicionRaw ? [
+                'created_at' => $ultimaMedicionRaw->created_at->toDateTimeString(),
+                'glucose_level' => $ultimaMedicionRaw->glucose_level,
+            ] : null;
+
+            $ultimaHba1cRaw = VitalSign::where('user_id', $userId)->whereNotNull('hba1c')->latest('created_at')->first();
+            $ultimaHba1c = $ultimaHba1cRaw ? [
+                'hba1c' => $ultimaHba1cRaw->hba1c,
+                'created_at' => $ultimaHba1cRaw->created_at->toDateTimeString(),
+            ] : null;
 
             // 2. Nutrición
             $carbsHoy = NutritionLog::where('user_id', $userId)->whereDate('created_at', $today)->sum('carbs_grams');

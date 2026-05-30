@@ -75,7 +75,7 @@
                         <div>
                             <strong class="d-block small text-dark mb-1">Última Medición</strong>
                             <span class="text-muted extra-small">
-                                {{ $ultimaMedicion ? $ultimaMedicion->created_at->diffForHumans() : 'Sin registros' }}
+                                {{ $ultimaMedicion ? \Carbon\Carbon::parse($ultimaMedicion['created_at'])->diffForHumans() : 'Sin registros' }}
                             </span>
                         </div>
                     </div>
@@ -173,8 +173,8 @@
                         @php
                             $heroBg = 'var(--diab-primary-light)';
                             $heroRadial = 'rgba(0, 180, 216, 0.15)';
-                            if ($ultimaMedicion && $ultimaMedicion->glucose_level) {
-                                $g = $ultimaMedicion->glucose_level;
+                            if ($ultimaMedicion && isset($ultimaMedicion['glucose_level'])) {
+                                $g = $ultimaMedicion['glucose_level'];
                                 if ($g > 140) { 
                                     $heroBg = 'var(--diab-danger-light)'; 
                                     $heroRadial = 'rgba(234, 84, 85, 0.15)'; 
@@ -195,16 +195,16 @@
                                 <span class="text-diab-text-secondary fw-bold small mb-2 d-block text-uppercase letter-spacing-1">Última Medición de Glucosa</span>
                                 <div class="d-flex align-items-baseline justify-content-center">
                                     <h1 class="display-3 fw-extrabold mb-0 text-dark">
-                                        {{ $ultimaMedicion?->glucose_level ?? '--' }}
+                                        {{ $ultimaMedicion['glucose_level'] ?? '--' }}
                                     </h1>
                                     <span class="ms-2 fs-5 text-muted">mg/dL</span>
                                 </div>
 
-                                @if($ultimaMedicion && $ultimaMedicion->glucose_level > 140)
+                                @if($ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140)
                                     <div class="vital-trend-pill mt-3 d-inline-block shadow-sm text-danger border-danger">
                                         <i class="fa-solid fa-triangle-exclamation me-1"></i> Nivel Elevado
                                     </div>
-                                @elseif($ultimaMedicion && $ultimaMedicion->glucose_level < 70)
+                                @elseif($ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] < 70)
                                     <div class="vital-trend-pill mt-3 d-inline-block shadow-sm text-warning border-warning">
                                         <i class="fa-solid fa-droplet-slash me-1"></i> Nivel Bajo
                                     </div>
@@ -245,7 +245,7 @@
                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                     <div data-bs-toggle="tooltip" title="Un cálculo de cómo ha estado tu azúcar en los últimos 3 meses.">
                                         <span class="extra-small fw-bold text-muted text-uppercase letter-spacing-1 d-block mb-1">A1c Estimada <i class="fa-solid fa-circle-info ms-1 opacity-50"></i></span>
-                                        <h3 class="fw-extrabold mb-0 text-dark">{{ $ultimaHba1c ? number_format($ultimaHba1c->hba1c, 1) . '%' : '--' }}</h3>
+                                        <h3 class="fw-extrabold mb-0 text-dark">{{ $ultimaHba1c ? number_format($ultimaHba1c['hba1c'], 1) . '%' : '--' }}</h3>
                                     </div>
                                     <div class="act-icon fire shadow-sm"><i class="fa-solid fa-dna"></i></div>
                                 </div>

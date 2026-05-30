@@ -179,7 +179,7 @@
                         <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Un cálculo de cómo ha estado tu azúcar en los últimos 3 meses en promedio."></i>
                     </div>
                     <div class="d-flex align-items-baseline gap-1">
-                        <h2 class="fw-extrabold text-dark mb-0">{{ $ultimaHba1c ? number_format($ultimaHba1c->hba1c, 1) : '--' }}</h2>
+                        <h2 class="fw-extrabold text-dark mb-0">{{ $ultimaHba1c ? number_format($ultimaHba1c['hba1c'], 1) : '--' }}</h2>
                         <span class="text-muted extra-small">%</span>
                     </div>
                     <p class="text-muted extra-small mt-3 mb-0">Basado en últimos 90 días</p>

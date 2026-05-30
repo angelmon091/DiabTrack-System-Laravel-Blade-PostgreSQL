@@ -75,13 +75,13 @@
                             <div class="admin-card-icon-wrapper bg-diab-primary-light text-diab-primary mb-0" style="width: 40px; height: 40px; border-radius: 12px;">
                                 <i class="fa-solid fa-droplet"></i>
                             </div>
-                            <span class="badge {{ $ultimaMedicion && $ultimaMedicion->glucose_level > 140 ? 'bg-danger' : 'bg-success' }} bg-opacity-10 {{ $ultimaMedicion && $ultimaMedicion->glucose_level > 140 ? 'text-danger' : 'text-success' }} extra-small">
-                                {{ $ultimaMedicion && $ultimaMedicion->glucose_level > 140 ? 'Elevado' : 'Normal' }}
+                            <span class="badge {{ $ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140 ? 'bg-danger' : 'bg-success' }} bg-opacity-10 {{ $ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140 ? 'text-danger' : 'text-success' }} extra-small">
+                                {{ $ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140 ? 'Elevado' : 'Normal' }}
                             </span>
                         </div>
                         <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1">Glucosa Actual</h6>
                         <div class="d-flex align-items-baseline">
-                            <h2 class="fw-extrabold mb-0">{{ $ultimaMedicion?->glucose_level ?? '--' }}</h2>
+                            <h2 class="fw-extrabold mb-0">{{ $ultimaMedicion['glucose_level'] ?? '--' }}</h2>
                             <span class="ms-1 text-muted small">mg/dL</span>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                         </div>
                         <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1">HbA1c Estimada</h6>
                         <div class="d-flex align-items-baseline">
-                            <h2 class="fw-extrabold mb-0">{{ $ultimaHba1c?->hba1c ?? '--' }}</h2>
+                            <h2 class="fw-extrabold mb-0">{{ $ultimaHba1c['hba1c'] ?? '--' }}</h2>
                             <span class="ms-1 text-muted small">%</span>
                         </div>
                     </div>
