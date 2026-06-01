@@ -54,44 +54,6 @@ DiabTrack utiliza una **Arquitectura Monolítica** basada en el patrón de dise�
 
 ---
 
-## 🛠️ Instalación y Configuración
-
-### Requisitos
-*   Docker y Docker Compose instalados.
-
-### Pasos
-1. **Clonar el repo:**
-   ```bash
-   git clone https://github.com/tu-usuario/diabtracktest.git
-   cd diabtracktest
-   ```
-
-2. **Configurar el entorno:**
-   ```bash
-   cp .env.example .env
-   ```
-
-3. **Levantar el proyecto con Docker:**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Instalación automática:**
-   ```bash
-   # Este comando ejecuta composer, npm, migraciones y generación de llaves
-   docker-compose exec app php artisan setup
-   ```
-
----
-
-## 🧪 Pruebas
-Ejecuta la suite de pruebas para asegurar la integridad del sistema:
-```bash
-docker-compose exec app php artisan test
-```
-
----
-
 ## 🛡️ Seguridad
 *   Protección contra CSRF, XSS e inyección SQL nativa de Laravel.
 *   Gestión de permisos basada en roles (RBAC).
