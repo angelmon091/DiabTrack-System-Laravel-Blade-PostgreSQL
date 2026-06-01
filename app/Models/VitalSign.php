@@ -59,4 +59,18 @@ class VitalSign extends Model
     {
         return $query->whereDate('created_at', \Carbon\Carbon::today());
     }
+
+    /**
+     * Método de arranque del modelo.
+     */
+    protected static function booted()
+    {
+        static::saved(function ($vitalSign) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$vitalSign->user_id}_v2");
+        });
+
+        static::deleted(function ($vitalSign) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$vitalSign->user_id}_v2");
+        });
+    }
 }

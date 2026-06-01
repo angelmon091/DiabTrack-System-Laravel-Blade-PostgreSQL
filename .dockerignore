@@ -13,3 +13,5 @@ Dockerfile
 .dockerignore
 README.md
 tests
+rr
+.rr.yaml

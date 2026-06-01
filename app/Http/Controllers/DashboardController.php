@@ -69,7 +69,9 @@ class DashboardController extends Controller
         // Obtener últimos 5 registros para llenar el espacio del dashboard
         $recentLogs = \App\Models\VitalSign::where('user_id', $user->id)
             ->whereNotNull('glucose_level')
-            ->latest()
+            ->where('glucose_level', '>', 0)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->take(5)
             ->get();
 
@@ -92,7 +94,6 @@ class DashboardController extends Controller
         \App\Models\VitalSign::create([
             'user_id' => auth()->id(),
             'weight' => $request->weight,
-            'glucose_level' => null,
             'measurement_moment' => 'Ayunas',
         ]);
 

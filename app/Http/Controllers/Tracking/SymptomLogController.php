@@ -28,6 +28,9 @@ class SymptomLogController extends Controller
 
         $user->symptoms()->attach($pivotData);
 
+        // Invalidar el caché de métricas del dashboard del usuario
+        \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$user->id}_v2");
+
         return redirect()->route('dashboard')->with('status', __('Registro de síntomas guardado con éxito.'));
     }
 }

@@ -34,6 +34,7 @@ class ProfileUpdateRequest extends FormRequest
             ],
             'avatar' => ['nullable', 'image', 'max:5120'],
             'current_password' => ['nullable', 'string', 'current_password'],
+            'timezone' => ['nullable', 'string', 'max:100'],
         ];
     }
 }

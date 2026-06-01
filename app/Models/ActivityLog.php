@@ -56,4 +56,18 @@ class ActivityLog extends Model
     {
         return $query->whereDate('created_at', \Carbon\Carbon::today());
     }
+
+    /**
+     * Método de arranque del modelo.
+     */
+    protected static function booted()
+    {
+        static::saved(function ($activityLog) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$activityLog->user_id}_v2");
+        });
+
+        static::deleted(function ($activityLog) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$activityLog->user_id}_v2");
+        });
+    }
 }

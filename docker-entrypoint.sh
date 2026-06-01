@@ -15,8 +15,8 @@ if [ "$DB_CONNECTION" = "mysql" ] || [ "$DB_CONNECTION" = "pgsql" ]; then
     max_tries=30
     count=0
     
-    # Direct PHP connection test - more reliable than artisan monitor during first boot
-    until php -r "try { DB::connection()->getPdo(); exit(0); } catch (Exception \$e) { exit(1); }" > /dev/null 2>&1; do
+    # Direct PHP/PDO connection test - works without Laravel autoloading
+    until php -r "try { new PDO('mysql:host='.getenv('DB_HOST').';port='.getenv('DB_PORT'), getenv('DB_USERNAME'), getenv('DB_PASSWORD')); exit(0); } catch (Exception \$e) { exit(1); }" > /dev/null 2>&1; do
         sleep 2
         count=$((count + 1))
         if [ $count -gt $max_tries ]; then

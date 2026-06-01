@@ -63,4 +63,18 @@ class NutritionLog extends Model
     {
         return $query->whereDate('created_at', \Carbon\Carbon::today());
     }
+
+    /**
+     * Método de arranque del modelo.
+     */
+    protected static function booted()
+    {
+        static::saved(function ($nutritionLog) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$nutritionLog->user_id}_v2");
+        });
+
+        static::deleted(function ($nutritionLog) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$nutritionLog->user_id}_v2");
+        });
+    }
 }

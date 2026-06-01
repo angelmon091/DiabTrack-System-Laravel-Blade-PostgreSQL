@@ -27,8 +27,10 @@ services:
       - /var/www/html/bootstrap/cache
       - /var/www/html/public/build
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - diabtrack-network
 
@@ -45,6 +47,12 @@ services:
       - "127.0.0.1:${DB_PORT_EXTERNAL:-3306}:3306"
     volumes:
       - diabtrack-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - diabtrack-network
 
@@ -52,6 +60,11 @@ services:
     image: redis:alpine
     container_name: diabtrack-redis
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
       - diabtrack-network
 

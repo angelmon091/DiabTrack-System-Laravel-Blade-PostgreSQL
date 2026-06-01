@@ -111,6 +111,33 @@
             @endif
         </div>
 
+        <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase" for="timezone">{{ __('Zona Horaria') }}</label>
+            <select id="timezone" name="timezone" class="form-select diab-input" style="border-radius: 12px; font-weight: 500;">
+                @php
+                    $timezones = [
+                        'America/Monterrey' => 'Monterrey (GMT-6)',
+                        'America/Mexico_City' => 'Ciudad de México (GMT-6)',
+                        'America/Tijuana' => 'Tijuana (GMT-7)',
+                        'America/Hermosillo' => 'Hermosillo (GMT-7)',
+                        'America/Bogota' => 'Bogotá / Colombia (GMT-5)',
+                        'America/Santiago' => 'Santiago / Chile (GMT-4)',
+                        'America/Buenos_Aires' => 'Buenos Aires / Argentina (GMT-3)',
+                        'America/New_York' => 'New York (GMT-5)',
+                        'America/Los_Angeles' => 'Los Angeles (GMT-8)',
+                        'UTC' => 'Coordinated Universal Time (UTC)',
+                    ];
+                    $userTz = old('timezone', $user->timezone ?? 'America/Monterrey');
+                @endphp
+                @foreach($timezones as $value => $label)
+                    <option value="{{ $value }}" {{ $userTz === $value ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
+            </select>
+            @if($errors->has('timezone'))
+                <span class="text-danger extra-small">{{ $errors->first('timezone') }}</span>
+            @endif
+        </div>
+
         <div class="d-flex align-items-center gap-4 mt-4">
             <button type="submit" class="btn-diab-primary shadow-sm">{{ __('Guardar Cambios') }}</button>
 

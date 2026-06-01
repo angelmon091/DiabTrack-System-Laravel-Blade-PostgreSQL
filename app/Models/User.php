@@ -28,6 +28,7 @@ class User extends Authenticatable
         'facebook_id',
         'avatar',
         'provider',
+        'timezone',
     ];
 
 
