@@ -6,6 +6,7 @@ use App\Models\VitalSign;
 use App\Models\ActivityLog;
 use App\Models\NutritionLog;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 /**
@@ -20,6 +21,23 @@ class DashboardMetricsService
     /**
      * Calcula y retorna todas las métricas necesarias para el panel principal del usuario.
      * 
+     * Los resultados se almacenan en caché Redis durante 5 minutos.
+     * La caché se invalida automáticamente cuando se crean o actualizan
+     * registros en VitalSign, NutritionLog, ActivityLog o SymptomLog.
+     *
+     * @param int $userId ID del usuario autenticado.
+     * @return array Conjunto de métricas procesadas.
+     */
+    public function getDashboardMetrics($userId)
+    {
+        return Cache::remember("dashboard_metrics_{$userId}_v2", 300, function () use ($userId) {
+            return $this->calculateMetrics($userId);
+        });
+    }
+
+    /**
+     * Ejecuta todas las consultas y cálculos de métricas del dashboard.
+     *
      * Este método procesa:
      * - Última medición de glucosa y HbA1c.
      * - Ingesta calórica diaria basada en carbohidratos.
@@ -27,10 +45,10 @@ class DashboardMetricsService
      * - Estadísticas semanales para gráficas de tendencias.
      * - Cálculo del "Tiempo en Rango" de glucosa (70-140 mg/dL).
      *
-     * @param int $userId ID del usuario autenticado.
-     * @return array Conjunto de métricas procesadas.
+     * @param int $userId
+     * @return array
      */
-    public function getDashboardMetrics($userId)
+    protected function calculateMetrics($userId)
     {
         $today = Carbon::today();
         $user = \App\Models\User::with('patientProfile')->findOrFail($userId);
