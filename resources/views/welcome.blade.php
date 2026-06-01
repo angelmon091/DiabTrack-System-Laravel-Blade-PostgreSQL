@@ -25,7 +25,8 @@
     <meta property="twitter:description" content="Control inteligente de la diabetes con análisis de IA y monitoreo constante de signos vitales.">
     <meta property="twitter:image" content="{{ asset('og-image.jpg') }}">
 
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 
     <title>DiabTrack - Monitorea tu salud, vive mejor</title>
 
