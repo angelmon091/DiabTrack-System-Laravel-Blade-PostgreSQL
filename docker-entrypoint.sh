@@ -36,10 +36,18 @@ php artisan migrate --force --no-interaction
 # echo "Running seeders..."
 # php artisan db:seed --force
 
-# Cache configuration for production performance
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Cache configuration only for production performance
+if [ "$APP_ENV" = "production" ]; then
+    echo "Caching configuration for production..."
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+else
+    echo "Clearing cache for development..."
+    php artisan config:clear
+    php artisan route:clear
+    php artisan view:clear
+fi
 
 # Ensure RoadRunner binary is present
 if [ ! -f "rr" ]; then
