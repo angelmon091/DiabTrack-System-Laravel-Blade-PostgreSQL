@@ -45,6 +45,11 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
+        // Redirigir al proceso administrativo si es administrador
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        
         // Redirigir al proceso de configuración inicial si no tiene rol asignado
         if (!$user->hasCompletedOnboarding()) {
             return redirect()->route('onboarding.index');

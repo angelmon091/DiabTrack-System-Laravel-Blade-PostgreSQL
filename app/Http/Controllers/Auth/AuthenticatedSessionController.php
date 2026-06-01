@@ -43,8 +43,13 @@ class AuthenticatedSessionController extends Controller
         // Regenera el ID de sesión para prevenir ataques de fijación de sesión
         $request->session()->regenerate();
 
-        // Si el usuario autenticado no tiene perfil de paciente, lo envía al onboarding
-        if (!Auth::user()->patientProfile) {
+        // Si el usuario es administrador, redirigir directamente al panel administrativo
+        if (Auth::user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Si el usuario autenticado no tiene perfil de paciente, cuidador o médico ni ha completado el onboarding, lo envía al onboarding
+        if (!Auth::user()->patientProfile && !Auth::user()->caregiverProfile && !Auth::user()->doctorProfile && !Auth::user()->hasCompletedOnboarding()) {
             return redirect()->route('onboarding.index');
         }
 

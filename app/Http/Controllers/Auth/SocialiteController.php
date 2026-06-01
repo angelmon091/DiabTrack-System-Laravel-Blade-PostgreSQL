@@ -89,6 +89,15 @@ class SocialiteController extends Controller
             Auth::login($user);
         }
 
+        // Si el usuario es administrador, redirigir al panel de administración
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Si no ha completado el onboarding, enviarlo allí
+        if (!$user->patientProfile && !$user->caregiverProfile && !$user->doctorProfile && !$user->hasCompletedOnboarding()) {
+            return redirect()->route('onboarding.index');
+        }
 
         return redirect()->intended('/dashboard');
     }

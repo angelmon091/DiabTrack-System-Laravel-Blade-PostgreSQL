@@ -22,6 +22,11 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
+        // Si es administrador, redirigir directamente al panel de administración
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         foreach ($roles as $role) {
             if ($user->hasRole($role)) {
                 return $next($request);

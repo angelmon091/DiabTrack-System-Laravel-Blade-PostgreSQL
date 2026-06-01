@@ -9,14 +9,30 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Routing\Controllers\HasMiddleware;
+
 /**
  * Clase OnboardingController
  * 
  * Gestiona el proceso de onboarding para nuevos usuarios.
  * Adapta el formulario según el rol seleccionado (paciente, cuidador o médico).
  */
-class OnboardingController extends Controller
+class OnboardingController extends Controller implements HasMiddleware
 {
+    /**
+     * Define los middlewares que se aplican a este controlador.
+     */
+    public static function middleware(): array
+    {
+        return [
+            function ($request, $next) {
+                if (Auth::check() && Auth::user()->isAdmin()) {
+                    return redirect()->route('admin.dashboard');
+                }
+                return $next($request);
+            }
+        ];
+    }
     /**
      * Muestra la pantalla de selección de rol.
      */
