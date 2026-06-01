@@ -27,9 +27,9 @@ RUN apt-get update && apt-get install -y \
     libbrotli-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip intl sockets \
+    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip intl sockets opcache \
     && pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-enable redis opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -43,6 +43,9 @@ COPY . .
 
 # Copy built assets from the assets stage
 COPY --from=assets /app/public/build ./public/build
+
+# Copy optimized PHP configuration
+COPY php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Install PHP dependencies
 RUN composer update --no-dev --optimize-autoloader --no-interaction --no-progress
@@ -58,4 +61,4 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php", "artisan", "octane:start", "--server=roadrunner", "--host=0.0.0.0", "--port=8000"]
+CMD ["sh", "-c", "php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=8000 --workers=${OCTANE_WORKERS:-8} --max-requests=${OCTANE_MAX_REQUESTS:-1000}"]
