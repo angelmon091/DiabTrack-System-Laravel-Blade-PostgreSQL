@@ -21,18 +21,17 @@ services:
       CACHE_STORE: redis
       SESSION_DRIVER: redis
       QUEUE_CONNECTION: redis
-      OCTANE_WORKERS: ${OCTANE_WORKERS:-8}
+      OCTANE_WORKERS: ${OCTANE_WORKERS:-4}
       OCTANE_MAX_REQUESTS: 1000
     ports:
       - "${APP_PORT:-80}:8000"
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 2G
+          cpus: '0.80'
+          memory: 1G
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          memory: 256M
     volumes:
       - .:/var/www/html
       - /var/www/html/node_modules
@@ -56,7 +55,7 @@ services:
       MYSQL_USER: ${DB_USERNAME:-diabuser}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    command: --max_connections=1000 --innodb_buffer_pool_size=1G
+    command: --max_connections=500 --innodb_buffer_pool_size=512M
     ports:
       - "127.0.0.1:${DB_PORT_EXTERNAL:-3306}:3306"
     volumes:
@@ -73,8 +72,8 @@ services:
   redis:
     image: redis:alpine
     container_name: diabtrack-redis
-    restart: unless-stopped
-    command: redis-server --maxclients 10000
+    restart: stopped
+    command: redis-server --maxclients 5000
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
