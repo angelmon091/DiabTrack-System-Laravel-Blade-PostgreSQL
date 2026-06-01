@@ -72,7 +72,7 @@ services:
   redis:
     image: redis:alpine
     container_name: diabtrack-redis
-    restart: stopped
+    restart: unless-stopped
     command: redis-server --maxclients 5000
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
