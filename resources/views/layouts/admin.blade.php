@@ -29,9 +29,7 @@
             </a>
             
             <div class="user-section d-flex align-items-center gap-3">
-                <a href="{{ route('dashboard') }}" class="btn btn-sm btn-diab-secondary rounded-pill px-3">
-                    <i class="fa-solid fa-arrow-left me-1"></i> Volver a la App
-                </a>
+
                 
                 <div class="user-card border bg-white shadow-sm p-1 ps-3 rounded-pill d-flex align-items-center gap-2">
                     <div class="user-text text-end d-none d-md-block me-2">

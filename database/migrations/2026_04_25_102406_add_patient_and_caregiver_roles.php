@@ -20,11 +20,17 @@ return new class extends Migration
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'médico',
+                'description' => 'Personal médico con acceso a información clínica y métricas de pacientes.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 
     public function down(): void
     {
-        DB::table('roles')->whereIn('name', ['paciente', 'cuidador'])->delete();
+        DB::table('roles')->whereIn('name', ['paciente', 'cuidador', 'médico'])->delete();
     }
 };

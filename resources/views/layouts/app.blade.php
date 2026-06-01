@@ -35,12 +35,15 @@
                         D<span>ia</span>bTrack
                     </a>
                     
+                    @if(auth()->user()->isPatient())
                     <div class="nav-search d-none d-lg-block">
                         <input type="text" class="form-control" placeholder="Buscar...">
                     </div>
+                    @endif
 
                     <!-- Desktop Navigation (hidden on mobile via CSS) -->
                     <nav class="nav-menu d-none d-md-flex">
+                        @if(auth()->user()->isPatient())
                         <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                             <i class="fa-solid fa-house"></i>
                             <span>Inicio</span>
@@ -53,6 +56,7 @@
                             <i class="fa-solid fa-plus"></i>
                             <span>Nuevo</span>
                         </a>
+                        @endif
                     </nav>
 
                 <div class="user-section d-flex align-items-center">
@@ -130,6 +134,7 @@
 
     <!-- Mobile Navigation (fixed bottom, shown only on mobile via CSS) -->
     <nav class="nav-menu d-flex d-md-none">
+        @if(auth()->user()->isPatient())
         <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class="fa-solid fa-house"></i>
             <span>Inicio</span>
@@ -142,6 +147,7 @@
             <i class="fa-solid fa-plus"></i>
             <span>Nuevo</span>
         </a>
+        @endif
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

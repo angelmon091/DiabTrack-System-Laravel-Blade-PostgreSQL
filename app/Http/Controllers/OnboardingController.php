@@ -86,7 +86,7 @@ class OnboardingController extends Controller implements HasMiddleware
         );
 
         // Asignar rol de paciente
-        $role = Role::where('name', 'paciente')->first();
+        $role = Role::firstOrCreate(['name' => 'paciente']);
         Auth::user()->roles()->syncWithoutDetaching([$role->id]);
 
         return redirect()->route('dashboard')->with('status', __('¡Bienvenido! Tu perfil de paciente ha sido configurado.'));
@@ -119,7 +119,7 @@ class OnboardingController extends Controller implements HasMiddleware
         );
 
         // Asignar rol de cuidador
-        $role = Role::where('name', 'cuidador')->first();
+        $role = Role::firstOrCreate(['name' => 'cuidador']);
         Auth::user()->roles()->syncWithoutDetaching([$role->id]);
 
         return redirect()->route('caregiver.dashboard')->with('status', __('¡Bienvenido! Tu perfil de cuidador ha sido configurado.'));
@@ -154,7 +154,7 @@ class OnboardingController extends Controller implements HasMiddleware
         );
 
         // Asignar rol de médico
-        $role = Role::where('name', 'médico')->first();
+        $role = Role::firstOrCreate(['name' => 'médico']);
         Auth::user()->roles()->syncWithoutDetaching([$role->id]);
 
         return redirect()->route('doctor.dashboard')->with('status', __('¡Bienvenido! Tu perfil profesional ha sido configurado.'));
