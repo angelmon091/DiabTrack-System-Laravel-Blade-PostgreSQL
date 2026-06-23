@@ -10,6 +10,7 @@ use App\Http\Controllers\Tracking\VitalSignController;
 use App\Http\Controllers\Tracking\ActivityLogController;
 use App\Http\Controllers\Tracking\NutritionLogController;
 use App\Http\Controllers\Tracking\SymptomLogController;
+use App\Services\TipService;
 
 Route::get('/', function () {
     return view('welcome');
@@ -73,6 +74,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/patient/{patient}', [DoctorController::class, 'showPatient'])->name('patient.show');
         Route::patch('/patient/{patient}/targets', [DoctorController::class, 'updateTargets'])->name('patient.targets.update');
     });
+
+    // Daily Tips Approval routes (Shared by Doctor and Caregiver)
+    Route::post('/tips/{tip}/approve', [\App\Http\Controllers\DailyTipController::class, 'approve'])->name('tips.approve');
+    Route::post('/tips/{tip}/reject', [\App\Http\Controllers\DailyTipController::class, 'reject'])->name('tips.reject');
 });
 
 require __DIR__.'/auth.php';
@@ -86,3 +91,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
 });
+
+if (app()->environment('local')) {
+    Route::get('/test-tip', function (TipService $tipService) {
+        return response()->json($tipService->generarTip([
+            'tipo_diabetes' => 2,
+            'edad' => 45,
+            'glucosa' => 190,
+            'hba1c' => 8.2,
+            'imc' => 28.5,
+        ]));
+    });
+}

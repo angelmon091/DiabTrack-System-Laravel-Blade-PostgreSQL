@@ -20,6 +20,10 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $attributes = [
+        'is_admin' => false,
+    ];
+
     protected $fillable = [
         'name',
         'email',
@@ -29,6 +33,7 @@ class User extends Authenticatable
         'avatar',
         'provider',
         'timezone',
+        'email_verified_at',
     ];
 
 
@@ -64,6 +69,22 @@ class User extends Authenticatable
     public function doctorProfile()
     {
         return $this->hasOne(DoctorProfile::class);
+    }
+
+    /**
+     * Consejos de salud diarios del paciente.
+     */
+    public function dailyTips()
+    {
+        return $this->hasMany(DailyTip::class, 'user_id');
+    }
+
+    /**
+     * Consejos de salud diarios revisados por este médico o cuidador.
+     */
+    public function reviewedTips()
+    {
+        return $this->hasMany(DailyTip::class, 'reviewed_by');
     }
 
     /**
@@ -114,7 +135,7 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->is_admin;
+        return (bool) ($this->is_admin ?? false);
     }
 
     public function hasRole(string $role): bool

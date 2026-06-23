@@ -47,5 +47,22 @@ return [
         'redirect' => env('FACEBOOK_REDIRECT_URI'),
     ],
 
+    'daily_tips' => [
+        'provider' => env('DAILY_TIPS_PROVIDER', 'anthropic'),
+        'model' => env('DAILY_TIPS_MODEL', 'claude-haiku-4-5'),
+    ],
+
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY'),
+        'model' => env('ANTHROPIC_MODEL', 'claude-haiku-4-5'),
+        'version' => env('ANTHROPIC_API_VERSION', '2023-06-01'),
+    ],
+
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+    ],
+
 ];
+
 

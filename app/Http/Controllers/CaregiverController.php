@@ -72,7 +72,13 @@ class CaregiverController extends Controller
             ->take(5)
             ->get();
 
-        return view('caregiver.patient-detail', array_merge($metrics, compact('patient', 'recentLogs')));
+        // Mostrar los consejos ya publicados (auto-aprobados)
+        $pendingTips = \App\Models\DailyTip::where('user_id', $patient->id)
+            ->where('status', 'approved')
+            ->latest()
+            ->get();
+
+        return view('caregiver.patient-detail', array_merge($metrics, compact('patient', 'recentLogs', 'pendingTips')));
     }
 
     /**
