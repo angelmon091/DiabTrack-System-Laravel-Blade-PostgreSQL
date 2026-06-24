@@ -24,15 +24,58 @@ class DashboardMetricsService
      * Los resultados se almacenan en caché Redis durante 5 minutos.
      * La caché se invalida automáticamente cuando se crean o actualizan
      * registros en VitalSign, NutritionLog, ActivityLog, SymptomLog o DailyTip.
+     * El tip del día se resuelve fuera del caché para mostrar siempre el último consejo IA.
      *
      * @param int $userId ID del usuario autenticado.
      * @return array Conjunto de métricas procesadas.
      */
     public function getDashboardMetrics($userId)
     {
-        return Cache::remember(self::cacheKey($userId), 300, function () use ($userId) {
+        $metrics = Cache::remember(self::cacheKey($userId), 300, function () use ($userId) {
             return $this->calculateMetrics($userId);
         });
+
+        // Eliminar cualquier tip obsoleto que haya quedado en caché de versiones anteriores.
+        unset($metrics['tipDelDia'], $metrics['tipEsIA']);
+
+        return array_merge($metrics, $this->getDailyTipForUser($userId));
+    }
+
+    /**
+     * Obtiene el tip del día directamente de la BD (sin caché).
+     */
+    public function getDailyTipForUser(int $userId): array
+    {
+        $tipAprobado = \App\Models\DailyTip::query()
+            ->where('user_id', $userId)
+            ->where('status', 'approved')
+            ->orderByDesc('id')
+            ->first();
+
+        if ($tipAprobado) {
+            return [
+                'tipDelDia' => $tipAprobado->tip_text,
+                'tipEsIA' => true,
+            ];
+        }
+
+        $tips = [
+            "Mantener un horario regular de comidas ayuda a estabilizar tus niveles de glucosa durante el día.",
+            "Beber al menos 2 litros de agua diarios mejora la circulación y reduce el riesgo de hiperglucemia.",
+            "Caminar 15 minutos después de comer reduce significativamente los picos de azúcar en sangre.",
+            "Revisa tus pies a diario y mantenlos hidratados para prevenir posibles complicaciones.",
+            "Prioriza el consumo de proteínas y fibra en tus desayunos para evitar hipoglucemias reactivas.",
+            "Lleva siempre contigo un carbohidrato de rápida absorción (jugo o caramelos) para emergencias.",
+            "Dormir de 7 a 8 horas cada noche promueve una mejor sensibilidad a la insulina.",
+            "Anotar lo que comes te ayudará a detectar patrones en cómo ciertos alimentos afectan tu glucosa.",
+            "El estrés eleva el azúcar en sangre de forma natural. Prueba técnicas de respiración si te sientes tenso.",
+            "Comer la ensalada o fibra antes de los carbohidratos ayuda a aplanar tu curva de glucosa.",
+        ];
+
+        return [
+            'tipDelDia' => $tips[Carbon::now()->dayOfYear % count($tips)],
+            'tipEsIA' => false,
+        ];
     }
 
     public static function cacheKey(int $userId): string
@@ -152,33 +195,7 @@ class DashboardMetricsService
             }
         }
 
-        // 6. Tip de Salud: priorizar tip aprobado por IA, fallback a tips estáticos
-        $tipAprobado = \App\Models\DailyTip::where('user_id', $userId)
-            ->where('status', 'approved')
-            ->whereDate('created_at', $today)
-            ->latest()
-            ->first();
-
-        if ($tipAprobado) {
-            $tipDelDia = $tipAprobado->tip_text;
-        } else {
-            // Fallback: tips estáticos rotativos si no hay tip aprobado hoy
-            $tips = [
-                "Mantener un horario regular de comidas ayuda a estabilizar tus niveles de glucosa durante el día.",
-                "Beber al menos 2 litros de agua diarios mejora la circulación y reduce el riesgo de hiperglucemia.",
-                "Caminar 15 minutos después de comer reduce significativamente los picos de azúcar en sangre.",
-                "Revisa tus pies a diario y mantenlos hidratados para prevenir posibles complicaciones.",
-                "Prioriza el consumo de proteínas y fibra en tus desayunos para evitar hipoglucemias reactivas.",
-                "Lleva siempre contigo un carbohidrato de rápida absorción (jugo o caramelos) para emergencias.",
-                "Dormir de 7 a 8 horas cada noche promueve una mejor sensibilidad a la insulina.",
-                "Anotar lo que comes te ayudará a detectar patrones en cómo ciertos alimentos afectan tu glucosa.",
-                "El estrés eleva el azúcar en sangre de forma natural. Prueba técnicas de respiración si te sientes tenso.",
-                "Comer la ensalada o fibra antes de los carbohidratos ayuda a aplanar tu curva de glucosa."
-            ];
-            $tipDelDia = $tips[Carbon::now()->dayOfYear % count($tips)];
-        }
-
-        // 7. Recordatorio Mensual de Peso
+        // 6. Recordatorio Mensual de Peso
         $ultimoPesoRegistro = VitalSign::where('user_id', $userId)
             ->whereNotNull('weight')
             ->latest('id')
@@ -206,7 +223,7 @@ class DashboardMetricsService
             'metaCalorias', 'metaCarbs', 'actividadMinutos', 'metaActividad',
             'pasosEstimados', 'metaPasos', 'sintomasHoy', 'porcentajeCalorias',
             'porcentajeActividad', 'porcentajePasos', 'tiempoEnRango',
-            'glucosaLabels', 'glucosaData', 'tipDelDia', 'needsWeightUpdate', 'ultimoPesoValor'
+            'glucosaLabels', 'glucosaData', 'needsWeightUpdate', 'ultimoPesoValor'
         );
     }
 }

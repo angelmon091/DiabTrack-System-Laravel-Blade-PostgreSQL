@@ -151,11 +151,85 @@
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Intercept health tracking forms
+            document.querySelectorAll('form.tracking-form-layout').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) submitBtn.disabled = true;
+
+                    const formData = new FormData(form);
+                    const action = form.getAttribute('action');
+                    const method = form.getAttribute('method') || 'POST';
+
+                    fetch(action, {
+                        method: method,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: formData
+                    })
+                    .then(response => {
+                        if (submitBtn) submitBtn.disabled = false;
+                        
+                        if (response.status === 422) {
+                            return response.json().then(data => {
+                                let errorHtml = '<ul class="text-start" style="list-style-type: none; padding-left: 0; margin-bottom: 0;">';
+                                Object.values(data.errors).forEach(errArray => {
+                                    errArray.forEach(err => {
+                                        errorHtml += `<li><i class="fa-solid fa-circle-xmark text-danger me-2"></i>${err}</li>`;
+                                    });
+                                });
+                                errorHtml += '</ul>';
+                                
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Errores de Validación',
+                                    html: errorHtml,
+                                    confirmButtonColor: '#00B4D8'
+                                });
+                            });
+                        } else if (!response.ok) {
+                            throw new Error('Server error');
+                        } else {
+                            return response.json().then(data => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Guardado!',
+                                    text: data.message || 'El registro se guardó correctamente.',
+                                    confirmButtonColor: '#00B4D8'
+                                }).then(() => {
+                                    form.reset();
+                                    
+                                    // Trigger range inputs oninput events to reset text values
+                                    form.querySelectorAll('input[type="range"]').forEach(range => {
+                                        if (range.oninput) range.oninput();
+                                    });
+                                });
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        if (submitBtn) submitBtn.disabled = false;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al guardar el registro. Inténtalo de nuevo.',
+                            confirmButtonColor: '#00B4D8'
+                        });
+                    });
+                });
             });
         });
     </script>

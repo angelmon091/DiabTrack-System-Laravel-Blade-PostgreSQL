@@ -23,7 +23,7 @@ class OnboardingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post('/onboarding', [
+        $response = $this->actingAs($user)->post('/onboarding/patient', [
             'birth_day' => '15',
             'birth_month' => 'Marzo',
             'birth_year' => '1990',

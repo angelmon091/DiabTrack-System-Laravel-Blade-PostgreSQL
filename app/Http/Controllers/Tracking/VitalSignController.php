@@ -29,6 +29,13 @@ class VitalSignController extends Controller
             'notes' => $request->notes,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Registro de salud guardado con éxito.')
+            ]);
+        }
+
         return redirect()->route('dashboard')->with('status', __('Registro de salud guardado con éxito.'));
     }
 }

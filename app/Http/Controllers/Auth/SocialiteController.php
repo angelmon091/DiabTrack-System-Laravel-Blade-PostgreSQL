@@ -25,7 +25,14 @@ class SocialiteController extends Controller
         }
 
         try {
-            return Socialite::driver($provider)->redirect();
+            $driver = Socialite::driver($provider);
+
+            // Forzar selector de cuenta en Google para no tomar la sesión automáticamente
+            if ($provider === 'google') {
+                $driver = $driver->with(['prompt' => 'select_account']);
+            }
+
+            return $driver->redirect();
         } catch (\InvalidArgumentException $e) {
             // Error de configuración (ej: falta el client_id)
             return redirect()->route('login')->with('error', 'El servicio de ' . ucfirst($provider) . ' no está configurado correctamente en este momento.');

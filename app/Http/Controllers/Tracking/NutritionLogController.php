@@ -40,6 +40,13 @@ class NutritionLogController extends Controller
             'medication_dose' => $request->medication_dose,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Registro de nutrición guardado con éxito.')
+            ]);
+        }
+
         return redirect()->route('dashboard')->with('status', __('Registro de nutrición guardado con éxito.'));
     }
 }

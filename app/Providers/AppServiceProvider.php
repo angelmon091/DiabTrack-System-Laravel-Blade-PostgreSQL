@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\DashboardMetricsService;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -28,5 +30,13 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
+
+        View::composer(['dashboard', 'tracking.nutrition.index'], function ($view) {
+            if (! auth()->check()) {
+                return;
+            }
+
+            $view->with(app(DashboardMetricsService::class)->getDailyTipForUser(auth()->id()));
+        });
     }
 }

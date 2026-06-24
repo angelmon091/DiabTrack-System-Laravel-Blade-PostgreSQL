@@ -46,10 +46,17 @@
 
                 <!-- Tip del Día -->
                 <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
-                    <h6 class="fw-bold mb-3 text-diab-text-secondary text-uppercase letter-spacing-1 small">Tip del Día</h6>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="fw-bold mb-0 text-diab-text-secondary text-uppercase letter-spacing-1 small">Tip del Día</h6>
+                        @if($tipEsIA ?? false)
+                            <span class="badge d-flex align-items-center gap-1" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 20px; letter-spacing: 0.3px;">
+                                Generado con IA
+                            </span>
+                        @endif
+                    </div>
                     <div class="d-flex align-items-start">
                         <i class="fa-regular fa-lightbulb text-diab-primary fs-5 me-3 mt-1"></i>
-                        <p class="mb-0 small text-muted text-justify" style="line-height: 1.5;">{{ $tipDelDia }}</p>
+                        <p class="mb-0 small text-muted text-justify" style="line-height: 1.5;">{{ $tipDelDia ?? '' }}</p>
                     </div>
                 </div>
 
@@ -82,18 +89,20 @@
                 </div>
 
                 <!-- Compartir Acceso -->
-                <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.25s;">
+                <div id="share-access-card" class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.25s;">
                     <h6 class="fw-bold mb-3 text-diab-text-secondary text-uppercase letter-spacing-1 small">Compartir Acceso</h6>
                     <p class="extra-small text-muted mb-3">Genera un código para que tu médico o cuidador pueda ver tus datos.</p>
                     
-                    @if(session('invite_code'))
-                        <div class="text-center p-3 rounded-3 mb-3 animate-pulse" style="background: rgba(0, 194, 224, 0.1); border: 1px dashed var(--diab-primary);">
-                            <span class="extra-small text-muted d-block mb-1">Código Temporal (24h)</span>
-                            <strong class="fs-4 letter-spacing-2 text-diab-primary">{{ session('invite_code') }}</strong>
-                        </div>
-                    @endif
+                    <div id="invite-code-container">
+                        @if(session('invite_code'))
+                            <div class="text-center p-3 rounded-3 mb-3 animate-pulse" style="background: rgba(0, 194, 224, 0.1); border: 1px dashed var(--diab-primary);">
+                                <span class="extra-small text-muted d-block mb-1">Código Temporal (24h)</span>
+                                <strong class="fs-4 letter-spacing-2 text-diab-primary">{{ session('invite_code') }}</strong>
+                            </div>
+                        @endif
+                    </div>
 
-                    <form action="{{ route('dashboard.invite') }}" method="POST" class="d-flex flex-column gap-2">
+                    <form id="invite-code-form" action="{{ route('dashboard.invite') }}" method="POST" class="d-flex flex-column gap-2">
                         @csrf
                         <div class="d-flex gap-2">
                             <select name="role" class="form-select extra-small py-1" required>
@@ -516,6 +525,48 @@
                 }
             }
         });
+
+        // Intercept invite code generation form
+        const inviteForm = document.getElementById('invite-code-form');
+        if (inviteForm) {
+            inviteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(inviteForm);
+                const action = inviteForm.getAttribute('action');
+                
+                const submitBtn = inviteForm.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.disabled = true;
+
+                fetch(action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': formData.get('_token')
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (submitBtn) submitBtn.disabled = false;
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const container = document.getElementById('invite-code-container');
+                        container.innerHTML = `
+                            <div class="text-center p-3 rounded-3 mb-3 animate-pulse" style="background: rgba(0, 194, 224, 0.1); border: 1px dashed var(--diab-primary);">
+                                <span class="extra-small text-muted d-block mb-1">Código Temporal (24h)</span>
+                                <strong class="fs-4 letter-spacing-2 text-diab-primary">${data.code}</strong>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(err => {
+                    if (submitBtn) submitBtn.disabled = false;
+                    console.error(err);
+                });
+            });
+        }
     });
 </script>
 @endsection

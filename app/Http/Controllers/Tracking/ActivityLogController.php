@@ -26,6 +26,13 @@ class ActivityLogController extends Controller
             'energy_level' => $request->energy_level,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Registro de actividad guardado con éxito.')
+            ]);
+        }
+
         return redirect()->route('dashboard')->with('status', __('Registro de actividad guardado con éxito.'));
     }
 }

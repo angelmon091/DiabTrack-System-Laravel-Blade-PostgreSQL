@@ -21,7 +21,11 @@ use Laravel\Octane\Listeners\FlushTemporaryContainerInstances;
 use Laravel\Octane\Listeners\FlushUploadedFiles;
 use Laravel\Octane\Listeners\ReportException;
 use Laravel\Octane\Listeners\StopWorkerIfNecessary;
-use Laravel\Octane\Octane;
+
+$octaneAvailable = class_exists(\Laravel\Octane\Octane::class);
+$prepareForNextOperation = $octaneAvailable ? \Laravel\Octane\Octane::prepareApplicationForNextOperation() : [];
+$prepareForNextRequest = $octaneAvailable ? \Laravel\Octane\Octane::prepareApplicationForNextRequest() : [];
+$defaultServicesToWarm = $octaneAvailable ? \Laravel\Octane\Octane::defaultServicesToWarm() : [];
 
 return [
 
@@ -71,8 +75,8 @@ return [
         ],
 
         RequestReceived::class => [
-            ...Octane::prepareApplicationForNextOperation(),
-            ...Octane::prepareApplicationForNextRequest(),
+            ...$prepareForNextOperation,
+            ...$prepareForNextRequest,
             //
         ],
 
@@ -85,7 +89,7 @@ return [
         ],
 
         TaskReceived::class => [
-            ...Octane::prepareApplicationForNextOperation(),
+            ...$prepareForNextOperation,
             //
         ],
 
@@ -94,7 +98,7 @@ return [
         ],
 
         TickReceived::class => [
-            ...Octane::prepareApplicationForNextOperation(),
+            ...$prepareForNextOperation,
             //
         ],
 
@@ -131,7 +135,7 @@ return [
     */
 
     'warm' => [
-        ...Octane::defaultServicesToWarm(),
+        ...$defaultServicesToWarm,
     ],
 
     'flush' => [

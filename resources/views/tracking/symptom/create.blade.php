@@ -15,7 +15,7 @@
 
     <x-tracking-nav active="sintomas" />
 
-    <form action="{{ route('tracking.symptom.store') }}" method="POST">
+    <form class="tracking-form-layout" action="{{ route('tracking.symptom.store') }}" method="POST">
         @csrf
 
         <div class="diab-card p-4 mb-4">

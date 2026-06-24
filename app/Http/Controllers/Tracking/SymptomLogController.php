@@ -31,6 +31,13 @@ class SymptomLogController extends Controller
         // Invalidar el caché de métricas del dashboard del usuario
         \Illuminate\Support\Facades\Cache::forget("dashboard_metrics_{$user->id}_v2");
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Registro de síntomas guardado con éxito.')
+            ]);
+        }
+
         return redirect()->route('dashboard')->with('status', __('Registro de síntomas guardado con éxito.'));
     }
 }

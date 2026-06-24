@@ -197,6 +197,14 @@ class DashboardController extends Controller
             'expires_at' => now()->addHours(24),
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'code' => $code,
+                'message' => 'Código de invitación generado. Compártelo con tu cuidador o médico.'
+            ]);
+        }
+
         return redirect()->route('dashboard')
             ->with('invite_code', $code)
             ->with('status', 'Código de invitación generado. Compártelo con tu cuidador o médico.');
