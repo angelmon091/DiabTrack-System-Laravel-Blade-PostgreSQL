@@ -12,18 +12,18 @@ class TipService
         $tipLocal = $this->generarTipLocal($datosPaciente);
 
         try {
-            return $this->generarConClaude($datosPaciente);
+            return $this->generarConGemini($datosPaciente);
         } catch (\Throwable $e) {
-            Log::error('TipService: error al generar tip con Anthropic', [
+            Log::error('TipService: error al generar tip con Gemini', [
                 'error' => $e->getMessage(),
                 'datos_paciente' => $datosPaciente,
             ]);
 
             try {
-                return $this->generarConGemini($datosPaciente);
-            } catch (\Throwable $geminiError) {
-                Log::error('TipService: error al generar tip con Gemini', [
-                    'error' => $geminiError->getMessage(),
+                return $this->generarConClaude($datosPaciente);
+            } catch (\Throwable $claudeError) {
+                Log::error('TipService: error al generar tip con Anthropic', [
+                    'error' => $claudeError->getMessage(),
                     'datos_paciente' => $datosPaciente,
                 ]);
             }
@@ -129,7 +129,7 @@ class TipService
                     ],
                 ],
                 'generationConfig' => [
-                    'maxOutputTokens' => 300,
+                    'maxOutputTokens' => 1500,
                 ],
             ]);
 

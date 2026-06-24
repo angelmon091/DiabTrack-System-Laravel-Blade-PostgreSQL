@@ -72,6 +72,63 @@ class DailyTipSuggestionService
         }
     }
 
+    public function generateGemini(array $context, ?string $apiKey = null, ?string $modelName = null): string
+    {
+        if ($alert = $this->extremeGlucoseAlert($context)) {
+            return $alert;
+        }
+
+        $key = $apiKey ?: config('services.gemini.key');
+        if (empty($key)) {
+            throw new \RuntimeException('GEMINI_API_KEY no configurada.');
+        }
+
+        $model = $modelName ?: config('services.gemini.model', 'gemini-2.5-flash');
+
+        try {
+            $response = Http::timeout(30)
+                ->acceptJson()
+                ->post('https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent?key=' . urlencode($key), [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                [
+                                    'text' => $this->buildUserPrompt($context),
+                                ],
+                            ],
+                        ],
+                    ],
+                    'systemInstruction' => [
+                        'parts' => [
+                            [
+                                'text' => $this->systemPrompt(),
+                            ],
+                        ],
+                    ],
+                    'generationConfig' => [
+                        'maxOutputTokens' => 1500,
+                        'temperature' => 0.5,
+                    ],
+                ]);
+
+            if ($response->failed()) {
+                throw new \RuntimeException('Gemini respondió con estado HTTP ' . $response->status());
+            }
+
+            $tip = trim((string) data_get($response->json(), 'candidates.0.content.parts.0.text', ''));
+
+            if ($tip === '') {
+                throw new \RuntimeException('Gemini devolvió una respuesta vacía.');
+            }
+
+            return $tip;
+
+        } catch (\Throwable $e) {
+            Log::warning('GenerateDailyTips: error de Gemini — ' . $e->getMessage());
+            throw new \RuntimeException('No se pudo generar el tip con Gemini.', 0, $e);
+        }
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // System Prompt — define el rol y los límites de la IA
     // ─────────────────────────────────────────────────────────────────────────

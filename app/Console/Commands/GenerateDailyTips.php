@@ -37,6 +37,8 @@ class GenerateDailyTips extends Command
             return;
         }
 
+        $geminiKey = config('services.gemini.key');
+        $geminiModel = config('services.gemini.model', 'gemini-2.5-flash');
         $anthropicKey = config('services.anthropic.key');
         $anthropicModel = config('services.anthropic.model', 'claude-haiku-4-5');
 
@@ -44,13 +46,28 @@ class GenerateDailyTips extends Command
             $this->info("Procesando paciente: {$patient->name} (ID: {$patient->id})");
 
             $context = $this->buildPatientContext($patient);
+            $tipGenerado = null;
 
-            if ($anthropicKey) {
-                $tipGenerado = $this->suggestionService->generateAnthropic($context, $anthropicKey, $anthropicModel);
-                $this->line("  Tip generado con Anthropic: {$anthropicModel}");
-            } else {
-                $this->error('ANTHROPIC_API_KEY no está configurada. No se generará tip.');
-                Log::warning("GenerateDailyTips: tip omitido para el paciente {$patient->id} por falta de Anthropic.");
+            if ($geminiKey) {
+                try {
+                    $tipGenerado = $this->suggestionService->generateGemini($context, $geminiKey, $geminiModel);
+                    $this->line("  Tip generado con Gemini: {$geminiModel}");
+                } catch (\Throwable $e) {
+                    $this->error("  Error con Gemini: " . $e->getMessage());
+                }
+            }
+
+            if (!$tipGenerado && $anthropicKey) {
+                try {
+                    $tipGenerado = $this->suggestionService->generateAnthropic($context, $anthropicKey, $anthropicModel);
+                    $this->line("  Tip generado con Anthropic: {$anthropicModel}");
+                } catch (\Throwable $e) {
+                    $this->error("  Error con Anthropic: " . $e->getMessage());
+                }
+            }
+
+            if (!$tipGenerado) {
+                $this->error("  No se pudo generar tip para el paciente {$patient->id} con ninguna IA configurada.");
                 continue;
             }
 
