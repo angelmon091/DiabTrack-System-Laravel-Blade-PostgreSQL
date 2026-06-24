@@ -13,13 +13,16 @@
                     </div>
 
                     <div class="d-flex flex-column gap-2">
-                        <a href="{{ route('tracking.nutrition.index') }}" class="action-item">
+                        <div class="action-item" style="opacity: 0.55; cursor: not-allowed; pointer-events: none; position: relative;">
                             <div class="action-icon orange"><i class="fa-solid fa-robot"></i></div>
                             <div class="ms-3">
                                 <strong class="d-block">Nutrición IA</strong>
                                 <p class="mb-0 extra-small text-muted">Planificación de comidas</p>
+                                <span class="badge rounded-pill mt-1 d-inline-block" style="font-size: 0.6rem; background: rgba(255,159,67,0.15); color: var(--diab-warning); border: 1px solid rgba(255,159,67,0.3); letter-spacing: 0.03em;">
+                                    <i class="fa-solid fa-clock me-1" style="font-size: 0.55rem;"></i>Próximamente
+                                </span>
                             </div>
-                        </a>
+                        </div>
                         <a href="{{ route('tracking.summary') }}" class="action-item">
                             <div class="action-icon blue"><i class="fa-solid fa-chart-line"></i></div>
                             <div class="ms-3">

@@ -132,9 +132,13 @@
                 <button class="btn btn-outline-secondary rounded-pill px-3 px-md-4 btn-sm">
                     <i class="fa-solid fa-calendar-day me-2"></i> <span class="d-none d-sm-inline">Historial</span> Completo
                 </button>
-                <button class="btn btn-diab-primary rounded-pill px-3 px-md-4 btn-sm shadow-sm">
-                    <i class="fa-solid fa-file-pdf me-2"></i> Reporte Médico
-                </button>
+                <div class="btn btn-diab-primary rounded-pill px-3 px-md-4 btn-sm shadow-sm d-inline-flex align-items-center gap-2"
+                     style="opacity: 0.55; cursor: not-allowed; pointer-events: none;">
+                    <i class="fa-solid fa-file-pdf"></i> Reporte Médico
+                    <span class="badge rounded-pill" style="font-size: 0.55rem; background: rgba(255,255,255,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.4); letter-spacing: 0.03em;">
+                        <i class="fa-solid fa-clock me-1" style="font-size: 0.5rem;"></i>Próximamente
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -277,19 +281,13 @@
                 </div>
             </div>
             <div class="col-12 col-lg-4">
-                <div class="diab-card p-4 p-md-5 h-100">
+                <div class="diab-card p-4 p-md-5 h-100 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h5 class="fw-bold mb-0">Composición de Dieta</h5>
                         <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Te muestra visualmente qué tipo de comida estás comiendo más (ej. si comes más proteínas o más carbohidratos)."></i>
                     </div>
-                    <div class="chart-container-sm mb-4">
+                    <div class="chart-container-sm flex-grow-1 d-flex align-items-center justify-content-center">
                         <canvas id="dietCompositionChart"></canvas>
-                    </div>
-                    <div class="mt-4">
-                        <div class="insight-card">
-                            <h6 class="fw-bold small mb-2"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Observación IA</h6>
-                            <p class="extra-small text-muted mb-0">Tus niveles de glucosa tienden a subir un 15% tras comidas altas en cereales. Considera balancear con más fibra.</p>
-                        </div>
                     </div>
                 </div>
             </div>

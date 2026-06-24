@@ -153,6 +153,96 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // ── DiabTrack SweetAlert theme ────────────────────────────────────────
+        const DiabSwal = Swal.mixin({
+            customClass: {
+                popup:          'diabswal-popup',
+                title:          'diabswal-title',
+                htmlContainer:  'diabswal-html',
+                confirmButton:  'diabswal-btn diabswal-btn-confirm',
+                cancelButton:   'diabswal-btn diabswal-btn-cancel',
+                icon:           'diabswal-icon',
+            },
+            buttonsStyling: false,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp animate__faster'
+            }
+        });
+
+        // Inject DiabSwal styles once
+        (function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .diabswal-popup {
+                    border-radius: 24px !important;
+                    font-family: 'Inter', sans-serif !important;
+                    background: #FFFFFF !important;
+                    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12), 0 8px 16px -4px rgba(0,180,216,0.08) !important;
+                    padding: 2rem !important;
+                    border: 1px solid rgba(0,180,216,0.12) !important;
+                }
+                .diabswal-title {
+                    font-family: 'Inter', sans-serif !important;
+                    font-weight: 700 !important;
+                    font-size: 1.2rem !important;
+                    color: #0F172A !important;
+                    letter-spacing: -0.02em !important;
+                }
+                .diabswal-html {
+                    font-family: 'Inter', sans-serif !important;
+                    font-size: 0.9rem !important;
+                    color: #64748B !important;
+                }
+                .diabswal-btn {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    padding: 0.6rem 1.6rem !important;
+                    border-radius: 12px !important;
+                    font-family: 'Inter', sans-serif !important;
+                    font-size: 0.875rem !important;
+                    font-weight: 600 !important;
+                    border: none !important;
+                    cursor: pointer !important;
+                    transition: all 0.25s cubic-bezier(0.4,0,0.2,1) !important;
+                    letter-spacing: -0.01em !important;
+                }
+                .diabswal-btn-confirm {
+                    background: linear-gradient(135deg, #00B4D8 0%, #0096C7 100%) !important;
+                    color: #fff !important;
+                    box-shadow: 0 4px 14px rgba(0,180,216,0.35) !important;
+                }
+                .diabswal-btn-confirm:hover {
+                    background: linear-gradient(135deg, #0096C7 0%, #0077A8 100%) !important;
+                    box-shadow: 0 6px 20px rgba(0,180,216,0.45) !important;
+                    transform: translateY(-1px) !important;
+                }
+                .diabswal-btn-cancel {
+                    background: rgba(0,180,216,0.08) !important;
+                    color: #00B4D8 !important;
+                    border: 1px solid rgba(0,180,216,0.2) !important;
+                }
+                .diabswal-btn-cancel:hover {
+                    background: rgba(0,180,216,0.15) !important;
+                    transform: translateY(-1px) !important;
+                }
+                .swal2-actions { gap: 0.6rem !important; }
+                .diabswal-icon.swal2-success { border-color: #28C76F !important; }
+                .diabswal-icon.swal2-success [class^="swal2-success-line"] { background: #28C76F !important; }
+                .diabswal-icon.swal2-success .swal2-success-ring { border-color: rgba(40,199,111,0.25) !important; }
+                .diabswal-icon.swal2-error { border-color: #EA5455 !important; }
+                .diabswal-icon.swal2-error [class^="swal2-x-mark-line"] { background: #EA5455 !important; }
+                .diabswal-icon.swal2-warning { border-color: #FF9F43 !important; color: #FF9F43 !important; }
+                .diabswal-icon.swal2-info { border-color: #00CFE8 !important; color: #00CFE8 !important; }
+                .diabswal-icon.swal2-question { border-color: #00B4D8 !important; color: #00B4D8 !important; }
+            `;
+            document.head.appendChild(style);
+        })();
+    </script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -193,22 +283,20 @@
                                 });
                                 errorHtml += '</ul>';
                                 
-                                Swal.fire({
+                                DiabSwal.fire({
                                     icon: 'error',
                                     title: 'Errores de Validación',
                                     html: errorHtml,
-                                    confirmButtonColor: '#00B4D8'
                                 });
                             });
                         } else if (!response.ok) {
                             throw new Error('Server error');
                         } else {
                             return response.json().then(data => {
-                                Swal.fire({
+                                DiabSwal.fire({
                                     icon: 'success',
                                     title: '¡Guardado!',
                                     text: data.message || 'El registro se guardó correctamente.',
-                                    confirmButtonColor: '#00B4D8'
                                 }).then(() => {
                                     form.reset();
                                     
@@ -222,11 +310,10 @@
                     })
                     .catch(err => {
                         if (submitBtn) submitBtn.disabled = false;
-                        Swal.fire({
+                        DiabSwal.fire({
                             icon: 'error',
                             title: 'Error',
                             text: 'Hubo un problema al guardar el registro. Inténtalo de nuevo.',
-                            confirmButtonColor: '#00B4D8'
                         });
                     });
                 });

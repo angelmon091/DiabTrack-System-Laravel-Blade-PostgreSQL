@@ -71,10 +71,11 @@ class DoctorController extends Controller
             ->take(10)
             ->get();
 
-        // Mostrar los consejos ya publicados (auto-aprobados)
+        // Mostrar los últimos 3 consejos publicados (auto-aprobados)
         $pendingTips = \App\Models\DailyTip::where('user_id', $patient->id)
             ->where('status', 'approved')
             ->latest()
+            ->take(3)
             ->get();
 
         return view('doctor.patient-detail', array_merge($metrics, compact('patient', 'recentLogs', 'pendingTips')));

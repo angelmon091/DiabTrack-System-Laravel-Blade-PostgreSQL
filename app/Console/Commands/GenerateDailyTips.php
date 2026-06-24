@@ -42,8 +42,22 @@ class GenerateDailyTips extends Command
         $anthropicKey = config('services.anthropic.key');
         $anthropicModel = config('services.anthropic.model', 'claude-haiku-4-5');
 
+        $maxInactivityDays = (int) env('DAILY_TIPS_MAX_INACTIVITY_DAYS', 3);
+
         foreach ($patients as $patient) {
             $this->info("Procesando paciente: {$patient->name} (ID: {$patient->id})");
+
+            // Verificar si el paciente ha ingresado datos clínicos o de estilo de vida recientemente
+            $since = Carbon::now()->subDays($maxInactivityDays);
+            $hasRecentData = $patient->vitalSigns()->where('created_at', '>=', $since)->exists() ||
+                             $patient->activityLogs()->where('created_at', '>=', $since)->exists() ||
+                             $patient->nutritionLogs()->where('created_at', '>=', $since)->exists() ||
+                             DB::table('symptom_user')->where('user_id', $patient->id)->where('logged_at', '>=', $since)->exists();
+
+            if (!$hasRecentData) {
+                $this->warn("  Paciente inactivo en los últimos {$maxInactivityDays} días. Omitiendo generación de tip.");
+                continue;
+            }
 
             $context = $this->buildPatientContext($patient);
             $tipGenerado = null;

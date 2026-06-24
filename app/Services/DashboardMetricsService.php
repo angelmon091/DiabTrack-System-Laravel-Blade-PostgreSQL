@@ -59,6 +59,24 @@ class DashboardMetricsService
             ];
         }
 
+        $maxInactivityDays = (int) env('DAILY_TIPS_MAX_INACTIVITY_DAYS', 3);
+        $since = Carbon::now()->subDays($maxInactivityDays);
+        $user = \App\Models\User::find($userId);
+
+        if ($user) {
+            $hasRecentData = $user->vitalSigns()->where('created_at', '>=', $since)->exists() ||
+                $user->activityLogs()->where('created_at', '>=', $since)->exists() ||
+                $user->nutritionLogs()->where('created_at', '>=', $since)->exists() ||
+                \Illuminate\Support\Facades\DB::table('symptom_user')->where('user_id', $userId)->where('logged_at', '>=', $since)->exists();
+
+            if (!$hasRecentData) {
+                return [
+                    'tipDelDia' => "¡Hola! Para darte tips de salud 100% personalizados y precisos generados con Inteligencia Artificial, recuerda registrar tus datos (como tu nivel de glucosa, comidas o actividad física de hoy) en la sección 'Registrar o Nuevo'",
+                    'tipEsIA' => false,
+                ];
+            }
+        }
+
         $tips = [
             "Mantener un horario regular de comidas ayuda a estabilizar tus niveles de glucosa durante el día.",
             "Beber al menos 2 litros de agua diarios mejora la circulación y reduce el riesgo de hiperglucemia.",
@@ -134,8 +152,8 @@ class DashboardMetricsService
         // 2. Nutrición
         $carbsHoy = NutritionLog::where('user_id', $userId)->whereDate('created_at', $today)->sum('carbs_grams');
         $caloriasHoy = $carbsHoy * 4;
-        
-        $metaCalorias = 2000; 
+
+        $metaCalorias = 2000;
         $metaCarbs = 200;
         $porcentajeCalorias = $metaCalorias > 0 ? min(round(($caloriasHoy / $metaCalorias) * 100), 100) : 0;
 
@@ -148,7 +166,7 @@ class DashboardMetricsService
             ->whereDate('created_at', $today)
             ->where('activity_type', 'caminar')
             ->sum('duration_minutes') * 100;
-            
+
         $metaPasos = 8000;
         $porcentajePasos = $metaPasos > 0 ? min(round(($pasosEstimados / $metaPasos) * 100), 100) : 0;
 
@@ -171,10 +189,10 @@ class DashboardMetricsService
         $medicionesEnRango = $medicionesGlucosaSemana->filter(function ($item) use ($minRango, $maxRango) {
             return $item->glucose_level >= $minRango && $item->glucose_level <= $maxRango;
         })->count();
-        
+
         $tiempoEnRango = $medicionesRecientes > 0 ? round(($medicionesEnRango / $medicionesRecientes) * 100) : 0;
 
-        $registrosGlucosaAgrupados = $medicionesGlucosaSemana->groupBy(function($item) {
+        $registrosGlucosaAgrupados = $medicionesGlucosaSemana->groupBy(function ($item) {
             return $item->created_at->toDateString();
         });
 
@@ -184,9 +202,9 @@ class DashboardMetricsService
         for ($i = 6; $i >= 0; $i--) {
             $day = Carbon::today()->subDays($i);
             $dateString = $day->toDateString();
-            
+
             $glucosaLabels[] = $day->isoFormat('ddd D');
-            
+
             if ($registrosGlucosaAgrupados->has($dateString)) {
                 $avgGlucose = $registrosGlucosaAgrupados->get($dateString)->avg('glucose_level');
                 $glucosaData[] = $avgGlucose ? round($avgGlucose) : null;
@@ -219,11 +237,25 @@ class DashboardMetricsService
         $tiempoEnRango = $tiempoEnRango ?? 0;
 
         return compact(
-            'ultimaMedicion', 'ultimaHba1c', 'carbsHoy', 'caloriasHoy',
-            'metaCalorias', 'metaCarbs', 'actividadMinutos', 'metaActividad',
-            'pasosEstimados', 'metaPasos', 'sintomasHoy', 'porcentajeCalorias',
-            'porcentajeActividad', 'porcentajePasos', 'tiempoEnRango',
-            'glucosaLabels', 'glucosaData', 'needsWeightUpdate', 'ultimoPesoValor'
+            'ultimaMedicion',
+            'ultimaHba1c',
+            'carbsHoy',
+            'caloriasHoy',
+            'metaCalorias',
+            'metaCarbs',
+            'actividadMinutos',
+            'metaActividad',
+            'pasosEstimados',
+            'metaPasos',
+            'sintomasHoy',
+            'porcentajeCalorias',
+            'porcentajeActividad',
+            'porcentajePasos',
+            'tiempoEnRango',
+            'glucosaLabels',
+            'glucosaData',
+            'needsWeightUpdate',
+            'ultimoPesoValor'
         );
     }
 }
