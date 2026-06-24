@@ -25,6 +25,22 @@
                         @endif
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase" for="relationship">Parentesco con el Paciente</label>
+                        <select id="relationship" name="relationship" class="form-select diab-input" required style="border-radius: 12px; font-weight: 500;">
+                            <option value="" disabled selected>Selecciona el parentesco...</option>
+                            <option value="Padre/Madre">Padre / Madre</option>
+                            <option value="Hijo/a">Hijo / a</option>
+                            <option value="Hermano/a">Hermano / a</option>
+                            <option value="Pareja">Pareja</option>
+                            <option value="Médico Particular">Médico Particular</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        @if($errors->has('relationship'))
+                            <span class="text-danger extra-small mt-1 d-block">{{ $errors->first('relationship') }}</span>
+                        @endif
+                    </div>
+
                     <button type="submit" class="btn-diab-primary w-100">
                         <i class="fa-solid fa-check me-2"></i>Vincular
                     </button>

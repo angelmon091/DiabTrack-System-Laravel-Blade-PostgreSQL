@@ -64,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/patient/{patient}', [CaregiverController::class, 'showPatient'])->name('patient.show');
         Route::get('/patient/{patient}/vital/create', [CaregiverController::class, 'createVital'])->name('patient.vital.create');
         Route::post('/patient/{patient}/vital', [CaregiverController::class, 'storeVital'])->name('patient.vital.store');
+        Route::delete('/patient/{patient}/unlink', [CaregiverController::class, 'unlinkPatient'])->name('patient.unlink');
     });
 
     // Doctor routes
@@ -73,6 +74,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/link', [DoctorController::class, 'linkPatient'])->name('link.store');
         Route::get('/patient/{patient}', [DoctorController::class, 'showPatient'])->name('patient.show');
         Route::patch('/patient/{patient}/targets', [DoctorController::class, 'updateTargets'])->name('patient.targets.update');
+        Route::delete('/patient/{patient}/unlink', [DoctorController::class, 'unlinkPatient'])->name('patient.unlink');
     });
 
     // Daily Tips Approval routes (Shared by Doctor and Caregiver)

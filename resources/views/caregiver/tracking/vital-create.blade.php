@@ -21,6 +21,7 @@
                     <div class="tracking-field">
                         <label class="d-flex justify-content-between align-items-center w-100 mb-3">
                             <span>{{ __('Nivel de Glucosa (Azúcar)') }}: <strong id="glucose_val">{{ old('glucose_level', 120) }}</strong> mg/dL</span>
+                            <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="Nivel de azúcar del paciente. Se mide con glucómetro."></i>
                         </label>
                         <input type="range" name="glucose_level" class="tracking-range" min="40" max="300"
                             value="{{ old('glucose_level', 120) }}"
@@ -28,9 +29,46 @@
                         <x-input-error :messages="$errors->get('glucose_level')" />
                     </div>
 
+                    <div class="tracking-field">
+                        <label class="d-flex justify-content-between align-items-center w-100 mb-3">
+                            <span>{{ __('Presión Arterial (Sistólica / Diastólica)') }} <span class="text-muted small fw-normal">(Opcional)</span>:</span>
+                            <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="Presión en el brazo medida con baumanómetro."></i>
+                        </label>
+                        <div class="d-flex gap-3">
+                            <input type="number" name="systolic" class="tracking-input" placeholder="{{ __('Sistólica') }}"
+                                value="{{ old('systolic') }}">
+                            <input type="number" name="diastolic" class="tracking-input"
+                                placeholder="{{ __('Diastólica') }}" value="{{ old('diastolic') }}">
+                        </div>
+                        <x-input-error :messages="$errors->get('systolic')" />
+                        <x-input-error :messages="$errors->get('diastolic')" />
+                    </div>
+
+                    <div class="tracking-field">
+                        <label class="d-flex justify-content-between align-items-center w-100 mb-3">
+                            <span>{{ __('Frecuencia Cardiaca') }} <span class="text-muted small fw-normal">(Opcional)</span>: <strong id="heart_val">{{ old('heart_rate', 75) }}</strong> bpm</span>
+                            <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="Latidos por minuto del paciente."></i>
+                        </label>
+                        <input type="range" name="heart_rate" class="tracking-range" min="40" max="200"
+                            value="{{ old('heart_rate', 75) }}"
+                            oninput="document.getElementById('heart_val').innerText = this.value">
+                        <x-input-error :messages="$errors->get('heart_rate')" />
+                    </div>
+
+                    <div class="tracking-field" style="margin-bottom: 0;">
+                        <label>{{ __('Hemoglobina Glicosilada (HbA1c)') }} <span class="text-muted small fw-normal">(Opcional)</span>:</label>
+                        <p class="text-muted extra-small mb-2 mt-1">El promedio de azúcar de los últimos 3 meses.</p>
+                        <input type="number" step="0.1" name="hba1c" class="tracking-input"
+                            placeholder="{{ __('% de HbA1c') }}" value="{{ old('hba1c') }}">
+                        <x-input-error :messages="$errors->get('hba1c')" />
+                    </div>
+                </div>
+
+                <div class="diab-card p-4 mb-4">
                     <div class="tracking-field" style="margin-bottom: 0;">
                         <label>{{ __('Notas Adicionales') }} <span class="text-muted small fw-normal">(Opcional)</span>:</label>
-                        <textarea name="notes" class="tracking-input" rows="3" placeholder="{{ __('Ej: El paciente mencionó sentirse mareado...') }}">{{ old('notes') }}</textarea>
+                        <p class="text-muted extra-small mb-2 mt-1">Escribe cómo se sintió el paciente o cualquier otra observación.</p>
+                        <textarea name="notes" class="tracking-input" rows="3" placeholder="{{ __('Ej: El paciente mencionó tener dolor de cabeza...') }}">{{ old('notes') }}</textarea>
                         <x-input-error :messages="$errors->get('notes')" />
                     </div>
                 </div>
@@ -65,7 +103,7 @@
                 </div>
 
                 <div class="tracking-panel mt-4">
-                    <h3>{{ __('Nivel de Estrés Percibido') }}</h3>
+                    <h3>{{ __('Nivel de Estrés Percibido') }} <span class="text-muted fs-6 fw-normal">(Opcional)</span></h3>
                     <input type="hidden" name="stress_level" id="stress_level" value="{{ old('stress_level') }}">
 
                     <div class="selector-grid">
@@ -91,7 +129,7 @@
             </aside>
 
             <div class="tracking-actions">
-                <a href="{{ route('caregiver.patient.show', $patient) }}" class="btn-track-reset text-center text-decoration-none d-flex align-items-center justify-content-center">{{ __('Cancelar') }}</a>
+                <a href="{{ route('caregiver.dashboard', ['patient_id' => $patient->id]) }}" class="btn-track-reset text-center text-decoration-none d-flex align-items-center justify-content-center">{{ __('Cancelar') }}</a>
                 <button type="submit" class="btn-track-save">{{ __('Guardar Registro') }}</button>
             </div>
         </form>

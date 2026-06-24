@@ -461,73 +461,73 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const canvas = document.getElementById('glucosaChart');
-        if (!canvas) return;
+        if (canvas) {
+            const labels = @json($glucosaLabels);
+            const data = @json($glucosaData);
 
-        const labels = @json($glucosaLabels);
-        const data = @json($glucosaData);
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary').trim() || '#00B4D8';
+            const primaryLight = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary-light').trim() || 'rgba(0, 180, 216, 0.08)';
 
-                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary').trim() || '#00B4D8';
-                const primaryLight = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary-light').trim() || 'rgba(0, 180, 216, 0.08)';
-
-                new Chart(canvas, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Glucosa (mg/dL)',
-                            data: data,
-                            borderColor: primaryColor,
-                            backgroundColor: primaryLight,
-                            borderWidth: 2.5,
-                            pointBackgroundColor: primaryColor,
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    tension: 0.4,
-                    fill: true,
-                    spanGaps: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#0F172A',
-                        titleFont: { family: 'Inter', size: 11 },
-                        bodyFont: { family: 'Inter', size: 12, weight: 600 },
-                        padding: 10,
-                        cornerRadius: 10,
-                        callbacks: {
-                            label: function(ctx) {
-                                return ctx.parsed.y + ' mg/dL';
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Glucosa (mg/dL)',
+                        data: data,
+                        borderColor: primaryColor,
+                        backgroundColor: primaryLight,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: primaryColor,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.4,
+                        fill: true,
+                        spanGaps: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0F172A',
+                            titleFont: { family: 'Inter', size: 11 },
+                            bodyFont: { family: 'Inter', size: 12, weight: 600 },
+                            padding: 10,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.parsed.y + ' mg/dL';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            suggestedMin: 60,
+                            suggestedMax: 200,
+                            grid: { color: 'rgba(0,0,0,0.03)' },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                color: '#94A3B8'
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                color: '#94A3B8'
                             }
                         }
                     }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        suggestedMin: 60,
-                        suggestedMax: 200,
-                        grid: { color: 'rgba(0,0,0,0.03)' },
-                        ticks: {
-                            font: { family: 'Inter', size: 10 },
-                            color: '#94A3B8'
-                        }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: {
-                            font: { family: 'Inter', size: 10 },
-                            color: '#94A3B8'
-                        }
-                    }
                 }
-            }
-        });
+            });
+        }
 
         // Intercept invite code generation form
         const inviteForm = document.getElementById('invite-code-form');

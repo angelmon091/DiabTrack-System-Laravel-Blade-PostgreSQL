@@ -15,12 +15,43 @@ use Illuminate\Support\Str;
  */
 class CaregiverController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request, DashboardMetricsService $metricsService)
     {
         $user = Auth::user();
         $patients = $user->linkedPatients()->with('patientProfile', 'vitalSigns')->get();
 
-        return view('caregiver.dashboard', compact('user', 'patients'));
+        $selectedPatient = null;
+        $metrics = [];
+        $recentLogs = collect();
+        $pendingTips = collect();
+
+        if ($patients->isNotEmpty()) {
+            $selectedPatientId = $request->query('patient_id');
+            $selectedPatient = $selectedPatientId 
+                ? $patients->firstWhere('id', $selectedPatientId) 
+                : $patients->first();
+
+            if (!$selectedPatient) {
+                $selectedPatient = $patients->first();
+            }
+
+            $metrics = $metricsService->getDashboardMetrics($selectedPatient->id);
+            
+            $recentLogs = VitalSign::where('user_id', $selectedPatient->id)
+                ->whereNotNull('glucose_level')
+                ->latest()
+                ->take(5)
+                ->get();
+
+            // Mostrar los últimos 3 consejos publicados (aprobados)
+            $pendingTips = \App\Models\DailyTip::where('user_id', $selectedPatient->id)
+                ->where('status', 'approved')
+                ->latest()
+                ->take(3)
+                ->get();
+        }
+
+        return view('caregiver.dashboard', array_merge($metrics, compact('user', 'patients', 'selectedPatient', 'recentLogs', 'pendingTips')));
     }
 
     /**
@@ -38,6 +69,7 @@ class CaregiverController extends Controller
     {
         $request->validate([
             'invite_code' => 'required|string|size:6',
+            'relationship' => 'required|string|max:255',
         ]);
 
         $link = PatientLink::where('invite_code', strtoupper($request->invite_code))
@@ -52,34 +84,21 @@ class CaregiverController extends Controller
         $link->update([
             'linked_user_id' => Auth::id(),
             'status' => 'active',
+            'relationship' => $request->relationship,
         ]);
 
         return redirect()->route('caregiver.dashboard')
             ->with('status', '¡Paciente vinculado exitosamente!');
     }
+
     /**
-     * Muestra el detalle de un paciente vinculado.
+     * Muestra el detalle de un paciente vinculado (Redirige al dashboard unificado).
      */
-    public function showPatient(User $patient, DashboardMetricsService $metricsService)
+    public function showPatient(User $patient)
     {
         $this->checkLink($patient->id);
 
-        $metrics = $metricsService->getDashboardMetrics($patient->id);
-        
-        $recentLogs = VitalSign::where('user_id', $patient->id)
-            ->whereNotNull('glucose_level')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        // Mostrar los últimos 3 consejos publicados (auto-aprobados)
-        $pendingTips = \App\Models\DailyTip::where('user_id', $patient->id)
-            ->where('status', 'approved')
-            ->latest()
-            ->take(3)
-            ->get();
-
-        return view('caregiver.patient-detail', array_merge($metrics, compact('patient', 'recentLogs', 'pendingTips')));
+        return redirect()->route('caregiver.dashboard', ['patient_id' => $patient->id]);
     }
 
     /**
@@ -94,6 +113,10 @@ class CaregiverController extends Controller
             'measurement_moment' => 'required|string',
             'stress_level' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:1000',
+            'systolic' => 'nullable|integer|min:40|max:250',
+            'diastolic' => 'nullable|integer|min:30|max:180',
+            'heart_rate' => 'nullable|integer|min:30|max:220',
+            'hba1c' => 'nullable|numeric|min:3|max:20',
         ]);
 
         VitalSign::create([
@@ -102,9 +125,21 @@ class CaregiverController extends Controller
             'measurement_moment' => $validated['measurement_moment'],
             'stress_level' => $validated['stress_level'] ?? null,
             'notes' => $validated['notes'] ?? null,
+            'systolic' => $validated['systolic'] ?? null,
+            'diastolic' => $validated['diastolic'] ?? null,
+            'heart_rate' => $validated['heart_rate'] ?? null,
+            'hba1c' => $validated['hba1c'] ?? null,
         ]);
 
-        return redirect()->route('caregiver.patient.show', $patient)
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Registro de salud guardado con éxito.'),
+                'redirect_url' => route('caregiver.dashboard', ['patient_id' => $patient->id])
+            ]);
+        }
+
+        return redirect()->route('caregiver.dashboard', ['patient_id' => $patient->id])
             ->with('status', 'Registro de salud añadido correctamente.');
     }
 
@@ -115,6 +150,22 @@ class CaregiverController extends Controller
     {
         $this->checkLink($patient->id);
         return view('caregiver.tracking.vital-create', compact('patient'));
+    }
+
+    /**
+     * Desvincula un paciente.
+     */
+    public function unlinkPatient(User $patient)
+    {
+        $this->checkLink($patient->id);
+
+        PatientLink::where('patient_id', $patient->id)
+            ->where('linked_user_id', Auth::id())
+            ->where('status', 'active')
+            ->delete();
+
+        return redirect()->route('caregiver.dashboard')
+            ->with('status', 'Paciente desvinculado exitosamente.');
     }
 
     private function checkLink($patientId)

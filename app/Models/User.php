@@ -93,7 +93,8 @@ class User extends Authenticatable
     public function linkedPatients()
     {
         return $this->belongsToMany(User::class, 'patient_links', 'linked_user_id', 'patient_id')
-            ->wherePivot('status', 'active');
+            ->wherePivot('status', 'active')
+            ->withPivot('relationship');
     }
 
     /**
@@ -102,7 +103,8 @@ class User extends Authenticatable
     public function linkedCarers()
     {
         return $this->belongsToMany(User::class, 'patient_links', 'patient_id', 'linked_user_id')
-            ->wherePivot('status', 'active');
+            ->wherePivot('status', 'active')
+            ->withPivot('relationship');
     }
 
     public function isPatient(): bool

@@ -7,7 +7,8 @@
     <div class="row g-4">
 
         {{-- Sidebar --}}
-        <aside class="col-12 col-xl-3 order-2 order-xl-1">
+        <aside class="col-12 col-xl-4 order-2 order-xl-1">
+            {{-- Panel General del Médico --}}
             <div class="diab-card p-4 mb-4 animate-fade-in">
                 <div class="tool-header mb-4 d-flex align-items-center text-diab-info">
                     <i class="fa-solid fa-stethoscope me-2"></i>
@@ -32,7 +33,8 @@
                 </div>
             </div>
 
-            <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
+            {{-- Información Profesional --}}
+            <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.05s;">
                 <h6 class="fw-bold mb-3 text-muted text-uppercase letter-spacing-1 small">Tu Información</h6>
                 <div class="d-flex flex-column gap-2">
                     <div class="d-flex justify-content-between">
@@ -45,15 +47,63 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Lista de Pacientes Vinculados --}}
+            @if($patients->isNotEmpty())
+                <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
+                    <h6 class="fw-bold mb-3 text-muted text-uppercase letter-spacing-1 small">Pacientes Vinculados</h6>
+                    <div class="d-flex flex-column gap-3">
+                        @foreach($patients as $p)
+                            @php
+                                $isSelected = $selectedPatient && $p->id === $selectedPatient->id;
+                                $gender = strtolower($p->patientProfile?->gender ?? '');
+                                $avatar = $p->avatar;
+                            @endphp
+                            <div class="p-3 rounded-4 transition-hover position-relative" style="background: {{ $isSelected ? 'rgba(0, 180, 216, 0.08)' : 'var(--diab-card-bg, #fff)' }}; border: 2px solid {{ $isSelected ? 'var(--diab-primary)' : 'rgba(0,0,0,0.05)' }};">
+                                <a href="{{ route('doctor.dashboard', ['patient_id' => $p->id]) }}" class="text-decoration-none d-flex align-items-center mb-2">
+                                    <div class="rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 40px; height: 40px;">
+                                        @if($avatar && str_starts_with($avatar, 'http'))
+                                            <img src="{{ $avatar }}" class="w-100 h-100 object-fit-cover" alt="{{ $p->name }}">
+                                        @elseif($avatar)
+                                            <img src="{{ asset('storage/' . $avatar) }}" class="w-100 h-100 object-fit-cover" alt="{{ $p->name }}">
+                                        @else
+                                            @if($gender === 'femenino')
+                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-danger) 0%, #C0392B 100%); font-size: 0.8rem;">
+                                                    <i class="fa-solid fa-person-dress"></i>
+                                                </div>
+                                            @else
+                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%); font-size: 0.8rem;">
+                                                    <i class="fa-solid fa-user-tie"></i>
+                                                </div>
+                                            @endif
+                                        @endif
+                                    </div>
+                                    <div class="ms-3 flex-grow-1">
+                                        <strong class="d-block text-dark small" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">{{ $p->name }}</strong>
+                                        <span class="text-muted extra-small">{{ $p->patientProfile?->diabetes_type ?? '--' }}</span>
+                                    </div>
+                                </a>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-light">
+                                    <span class="extra-small text-muted" style="font-size: 0.7rem;">
+                                        Glucosa: <strong>{{ $p->vitalSigns->sortByDesc('created_at')->first()?->glucose_level ?? '--' }} mg/dL</strong>
+                                    </span>
+                                    <form action="{{ route('doctor.patient.unlink', $p) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desvincular a este paciente de tu panel clínico?');" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link text-danger p-0 d-flex align-items-center gap-1 text-decoration-none" title="Desvincular Paciente" style="font-size: 0.7rem; font-weight: 600;">
+                                            <i class="fa-solid fa-link-slash"></i> Desvincular
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </aside>
 
         {{-- Contenido Principal --}}
-        <section class="col-12 col-xl-9 order-1 order-xl-2">
-            <div class="mb-4 animate-fade-in">
-                <h2 class="fw-extrabold mb-1 fs-2">Dr. <span class="text-diab-primary">{{ auth()->user()->name }}</span></h2>
-                <p class="text-muted">Panel de seguimiento de pacientes.</p>
-            </div>
-
+        <section class="col-12 col-xl-8 order-1 order-xl-2">
             @if(session('status'))
                 <div class="alert alert-success border-0 bg-success bg-opacity-10 animate-fade-in mb-4">
                     <i class="fa-solid fa-circle-check me-2 text-success"></i>
@@ -68,78 +118,274 @@
                     </div>
                     <h4 class="fw-bold mb-2">Aún no tienes pacientes vinculados</h4>
                     <p class="text-muted mb-4">Pide a tu paciente que genere un <strong>código de invitación</strong> desde su panel y luego ingrésalo aquí.</p>
-                    <a href="{{ route('doctor.link') }}" class="btn-diab-primary">
-                        <i class="fa-solid fa-link me-2"></i>Vincular Paciente
+                    <a href="{{ route('doctor.link') }}" class="btn-diab-primary d-inline-flex align-items-center gap-2">
+                        <i class="fa-solid fa-link"></i> Vincular Paciente
                     </a>
                 </div>
             @else
-                <div class="row g-4">
-                    @foreach($patients as $patient)
-                        <div class="col-12 col-md-6 col-xl-4 animate-fade-in">
-                            <a href="{{ route('doctor.patient.show', $patient) }}" class="text-decoration-none">
-                                <div class="diab-card p-4 h-100 transition-hover">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 50px; height: 50px;">
-                                            @php
-                                                $gender = strtolower($patient->patientProfile?->gender ?? '');
-                                                $avatar = $patient->avatar;
-                                            @endphp
-                                            @if($avatar && str_starts_with($avatar, 'http'))
-                                                <img src="{{ $avatar }}" class="w-100 h-100 object-fit-cover" alt="{{ $patient->name }}">
-                                            @elseif($avatar)
-                                                <img src="{{ asset('storage/' . $avatar) }}" class="w-100 h-100 object-fit-cover" alt="{{ $patient->name }}">
-                                            @else
-                                                @if($gender === 'femenino')
-                                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-danger) 0%, #C0392B 100%);">
-                                                        <i class="fa-solid fa-person-dress"></i>
-                                                    </div>
-                                                @else
-                                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%);">
-                                                        <i class="fa-solid fa-user-tie"></i>
-                                                    </div>
-                                                @endif
-                                            @endif
+                @if($selectedPatient)
+                    {{-- Encabezado del Paciente Seleccionado --}}
+                    <div class="diab-card p-4 mb-4 animate-fade-in">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 60px; height: 60px; border: 2px solid var(--diab-primary);">
+                                @php
+                                    $gender = strtolower($selectedPatient->patientProfile?->gender ?? '');
+                                    $avatar = $selectedPatient->avatar;
+                                @endphp
+                                @if($avatar && str_starts_with($avatar, 'http'))
+                                    <img src="{{ $avatar }}" class="w-100 h-100 object-fit-cover" alt="{{ $selectedPatient->name }}">
+                                @elseif($avatar)
+                                    <img src="{{ asset('storage/' . $avatar) }}" class="w-100 h-100 object-fit-cover" alt="{{ $selectedPatient->name }}">
+                                @else
+                                    @if($gender === 'femenino')
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white fs-3" style="background: linear-gradient(135deg, var(--diab-danger) 0%, #C0392B 100%);">
+                                            <i class="fa-solid fa-person-dress"></i>
                                         </div>
-                                        <div class="ms-3">
-                                            <strong class="d-block">{{ $patient->name }}</strong>
-                                            <span class="text-muted extra-small">{{ $patient->patientProfile?->diabetes_type ?? '--' }}</span>
+                                    @else
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white fs-3" style="background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%);">
+                                            <i class="fa-solid fa-user-tie"></i>
                                         </div>
-                                    </div>
-                                    <div class="row g-2 mb-3">
-                                        @php
-                                            $lastVital = $patient->vitalSigns->sortByDesc('created_at')->first();
-                                        @endphp
-                                        <div class="col-4">
-                                            <div class="p-2 rounded-3 text-center" style="background: rgba(0,194,224,0.08);">
-                                                <span class="extra-small text-muted d-block">Glucosa</span>
-                                                <strong class="text-diab-primary small">{{ $lastVital?->glucose_level ?? '--' }}</strong>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="p-2 rounded-3 text-center bg-diab-success-light">
-                                                <span class="extra-small text-muted d-block">Presión</span>
-                                                <strong class="small text-diab-success">{{ $lastVital ? ($lastVital->systolic.'/'.$lastVital->diastolic) : '--' }}</strong>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="p-2 rounded-3 text-center bg-diab-warning-light">
-                                                <span class="extra-small text-muted d-block">Peso</span>
-                                                <strong class="small text-diab-warning">{{ $patient->patientProfile?->weight ?? '--' }}</strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex gap-1">
-                                        <span class="badge bg-info bg-opacity-10 text-info extra-small">
-                                            Meta: {{ $patient->patientProfile?->target_glucose_min ?? '70' }}-{{ $patient->patientProfile?->target_glucose_max ?? '180' }} mg/dL
-                                        </span>
-                                    </div>
+                                    @endif
+                                @endif
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="fw-bold mb-1 fs-4 text-dark">{{ $selectedPatient->name }}</h3>
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    <span class="badge bg-light text-dark border extra-small">{{ $selectedPatient->patientProfile?->diabetes_type ?? '--' }}</span>
+                                    <span class="text-muted extra-small"><i class="fa-solid fa-calendar me-1"></i>{{ $selectedPatient->patientProfile ? \Carbon\Carbon::parse($selectedPatient->patientProfile->birth_date)->age : '--' }} años</span>
+                                    <span class="text-muted extra-small"><i class="fa-solid fa-weight-scale me-1"></i>{{ $selectedPatient->patientProfile?->weight ?? '--' }} kg</span>
+                                    <span class="text-muted extra-small"><i class="fa-solid fa-arrows-up-down me-1"></i>{{ $selectedPatient->patientProfile?->height ?? '--' }} cm</span>
                                 </div>
-                            </a>
+                            </div>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+
+                    {{-- Formulario de Metas Clínicas --}}
+                    <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.05s;">
+                        <h6 class="fw-bold mb-3 text-diab-primary text-uppercase letter-spacing-1 small">Establecer Metas Glucémicas</h6>
+                        <form action="{{ route('doctor.patient.targets.update', $selectedPatient) }}" method="POST" class="row g-3 align-items-end">
+                            @csrf
+                            @method('PATCH')
+                            <div class="col-12 col-sm-5">
+                                <label class="form-label extra-small fw-bold">Límite Mínimo (mg/dL)</label>
+                                <input type="number" name="target_glucose_min" class="form-control diab-input" value="{{ $selectedPatient->patientProfile?->target_glucose_min ?? 70 }}" required>
+                            </div>
+                            <div class="col-12 col-sm-5">
+                                <label class="form-label extra-small fw-bold">Límite Máximo (mg/dL)</label>
+                                <input type="number" name="target_glucose_max" class="form-control diab-input" value="{{ $selectedPatient->patientProfile?->target_glucose_max ?? 140 }}" required>
+                            </div>
+                            <div class="col-12 col-sm-2">
+                                <button type="submit" class="btn-diab-primary w-100 py-2 extra-small">Actualizar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {{-- Tarjetas de Métricas Clínicas --}}
+                    <div class="row g-4 mb-4">
+                        {{-- Glucosa Actual --}}
+                        <div class="col-12 col-md-3 animate-fade-in" style="animation-delay: 0.1s;">
+                            <div class="diab-card p-4 h-100 text-center">
+                                <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1 mb-2">Glucosa Actual</h6>
+                                <h2 class="fw-extrabold mb-0 text-diab-primary">{{ $ultimaMedicion['glucose_level'] ?? '--' }}</h2>
+                                <span class="text-muted extra-small">mg/dL</span>
+                            </div>
+                        </div>
+
+                        {{-- Tiempo en Rango --}}
+                        <div class="col-12 col-md-3 animate-fade-in" style="animation-delay: 0.15s;">
+                            <div class="diab-card p-4 h-100 text-center">
+                                <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1 mb-2">Tiempo en Rango</h6>
+                                <h2 class="fw-extrabold mb-0 text-success">{{ $tiempoEnRango }}%</h2>
+                                <span class="text-muted extra-small">últimos 7 días</span>
+                            </div>
+                        </div>
+
+                        {{-- HbA1c Estimada --}}
+                        <div class="col-12 col-md-3 animate-fade-in" style="animation-delay: 0.2s;">
+                            <div class="diab-card p-4 h-100 text-center">
+                                <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1 mb-2">HbA1c Estimada</h6>
+                                <h2 class="fw-extrabold mb-0 text-diab-info">{{ $ultimaHba1c['hba1c'] ?? '--' }}%</h2>
+                                <span class="text-muted extra-small">basado en promedios</span>
+                            </div>
+                        </div>
+
+                        {{-- Calorías --}}
+                        <div class="col-12 col-md-3 animate-fade-in" style="animation-delay: 0.25s;">
+                            <div class="diab-card p-4 h-100 text-center">
+                                <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1 mb-2">Consumo Hoy</h6>
+                                <h2 class="fw-extrabold mb-0 text-diab-warning">{{ $caloriasHoy }}</h2>
+                                <span class="text-muted extra-small">kcal consumidas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Gráfica de Tendencia --}}
+                    <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.3s;">
+                        <h6 class="fw-bold mb-4 text-diab-text-secondary text-uppercase letter-spacing-1 small">Análisis de Tendencia Glucémica</h6>
+                        <div style="height: 300px;">
+                            <canvas id="glucoseChart"></canvas>
+                        </div>
+                    </div>
+
+                    {{-- Consejos Diarios Sugeridos por IA (Publicados y limitados a 3) --}}
+                    <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.35s; border-left: 5px solid var(--diab-primary);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="act-icon gray me-3 shadow-none" style="background: var(--diab-primary-light); color: var(--diab-primary); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark small text-uppercase letter-spacing-1">Consejos de Salud IA</h6>
+                                <span class="text-muted extra-small">Últimos consejos de salud aprobados para este paciente (máximo 3 al día).</span>
+                            </div>
+                        </div>
+
+                        @if($pendingTips->isEmpty())
+                            <p class="text-muted small mb-0"><i class="fa-solid fa-circle-check text-success me-1"></i>No hay consejos recientes aprobados para este paciente.</p>
+                        @else
+                            <div class="d-flex flex-column gap-3">
+                                @foreach($pendingTips as $tip)
+                                    <div class="p-3 rounded-4 bg-light border border-white shadow-sm d-flex flex-column gap-2">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <p class="mb-0 text-dark small fw-medium" style="line-height: 1.5;">"{{ $tip->tip_text }}"</p>
+                                            <span class="text-muted extra-small ms-2" style="white-space: nowrap;">{{ $tip->created_at->diffForHumans() }}</span>
+                                        </div>
+                                        @if(isset($tip->fuente))
+                                            <div class="text-muted extra-small">Fuente: {{ $tip->fuente }}</div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Historial Clínico Reciente --}}
+                    <div class="diab-card p-4 animate-fade-in" style="animation-delay: 0.4s;">
+                        <h6 class="fw-bold mb-3 text-diab-text-secondary text-uppercase letter-spacing-1 small">Historial Clínico Reciente</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="text-muted extra-small text-uppercase fw-bold">
+                                    <tr>
+                                        <th>Fecha/Hora</th>
+                                        <th>Glucosa</th>
+                                        <th>Presión (S/D)</th>
+                                        <th>Ritmo Cardiaco</th>
+                                        <th>Estado</th>
+                                        <th>Estrés</th>
+                                        <th>Notas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($recentLogs as $log)
+                                        <tr>
+                                            <td class="small">{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                                            <td><strong class="text-diab-primary">{{ $log->glucose_level ?? '--' }} <small>mg/dL</small></strong></td>
+                                            <td class="small">{{ $log->systolic ?? '--' }}/{{ $log->diastolic ?? '--' }} <small>mmHg</small></td>
+                                            <td class="small">{{ $log->heart_rate ?? '--' }} <small>bpm</small></td>
+                                            <td>
+                                                <span class="badge {{ $log->glucose_level > ($selectedPatient->patientProfile?->target_glucose_max ?? 140) ? 'bg-danger' : 'bg-success' }} bg-opacity-10 {{ $log->glucose_level > ($selectedPatient->patientProfile?->target_glucose_max ?? 140) ? 'text-danger' : 'text-success' }} extra-small">
+                                                    {{ $log->glucose_level > ($selectedPatient->patientProfile?->target_glucose_max ?? 140) ? 'Fuera de Rango' : 'En Rango' }}
+                                                </span>
+                                            </td>
+                                            <td class="small">
+                                                @if($log->stress_level)
+                                                    <span class="badge bg-light text-dark border extra-small">
+                                                        <i class="fa-solid fa-face-{{ $log->stress_level == 'Bajo' ? 'smile' : ($log->stress_level == 'Medio' ? 'meh' : 'frown') }} me-1"></i>
+                                                        {{ $log->stress_level }}
+                                                    </span>
+                                                @else
+                                                    --
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($log->notes)
+                                                    <i class="fa-solid fa-note-sticky text-muted cursor-help" data-bs-toggle="tooltip" title="{{ $log->notes }}"></i>
+                                                @else
+                                                    --
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="7" class="text-center py-4 text-muted small">No hay registros clínicos suficientes.</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
             @endif
         </section>
     </div>
 </main>
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas = document.getElementById('glucoseChart');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary').trim() || '#00B4D8';
+            const primaryLight = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary-light').trim() || 'rgba(0, 180, 216, 0.08)';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode($glucosaLabels ?? []) !!},
+                    datasets: [{
+                        label: 'Glucosa Promedio (mg/dL)',
+                        data: {!! json_encode($glucosaData ?? []) !!},
+                        borderColor: primaryColor,
+                        backgroundColor: primaryLight,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: primaryColor,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.4,
+                        fill: true,
+                        spanGaps: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0F172A',
+                            titleFont: { family: 'Inter', size: 11 },
+                            bodyFont: { family: 'Inter', size: 12, weight: 600 },
+                            padding: 10,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.parsed.y + ' mg/dL';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: false,
+                            grid: { color: 'rgba(0,0,0,0.03)' },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                color: '#94A3B8'
+                            }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                color: '#94A3B8'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
 @endsection

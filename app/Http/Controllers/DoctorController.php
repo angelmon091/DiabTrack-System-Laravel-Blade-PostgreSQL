@@ -14,12 +14,43 @@ use Illuminate\Support\Facades\Auth;
  */
 class DoctorController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request, DashboardMetricsService $metricsService)
     {
         $user = Auth::user();
         $patients = $user->linkedPatients()->with('patientProfile', 'vitalSigns')->get();
 
-        return view('doctor.dashboard', compact('user', 'patients'));
+        $selectedPatient = null;
+        $metrics = [];
+        $recentLogs = collect();
+        $pendingTips = collect();
+
+        if ($patients->isNotEmpty()) {
+            $selectedPatientId = $request->query('patient_id');
+            $selectedPatient = $selectedPatientId 
+                ? $patients->firstWhere('id', $selectedPatientId) 
+                : $patients->first();
+
+            if (!$selectedPatient) {
+                $selectedPatient = $patients->first();
+            }
+
+            $metrics = $metricsService->getDashboardMetrics($selectedPatient->id);
+            
+            $recentLogs = VitalSign::where('user_id', $selectedPatient->id)
+                ->whereNotNull('glucose_level')
+                ->latest()
+                ->take(10)
+                ->get();
+
+            // Mostrar los últimos 3 consejos publicados (aprobados)
+            $pendingTips = \App\Models\DailyTip::where('user_id', $selectedPatient->id)
+                ->where('status', 'approved')
+                ->latest()
+                ->take(3)
+                ->get();
+        }
+
+        return view('doctor.dashboard', array_merge($metrics, compact('user', 'patients', 'selectedPatient', 'recentLogs', 'pendingTips')));
     }
 
     /**
@@ -56,29 +87,15 @@ class DoctorController extends Controller
         return redirect()->route('doctor.dashboard')
             ->with('status', '¡Paciente vinculado exitosamente!');
     }
+
     /**
-     * Muestra el detalle clínico de un paciente vinculado.
+     * Muestra el detalle clínico de un paciente vinculado (Redirige al dashboard unificado).
      */
-    public function showPatient(User $patient, DashboardMetricsService $metricsService)
+    public function showPatient(User $patient)
     {
         $this->checkLink($patient->id);
 
-        $metrics = $metricsService->getDashboardMetrics($patient->id);
-        
-        $recentLogs = VitalSign::where('user_id', $patient->id)
-            ->whereNotNull('glucose_level')
-            ->latest()
-            ->take(10)
-            ->get();
-
-        // Mostrar los últimos 3 consejos publicados (auto-aprobados)
-        $pendingTips = \App\Models\DailyTip::where('user_id', $patient->id)
-            ->where('status', 'approved')
-            ->latest()
-            ->take(3)
-            ->get();
-
-        return view('doctor.patient-detail', array_merge($metrics, compact('patient', 'recentLogs', 'pendingTips')));
+        return redirect()->route('doctor.dashboard', ['patient_id' => $patient->id]);
     }
 
     /**
@@ -104,6 +121,22 @@ class DoctorController extends Controller
 
         return redirect()->route('doctor.patient.show', $patient)
             ->with('status', 'Metas terapéuticas actualizadas correctamente.');
+    }
+
+    /**
+     * Desvincula un paciente.
+     */
+    public function unlinkPatient(User $patient)
+    {
+        $this->checkLink($patient->id);
+
+        PatientLink::where('patient_id', $patient->id)
+            ->where('linked_user_id', Auth::id())
+            ->where('status', 'active')
+            ->delete();
+
+        return redirect()->route('doctor.dashboard')
+            ->with('status', 'Paciente desvinculado exitosamente.');
     }
 
     private function checkLink($patientId)

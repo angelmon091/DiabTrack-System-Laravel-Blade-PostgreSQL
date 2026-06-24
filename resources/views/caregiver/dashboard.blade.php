@@ -7,7 +7,8 @@
     <div class="row g-4">
 
         {{-- Sidebar --}}
-        <aside class="col-12 col-xl-3 order-2 order-xl-1">
+        <aside class="col-12 col-xl-4 order-2 order-xl-1">
+            {{-- Panel de Cuidador --}}
             <div class="diab-card p-4 mb-4 animate-fade-in">
                 <div class="tool-header mb-4 d-flex align-items-center text-diab-primary">
                     <i class="fa-solid fa-hand-holding-heart me-2"></i>
@@ -32,24 +33,62 @@
                 </div>
             </div>
 
-            <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
-                <h6 class="fw-bold mb-3 text-muted text-uppercase letter-spacing-1 small">Tu Información</h6>
-                <div class="d-flex flex-column gap-2">
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted small">Parentesco:</span>
-                        <span class="fw-bold small">{{ auth()->user()->caregiverProfile?->relationship ?? '--' }}</span>
+            {{-- Lista de Pacientes --}}
+            @if($patients->isNotEmpty())
+                <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
+                    <h6 class="fw-bold mb-3 text-muted text-uppercase letter-spacing-1 small">Pacientes Vinculados</h6>
+                    <div class="d-flex flex-column gap-3">
+                        @foreach($patients as $p)
+                            @php
+                                $isSelected = $selectedPatient && $p->id === $selectedPatient->id;
+                                $gender = strtolower($p->patientProfile?->gender ?? '');
+                                $avatar = $p->avatar;
+                            @endphp
+                            <div class="p-3 rounded-4 transition-hover position-relative" style="background: {{ $isSelected ? 'rgba(0, 194, 224, 0.08)' : 'var(--diab-card-bg, #fff)' }}; border: 2px solid {{ $isSelected ? 'var(--diab-primary)' : 'rgba(0,0,0,0.05)' }};">
+                                <a href="{{ route('caregiver.dashboard', ['patient_id' => $p->id]) }}" class="text-decoration-none d-flex align-items-center mb-2">
+                                    <div class="rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 40px; height: 40px;">
+                                        @if($avatar && str_starts_with($avatar, 'http'))
+                                            <img src="{{ $avatar }}" class="w-100 h-100 object-fit-cover" alt="{{ $p->name }}">
+                                        @elseif($avatar)
+                                            <img src="{{ asset('storage/' . $avatar) }}" class="w-100 h-100 object-fit-cover" alt="{{ $p->name }}">
+                                        @else
+                                            @if($gender === 'femenino')
+                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-danger) 0%, #C0392B 100%); font-size: 0.8rem;">
+                                                    <i class="fa-solid fa-person-dress"></i>
+                                                </div>
+                                            @else
+                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%); font-size: 0.8rem;">
+                                                    <i class="fa-solid fa-user-tie"></i>
+                                                </div>
+                                            @endif
+                                        @endif
+                                    </div>
+                                    <div class="ms-3 flex-grow-1">
+                                        <strong class="d-block text-dark small" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">{{ $p->name }}</strong>
+                                        <span class="text-muted extra-small">Parentesco: {{ $p->pivot->relationship ?? (auth()->user()->caregiverProfile?->relationship ?? 'Paciente') }}</span>
+                                    </div>
+                                </a>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-light">
+                                    <span class="extra-small text-muted" style="font-size: 0.7rem;">
+                                        Glucosa: <strong>{{ $p->vitalSigns->sortByDesc('created_at')->first()?->glucose_level ?? '--' }} mg/dL</strong>
+                                    </span>
+                                    <form action="{{ route('caregiver.patient.unlink', $p) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desvincular a este paciente? Perderás el acceso a sus datos de salud.');" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link text-danger p-0 d-flex align-items-center gap-1 text-decoration-none" title="Desvincular Paciente" style="font-size: 0.7rem; font-weight: 600;">
+                                            <i class="fa-solid fa-link-slash"></i> Desvincular
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-            </div>
+            @endif
         </aside>
 
         {{-- Contenido Principal --}}
-        <section class="col-12 col-xl-9 order-1 order-xl-2">
-            <div class="mb-4 animate-fade-in">
-                <h2 class="fw-extrabold mb-1 fs-2">Hola, <span class="text-diab-primary">{{ auth()->user()->name }}</span></h2>
-                <p class="text-muted">Aquí puedes monitorear a tus pacientes vinculados.</p>
-            </div>
-
+        <section class="col-12 col-xl-8 order-1 order-xl-2">
             @if(session('status'))
                 <div class="alert alert-success border-0 bg-success bg-opacity-10 animate-fade-in mb-4">
                     <i class="fa-solid fa-circle-check me-2 text-success"></i>
@@ -64,66 +103,255 @@
                     </div>
                     <h4 class="fw-bold mb-2">Aún no tienes pacientes vinculados</h4>
                     <p class="text-muted mb-4">Pide a tu paciente que genere un <strong>código de invitación</strong> desde su panel y luego ingrésalo aquí.</p>
-                    <a href="{{ route('caregiver.link') }}" class="btn-diab-primary">
-                        <i class="fa-solid fa-link me-2"></i>Vincular Paciente
+                    <a href="{{ route('caregiver.link') }}" class="btn-diab-primary d-inline-flex align-items-center gap-2">
+                        <i class="fa-solid fa-link"></i> Vincular Paciente
                     </a>
                 </div>
             @else
-                <div class="row g-4">
-                    @foreach($patients as $patient)
-                        <div class="col-12 col-md-6 animate-fade-in">
-                            <a href="{{ route('caregiver.patient.show', $patient) }}" class="text-decoration-none">
-                                <div class="diab-card p-4 h-100 transition-hover">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 50px; height: 50px;">
-                                        @php
-                                            $gender = strtolower($patient->patientProfile?->gender ?? '');
-                                            $avatar = $patient->avatar;
-                                        @endphp
-                                        @if($avatar && str_starts_with($avatar, 'http'))
-                                            <img src="{{ $avatar }}" class="w-100 h-100 object-fit-cover" alt="{{ $patient->name }}">
-                                        @elseif($avatar)
-                                            <img src="{{ asset('storage/' . $avatar) }}" class="w-100 h-100 object-fit-cover" alt="{{ $patient->name }}">
+                @if($selectedPatient)
+                    {{-- Encabezado del Paciente Seleccionado --}}
+                    <div class="diab-card p-4 mb-4 animate-fade-in">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle overflow-hidden shadow-sm flex-shrink-0" style="width: 60px; height: 60px; border: 2px solid var(--diab-primary);">
+                                    @php
+                                        $gender = strtolower($selectedPatient->patientProfile?->gender ?? '');
+                                        $avatar = $selectedPatient->avatar;
+                                    @endphp
+                                    @if($avatar && str_starts_with($avatar, 'http'))
+                                        <img src="{{ $avatar }}" class="w-100 h-100 object-fit-cover" alt="{{ $selectedPatient->name }}">
+                                    @elseif($avatar)
+                                        <img src="{{ asset('storage/' . $avatar) }}" class="w-100 h-100 object-fit-cover" alt="{{ $selectedPatient->name }}">
+                                    @else
+                                        @if($gender === 'femenino')
+                                            <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white fs-3" style="background: linear-gradient(135deg, var(--diab-danger) 0%, #C0392B 100%);">
+                                                <i class="fa-solid fa-person-dress"></i>
+                                            </div>
                                         @else
-                                            @if($gender === 'femenino')
-                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-danger) 0%, #C0392B 100%);">
-                                                    <i class="fa-solid fa-person-dress"></i>
-                                                </div>
-                                            @else
-                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%);">
-                                                    <i class="fa-solid fa-user-tie"></i>
-                                                </div>
-                                            @endif
+                                            <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white fs-3" style="background: linear-gradient(135deg, var(--diab-primary) 0%, var(--diab-primary-hover) 100%);">
+                                                <i class="fa-solid fa-user-tie"></i>
+                                            </div>
+                                        @endif
+                                    @endif
+                                </div>
+                                <div class="ms-3">
+                                    <h3 class="fw-bold mb-1 fs-4 text-dark">{{ $selectedPatient->name }}</h3>
+                                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                                        <span class="badge bg-light text-dark border extra-small">{{ $selectedPatient->patientProfile?->diabetes_type ?? '--' }}</span>
+                                        <span class="badge bg-diab-primary-light text-diab-primary extra-small">Parentesco: {{ $selectedPatient->pivot->relationship ?? (auth()->user()->caregiverProfile?->relationship ?? 'Paciente') }}</span>
+                                        <span class="text-muted extra-small"><i class="fa-solid fa-calendar me-1"></i>{{ $selectedPatient->patientProfile ? \Carbon\Carbon::parse($selectedPatient->patientProfile->birth_date)->age : '--' }} años</span>
+                                        <span class="text-muted extra-small"><i class="fa-solid fa-weight-scale me-1"></i>{{ $selectedPatient->patientProfile?->weight ?? '--' }} kg</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="{{ route('caregiver.patient.vital.create', $selectedPatient) }}" class="btn-diab-primary py-2 px-3 text-decoration-none d-inline-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-plus"></i> Registrar Datos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Tarjetas de Métricas del Paciente --}}
+                    <div class="row g-4 mb-4">
+                        {{-- Glucosa --}}
+                        <div class="col-12 col-md-4 animate-fade-in">
+                            <div class="diab-card p-4 h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="admin-card-icon-wrapper bg-diab-primary-light text-diab-primary mb-0" style="width: 40px; height: 40px; border-radius: 12px;">
+                                        <i class="fa-solid fa-droplet"></i>
+                                    </div>
+                                    <span class="badge {{ $ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140 ? 'bg-danger' : 'bg-success' }} bg-opacity-10 {{ $ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140 ? 'text-danger' : 'text-success' }} extra-small">
+                                        {{ $ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140 ? 'Elevado' : 'Normal' }}
+                                    </span>
+                                </div>
+                                <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1">Glucosa Actual</h6>
+                                <div class="d-flex align-items-baseline">
+                                    <h2 class="fw-extrabold mb-0">{{ $ultimaMedicion['glucose_level'] ?? '--' }}</h2>
+                                    <span class="ms-1 text-muted small">mg/dL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Tiempo en Rango --}}
+                        <div class="col-12 col-md-4 animate-fade-in" style="animation-delay: 0.1s;">
+                            <div class="diab-card p-4 h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="admin-card-icon-wrapper bg-diab-success-light text-diab-primary mb-0" style="width: 40px; height: 40px; border-radius: 12px;">
+                                        <i class="fa-solid fa-chart-pie"></i>
+                                    </div>
+                                </div>
+                                <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1">Tiempo en Rango</h6>
+                                <div class="d-flex align-items-baseline">
+                                    <h2 class="fw-extrabold mb-0">{{ $tiempoEnRango }}%</h2>
+                                    <span class="ms-1 text-muted small">últimos 7 días</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- HbA1c Estimada --}}
+                        <div class="col-12 col-md-4 animate-fade-in" style="animation-delay: 0.2s;">
+                            <div class="diab-card p-4 h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="admin-card-icon-wrapper bg-diab-info-light text-diab-info mb-0" style="width: 40px; height: 40px; border-radius: 12px;">
+                                        <i class="fa-solid fa-vial"></i>
+                                    </div>
+                                </div>
+                                <h6 class="text-muted extra-small text-uppercase fw-bold letter-spacing-1">HbA1c Estimada</h6>
+                                <div class="d-flex align-items-baseline">
+                                    <h2 class="fw-extrabold mb-0">{{ $ultimaHba1c['hba1c'] ?? '--' }}</h2>
+                                    <span class="ms-1 text-muted small">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Gráfica de Tendencia --}}
+                    <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.3s;">
+                        <h6 class="fw-bold mb-4 text-diab-text-secondary text-uppercase letter-spacing-1 small">Tendencia Semanal (Glucosa)</h6>
+                        <div style="height: 300px;">
+                            <canvas id="glucoseChart"></canvas>
+                        </div>
+                    </div>
+
+                    {{-- Consejos Diarios Sugeridos por IA (Publicados y limitados a 3) --}}
+                    <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.35s; border-left: 5px solid var(--diab-primary);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="act-icon gray me-3 shadow-none" style="background: var(--diab-primary-light); color: var(--diab-primary); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark small text-uppercase letter-spacing-1">Consejos de Salud IA</h6>
+                                <span class="text-muted extra-small">Últimos consejos de salud aprobados para este paciente (máximo 3 al día).</span>
+                            </div>
+                        </div>
+
+                        @if($pendingTips->isEmpty())
+                            <p class="text-muted small mb-0"><i class="fa-solid fa-circle-check text-success me-1"></i>No hay consejos recientes aprobados para este paciente.</p>
+                        @else
+                            <div class="d-flex flex-column gap-3">
+                                @foreach($pendingTips as $tip)
+                                    <div class="p-3 rounded-4 bg-light border border-white shadow-sm d-flex flex-column gap-2">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <p class="mb-0 text-dark small fw-medium" style="line-height: 1.5;">"{{ $tip->tip_text }}"</p>
+                                            <span class="text-muted extra-small ms-2" style="white-space: nowrap;">{{ $tip->created_at->diffForHumans() }}</span>
+                                        </div>
+                                        @if(isset($tip->fuente))
+                                            <div class="text-muted extra-small">Fuente: {{ $tip->fuente }}</div>
                                         @endif
                                     </div>
-                                    <div class="ms-3">
-                                        <strong class="d-block">{{ $patient->name }}</strong>
-                                        <span class="text-muted extra-small">{{ $patient->patientProfile?->diabetes_type ?? '--' }}</span>
-                                    </div>
-                                </div>
-                                <div class="row g-2">
-                                    @php
-                                        $lastVital = $patient->vitalSigns->sortByDesc('created_at')->first();
-                                    @endphp
-                                    <div class="col-6">
-                                        <div class="p-2 rounded-3 text-center bg-diab-primary-light">
-                                            <span class="extra-small text-muted d-block">Glucosa</span>
-                                            <strong class="text-diab-primary">{{ $lastVital?->glucose_level ?? '--' }} <small>mg/dL</small></strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="p-2 rounded-3 text-center bg-diab-warning-light">
-                                            <span class="extra-small text-muted d-block">Peso</span>
-                                            <strong class="text-diab-warning">{{ $patient->patientProfile?->weight ?? '--' }} <small>kg</small></strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Últimos Registros --}}
+                    <div class="diab-card p-4 animate-fade-in" style="animation-delay: 0.4s;">
+                        <h6 class="fw-bold mb-3 text-diab-text-secondary text-uppercase letter-spacing-1 small">Registros Recientes</h6>
+                        <div class="table-responsive">
+                            <table class="table table-borderless align-middle mb-0">
+                                <thead class="text-muted extra-small text-uppercase fw-bold">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Nivel</th>
+                                        <th>Momento</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($recentLogs as $log)
+                                        <tr>
+                                            <td class="small">{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                                            <td><strong class="text-diab-primary">{{ $log->glucose_level }} <small>mg/dL</small></strong></td>
+                                            <td class="small text-muted">{{ $log->measurement_moment }}</td>
+                                            <td>
+                                                <span class="badge {{ $log->glucose_level > 140 ? 'bg-danger' : 'bg-success' }} bg-opacity-10 {{ $log->glucose_level > 140 ? 'text-danger' : 'text-success' }} extra-small">
+                                                    {{ $log->glucose_level > 140 ? 'Elevado' : 'Normal' }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="4" class="text-center py-4 text-muted small">No hay registros recientes.</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endif
             @endif
         </section>
     </div>
 </main>
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas = document.getElementById('glucoseChart');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary').trim() || '#00B4D8';
+            const primaryLight = getComputedStyle(document.documentElement).getPropertyValue('--diab-primary-light').trim() || 'rgba(0, 180, 216, 0.08)';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode($glucosaLabels ?? []) !!},
+                    datasets: [{
+                        label: 'Glucosa Promedio (mg/dL)',
+                        data: {!! json_encode($glucosaData ?? []) !!},
+                        borderColor: primaryColor,
+                        backgroundColor: primaryLight,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: primaryColor,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.4,
+                        fill: true,
+                        spanGaps: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0F172A',
+                            titleFont: { family: 'Inter', size: 11 },
+                            bodyFont: { family: 'Inter', size: 12, weight: 600 },
+                            padding: 10,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.parsed.y + ' mg/dL';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: false,
+                            grid: { color: 'rgba(0,0,0,0.03)' },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                color: '#94A3B8'
+                            }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                color: '#94A3B8'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
 @endsection
