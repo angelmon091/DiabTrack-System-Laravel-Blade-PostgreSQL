@@ -185,20 +185,18 @@
                         @php
                             $heroBg = 'var(--diab-primary-light)';
                             $heroRadial = 'rgba(0, 180, 216, 0.15)';
-                            if ($ultimaMedicion && isset($ultimaMedicion['glucose_level'])) {
-                                $g = $ultimaMedicion['glucose_level'];
-                                if ($g > 140) { 
-                                    $heroBg = 'var(--diab-danger-light)'; 
-                                    $heroRadial = 'rgba(234, 84, 85, 0.15)'; 
-                                }
-                                elseif ($g < 70) { 
-                                    $heroBg = 'var(--diab-warning-light)'; 
-                                    $heroRadial = 'rgba(255, 159, 67, 0.15)'; 
-                                }
-                                else { 
-                                    $heroBg = 'var(--diab-success-light)'; 
-                                    $heroRadial = 'rgba(40, 199, 111, 0.15)'; 
-                                }
+                            $glucoseStatus = $ultimaMedicion['status'] ?? null;
+                            $glucoseUi = \App\Models\VitalSign::glucoseStatusUi($glucoseStatus);
+                            $glucoseMomento = $ultimaMedicion['measurement_moment'] ?? null;
+                            if ($glucoseStatus === 'elevada') {
+                                $heroBg = 'var(--diab-danger-light)';
+                                $heroRadial = 'rgba(234, 84, 85, 0.15)';
+                            } elseif ($glucoseStatus === 'baja') {
+                                $heroBg = 'var(--diab-warning-light)';
+                                $heroRadial = 'rgba(255, 159, 67, 0.15)';
+                            } elseif ($glucoseStatus === 'normal') {
+                                $heroBg = 'var(--diab-success-light)';
+                                $heroRadial = 'rgba(40, 199, 111, 0.15)';
                             }
                         @endphp
                         <div class="diab-card glucosa-hero p-4 h-100 d-flex flex-column justify-content-center align-items-center animate-fade-in" 
@@ -212,17 +210,17 @@
                                     <span class="ms-2 fs-5 text-muted">mg/dL</span>
                                 </div>
 
-                                @if($ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] > 140)
-                                    <div class="vital-trend-pill mt-3 d-inline-block shadow-sm text-danger border-danger">
-                                        <i class="fa-solid fa-triangle-exclamation me-1"></i> Nivel Elevado
+                                @if($glucoseMomento)
+                                    <div class="mt-3">
+                                        <span class="badge rounded-pill bg-white text-dark border shadow-sm px-3 py-2 fw-semibold" style="font-size: 0.7rem;">
+                                            <i class="fa-regular fa-clock me-1 text-diab-primary"></i> {{ $glucoseMomento }}
+                                        </span>
                                     </div>
-                                @elseif($ultimaMedicion && isset($ultimaMedicion['glucose_level']) && $ultimaMedicion['glucose_level'] < 70)
-                                    <div class="vital-trend-pill mt-3 d-inline-block shadow-sm text-warning border-warning">
-                                        <i class="fa-solid fa-droplet-slash me-1"></i> Nivel Bajo
-                                    </div>
-                                @else
-                                    <div class="vital-trend-pill mt-3 d-inline-block shadow-sm">
-                                        <i class="fa-solid fa-circle-check me-1"></i> En rango aceptable
+                                @endif
+
+                                @if($glucoseStatus)
+                                    <div class="vital-trend-pill mt-2 d-inline-block shadow-sm text-{{ $glucoseUi['color'] }} border-{{ $glucoseUi['color'] }}">
+                                        <i class="fa-solid {{ $glucoseUi['icon'] }} me-1"></i> {{ $glucoseUi['label'] }}
                                     </div>
                                 @endif
                             </div>
@@ -372,13 +370,16 @@
                                         <td class="text-muted">{{ $log->hba1c ? $log->hba1c . '%' : '--' }}</td>
                                         <td class="text-center">
                                             @php
-                                                $statusClass = 'success';
-                                                $statusText = 'En Rango';
-                                                if($log->glucose_level > 140) { $statusClass = 'danger'; $statusText = 'Alto'; }
-                                                elseif($log->glucose_level < 70) { $statusClass = 'warning'; $statusText = 'Bajo'; }
+                                                $rowStatus = \App\Models\VitalSign::clasificarGlucosa(
+                                                    (int) $log->glucose_level,
+                                                    $log->measurement_moment,
+                                                    auth()->user()->patientProfile?->target_glucose_min,
+                                                    auth()->user()->patientProfile?->target_glucose_max
+                                                );
+                                                $rowUi = \App\Models\VitalSign::glucoseStatusUi($rowStatus);
                                             @endphp
-                                            <span class="badge rounded-pill bg-{{ $statusClass }}-light text-{{ $statusClass }} px-3 py-2 border border-{{ $statusClass }} opacity-75" style="font-size: 0.7rem; min-width: 80px;">
-                                                <i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i> {{ $statusText }}
+                                            <span class="badge rounded-pill bg-{{ $rowUi['color'] }}-light text-{{ $rowUi['color'] }} px-3 py-2 border border-{{ $rowUi['color'] }} opacity-75" style="font-size: 0.7rem; min-width: 80px;">
+                                                <i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i> {{ $rowUi['badge'] }}
                                             </span>
                                         </td>
                                     </tr>
@@ -417,8 +418,8 @@
                     <div class="row g-4">
                         <div class="col-12 col-md-4">
                             <div class="p-3 rounded-4 bg-white shadow-sm border border-light h-100">
-                                <span class="extra-small text-muted d-block mb-1">Rango Glucosa</span>
-                                <strong class="text-dark">{{ $user->patientProfile?->target_glucose_min ?? 70 }} - {{ $user->patientProfile?->target_glucose_max ?? 140 }}</strong>
+                                <span class="extra-small text-muted d-block mb-1">Rango Glucosa <span class="text-diab-primary">(en ayunas)</span></span>
+                                <strong class="text-dark">{{ $user->patientProfile?->target_glucose_min ?? 70 }} - {{ $user->patientProfile?->target_glucose_max ?? 180 }}</strong>
                                 <span class="extra-small text-muted ms-1">mg/dL</span>
                                 <div class="progress mt-2" style="height: 4px;">
                                     <div class="progress-bar bg-success" style="width: 100%"></div>

@@ -400,6 +400,15 @@
     gap: 1.25rem;
     margin-top: 2rem;
     flex-wrap: wrap;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 1rem 0;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.06), 0 -4px 16px rgba(0, 0, 0, 0.04);
+    border-radius: var(--diab-radius-sm) var(--diab-radius-sm) 0 0;
 }
 
 .btn-track-reset {

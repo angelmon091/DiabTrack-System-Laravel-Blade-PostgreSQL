@@ -143,6 +143,14 @@ class DashboardMetricsService
         $ultimaMedicion = $ultimaMedicionRaw ? [
             'created_at' => $ultimaMedicionRaw->created_at->toDateTimeString(),
             'glucose_level' => $ultimaMedicionRaw->glucose_level,
+            'measurement_moment' => $ultimaMedicionRaw->measurement_moment,
+            // Clasificación clínica por momento (mismo criterio que usa la IA).
+            'status' => VitalSign::clasificarGlucosa(
+                (int) $ultimaMedicionRaw->glucose_level,
+                $ultimaMedicionRaw->measurement_moment,
+                $profile?->target_glucose_min,
+                $profile?->target_glucose_max
+            ),
         ] : null;
 
         $ultimaHba1cRaw = VitalSign::where('user_id', $userId)->whereNotNull('hba1c')->latest('id')->first();

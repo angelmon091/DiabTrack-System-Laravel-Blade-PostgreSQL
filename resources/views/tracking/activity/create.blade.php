@@ -65,11 +65,11 @@
                         <div class="selector-grid" id="energy-grid">
                             @php
                                 $energyLevels = [
-                                    ['id' => 'muy_baja', 'label' => 'Muy Baja', 'icon' => 'fa-solid fa-battery-empty'],
-                                    ['id' => 'baja', 'label' => 'Baja', 'icon' => 'fa-solid fa-battery-quarter'],
-                                    ['id' => 'normal', 'label' => 'Normal', 'icon' => 'fa-solid fa-battery-half'],
-                                    ['id' => 'alta', 'label' => 'Alta', 'icon' => 'fa-solid fa-battery-three-quarters'],
-                                    ['id' => 'muy_alta', 'label' => 'Muy Alta', 'icon' => 'fa-solid fa-battery-full'],
+                                    ['id' => 'muy_baja', 'label' => 'Muy Baja', 'icon' => 'fa-solid fa-battery-empty',          'desc' => 'Sin energía, agotado'],
+                                    ['id' => 'baja',     'label' => 'Baja',     'icon' => 'fa-solid fa-battery-quarter',        'desc' => 'Algo cansado'],
+                                    ['id' => 'normal',   'label' => 'Normal',   'icon' => 'fa-solid fa-battery-half',           'desc' => 'Energía habitual'],
+                                    ['id' => 'alta',     'label' => 'Alta',     'icon' => 'fa-solid fa-battery-three-quarters', 'desc' => 'Con más fuerza de lo usual'],
+                                    ['id' => 'muy_alta', 'label' => 'Muy Alta', 'icon' => 'fa-solid fa-battery-full',           'desc' => 'Lleno de energía'],
                                 ];
                             @endphp
                             @foreach($energyLevels as $level)
@@ -78,6 +78,7 @@
                                     onclick="setEnergy('{{ $level['id'] }}', this)">
                                     <span class="selector-emoji"><i class="{{ $level['icon'] }}"></i></span>
                                     <span>{{ __($level['label']) }}</span>
+                                    <span style="display:block; font-size:0.6rem; color:inherit; opacity:0.65; line-height:1.3; margin-top:2px;">{{ $level['desc'] }}</span>
                                 </button>
                             @endforeach
                         </div>
@@ -88,18 +89,18 @@
 
             <aside class="tracking-form-aside">
                 <div class="tracking-panel">
-                    <h3 class="d-flex justify-content-between align-items-center w-100 mb-3">
-                        <span>{{ __('Intensidad') }}</span>
-                        <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted fs-6" data-bs-toggle="tooltip" title="Baja: podías platicar. Media: podías platicar pero no cantar. Alta: te faltaba el aire al hablar."></i>
-                    </h3>
+                    <label class="d-flex justify-content-between align-items-center w-100 mb-3">
+                        <span style="font-size: 1.1rem; font-weight: 700; color: var(--diab-text);">{{ __('Intensidad') }}</span>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="Baja: podías platicar fácilmente. Media: costaba hablar seguido. Alta: te faltaba el aire al hablar."></i>
+                    </label>
                     <input type="hidden" name="intensity" id="intensity" value="{{ old('intensity', 'media') }}">
 
                     <div class="selector-grid" id="intensity-grid">
                         @php
                             $intensities = [
-                                ['id' => 'baja', 'label' => 'Baja', 'icon' => 'fa-solid fa-gauge-simple text-success'],
-                                ['id' => 'media', 'label' => 'Media', 'icon' => 'fa-solid fa-gauge text-warning'],
-                                ['id' => 'alta', 'label' => 'Alta', 'icon' => 'fa-solid fa-gauge-high text-danger'],
+                                ['id' => 'baja',  'label' => 'Baja',  'icon' => 'fa-solid fa-gauge-simple text-success', 'desc' => 'Podías platicar fácilmente'],
+                                ['id' => 'media', 'label' => 'Media', 'icon' => 'fa-solid fa-gauge text-warning',        'desc' => 'Costaba hablar seguido'],
+                                ['id' => 'alta',  'label' => 'Alta',  'icon' => 'fa-solid fa-gauge-high text-danger',   'desc' => 'Sin aliento para hablar'],
                             ];
                         @endphp
                         @foreach($intensities as $intensity)
@@ -108,6 +109,7 @@
                                 onclick="setIntensity('{{ $intensity['id'] }}', this)">
                                 <span class="selector-emoji"><i class="{{ $intensity['icon'] }}"></i></span>
                                 <span>{{ __($intensity['label']) }}</span>
+                                <span style="display:block; font-size:0.6rem; color:inherit; opacity:0.65; line-height:1.3; margin-top:2px;">{{ $intensity['desc'] }}</span>
                             </button>
                         @endforeach
                     </div>

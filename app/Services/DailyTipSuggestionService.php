@@ -152,12 +152,14 @@ INTERPRETACIÓN DE GLUCOSA POR MOMENTO
 Los datos de glucosa ya vienen clasificados (Normal / Elevada / Baja). Úsalos directamente.
 Si hay múltiples lecturas, analiza el PATRÓN, no un valor aislado.
 
-Referencia clínica (para tu comprensión interna, no la repitas al paciente):
-- Ayunas           : Normal 70–100 mg/dL | Elevada >100 | Baja <70
-- Antes de Comer   : Normal 80–130 mg/dL | Elevada >130 | Baja <70
-- Después de Comer : Normal <140 mg/dL   | Elevada ≥140  | Baja <70
-- Al Dormir        : Normal 100–140 mg/dL| Elevada >140  | Baja <70
-- Sin momento      : usa el rango objetivo personal del paciente
+Referencia clínica — metas de manejo ADA para diabéticos (uso interno, no la repitas al paciente):
+- Ayunas / Antes de Comer : Normal 80–130 mg/dL | Elevada >130 | Baja <70
+- Después de Comer (1–2h) : Normal <180 mg/dL   | Elevada ≥180 | Baja <70
+- Al Dormir               : Normal 90–150 mg/dL | Elevada >150 | Baja <70
+- Sin momento             : usa el rango objetivo personal del paciente
+
+Estas son metas de MANEJO para personas con diabetes, no los valores de una persona sana
+(por eso una glucosa de 110 en ayunas está DENTRO de meta, no elevada).
 
 Glucosa "Elevada después de comer" puede ser esperada si hubo carbohidratos o azúcares → consejo: orden de alimentos, fibra primero.
 Glucosa "Elevada en ayunas" es más significativa → sugiere mencionarlo al médico con calma.

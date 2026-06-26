@@ -76,17 +76,40 @@
 
             <aside class="tracking-form-aside">
                 <div class="tracking-panel">
-                    <h3>{{ __('Momento de la Medición') }}</h3>
+                    <label class="d-flex justify-content-between align-items-center w-100 mb-3">
+                        <span style="font-size: 1.1rem; font-weight: 700; color: var(--diab-text);">{{ __('¿Cuándo se midió?') }}</span>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="En ayunas: al despertar sin haber comido nada (8+ hrs). Antes de comer: justo antes de desayunar, comer o cenar. Después de comer: 1-2 horas después de cualquier comida. Al dormir: antes de acostarse."></i>
+                    </label>
                     <input type="hidden" name="measurement_moment" id="measurement_moment"
                         value="{{ old('measurement_moment', 'Ayunas') }}">
 
                     <div class="selector-grid">
                         @php
                             $moments = [
-                                ['id' => 'Ayunas', 'icon' => 'fa-solid fa-sun', 'label' => 'Ayunas'],
-                                ['id' => 'Antes de Comer', 'icon' => 'fa-solid fa-utensils', 'label' => 'Antes de Comer'],
-                                ['id' => 'Después de Comer', 'icon' => 'fa-solid fa-mug-hot', 'label' => 'Después de Comer'],
-                                ['id' => 'Al Dormir', 'icon' => 'fa-solid fa-moon', 'label' => 'Antes de Dormir'],
+                                [
+                                    'id'   => 'Ayunas',
+                                    'icon' => 'fa-solid fa-sun',
+                                    'label'=> 'En Ayunas',
+                                    'desc' => 'Al despertar, sin haber comido (8+ hrs)',
+                                ],
+                                [
+                                    'id'   => 'Antes de Comer',
+                                    'icon' => 'fa-solid fa-clock',
+                                    'label'=> 'Antes de Comer',
+                                    'desc' => 'Justo antes de desayunar, comer o cenar',
+                                ],
+                                [
+                                    'id'   => 'Después de Comer',
+                                    'icon' => 'fa-solid fa-utensils',
+                                    'label'=> 'Después de Comer',
+                                    'desc' => '1-2 horas después de la comida',
+                                ],
+                                [
+                                    'id'   => 'Al Dormir',
+                                    'icon' => 'fa-solid fa-moon',
+                                    'label'=> 'Al Dormir',
+                                    'desc' => 'Antes de acostarse',
+                                ],
                             ];
                         @endphp
 
@@ -96,6 +119,7 @@
                                 onclick="setMoment('{{ $moment['id'] }}', this)">
                                 <span class="selector-emoji"><i class="{{ $moment['icon'] }}"></i></span>
                                 <span>{{ __($moment['label']) }}</span>
+                                <span style="display:block; font-size:0.6rem; color:inherit; opacity:0.65; line-height:1.3; margin-top:2px;">{{ $moment['desc'] }}</span>
                             </button>
                         @endforeach
                     </div>
@@ -109,9 +133,9 @@
                     <div class="selector-grid">
                         @php
                             $stressLevels = [
-                                ['id' => 'Bajo', 'icon' => 'fa-solid fa-face-smile', 'label' => 'Bajo'],
-                                ['id' => 'Medio', 'icon' => 'fa-solid fa-face-meh', 'label' => 'Medio'],
-                                ['id' => 'Alto', 'icon' => 'fa-solid fa-face-frown', 'label' => 'Alto'],
+                                ['id' => 'Bajo',  'icon' => 'fa-solid fa-face-smile', 'label' => 'Bajo',  'desc' => 'Relajado, sin tensión'],
+                                ['id' => 'Medio', 'icon' => 'fa-solid fa-face-meh',   'label' => 'Medio', 'desc' => 'Algo de presión o ansiedad'],
+                                ['id' => 'Alto',  'icon' => 'fa-solid fa-face-frown', 'label' => 'Alto',  'desc' => 'Muy estresado o tenso'],
                             ];
                         @endphp
 
@@ -121,6 +145,7 @@
                                 onclick="setStress('{{ $stress['id'] }}', this)">
                                 <span class="selector-emoji"><i class="{{ $stress['icon'] }}"></i></span>
                                 <span>{{ __($stress['label']) }}</span>
+                                <span style="display:block; font-size:0.6rem; color:inherit; opacity:0.65; line-height:1.3; margin-top:2px;">{{ $stress['desc'] }}</span>
                             </button>
                         @endforeach
                     </div>

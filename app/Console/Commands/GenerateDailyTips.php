@@ -285,14 +285,9 @@ class GenerateDailyTips extends Command
 
     private function clasificarGlucosa(int $valor, ?string $momento, int $targetMin, int $targetMax): string
     {
-        if ($valor < 70) return 'Baja';
-
-        return match ($momento) {
-            'Ayunas'            => $valor <= 100 ? 'Normal' : 'Elevada',
-            'Antes de Comer'    => $valor <= 130 ? 'Normal' : 'Elevada',
-            'Después de Comer'  => $valor < 140  ? 'Normal' : 'Elevada',
-            'Al Dormir'         => ($valor >= 100 && $valor <= 140) ? 'Normal' : 'Elevada',
-            default             => ($valor >= $targetMin && $valor <= $targetMax) ? 'Normal' : 'Elevada',
-        };
+        // Fuente única de verdad: el mismo criterio clínico que usa el dashboard.
+        return ucfirst(
+            VitalSign::clasificarGlucosa($valor, $momento, $targetMin, $targetMax) ?? 'normal'
+        );
     }
 }

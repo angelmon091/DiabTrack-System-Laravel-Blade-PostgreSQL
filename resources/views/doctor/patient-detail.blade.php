@@ -50,17 +50,21 @@
 
             {{-- Ajustar Metas Clínicas --}}
             <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.1s;">
-                <h6 class="fw-bold mb-3 text-diab-primary text-uppercase letter-spacing-1 small">Metas Glucémicas</h6>
+                <h6 class="fw-bold mb-1 text-diab-primary text-uppercase letter-spacing-1 small">Metas Glucémicas <span class="text-muted">(en ayunas)</span></h6>
+                <p class="text-muted extra-small mb-3">
+                    <i class="fa-solid fa-circle-info me-1"></i>
+                    Este rango se aplica a las mediciones <strong>en ayunas</strong>. Las lecturas antes/después de comer y al dormir se evalúan con umbrales clínicos estándar.
+                </p>
                 <form action="{{ route('doctor.patient.targets.update', $patient) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <div class="mb-3">
-                        <label class="form-label extra-small fw-bold">Mínimo (mg/dL)</label>
+                        <label class="form-label extra-small fw-bold">Mínimo en ayunas (mg/dL)</label>
                         <input type="number" name="target_glucose_min" class="form-control diab-input" value="{{ $patient->patientProfile?->target_glucose_min ?? 70 }}" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label extra-small fw-bold">Máximo (mg/dL)</label>
-                        <input type="number" name="target_glucose_max" class="form-control diab-input" value="{{ $patient->patientProfile?->target_glucose_max ?? 140 }}" required>
+                        <label class="form-label extra-small fw-bold">Máximo en ayunas (mg/dL)</label>
+                        <input type="number" name="target_glucose_max" class="form-control diab-input" value="{{ $patient->patientProfile?->target_glucose_max ?? 180 }}" required>
                     </div>
                     <button type="submit" class="btn-diab-primary w-100 extra-small">Actualizar Metas</button>
                 </form>

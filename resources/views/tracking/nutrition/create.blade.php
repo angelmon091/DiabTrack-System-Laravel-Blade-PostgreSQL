@@ -9,8 +9,8 @@
 @section('content')
 <div class="tracking-container animate-fade-in">
     <div class="tracking-header">
-        <h1>{{ __('Registro de Nutrición') }}</h1>
-        <p class="tracking-subtitle">{{ __('Registra tu alimentación y medicación') }}</p>
+        <h1>{{ __('Registro de Alimentación') }}</h1>
+        <p class="tracking-subtitle">{{ __('Anota lo que comiste y cuántos carbohidratos aproximados tenía') }}</p>
     </div>
 
     <x-tracking-nav active="nutricion" />
@@ -66,34 +66,63 @@
 
         <aside class="tracking-form-aside">
             <div class="tracking-panel">
-                <h3>{{ __('Tipo de Comida') }}</h3>
+                <label class="d-flex justify-content-between align-items-center w-100 mb-3">
+                    <span style="font-size: 1.1rem; font-weight: 700; color: var(--diab-text);">{{ __('¿Qué comida fue?') }}</span>
+                    <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="Elige la comida que más se acerca. Si comiste algo pequeño entre comidas, elige Snack. Corrección es cuando tomaste jugo u azúcar rápida para subir la glucosa."></i>
+                </label>
                 <input type="hidden" name="meal_type" id="meal_type" value="{{ old('meal_type', 'desayuno') }}">
 
                 <div class="selector-grid" id="meal-grid">
                     @php
                         $mealTypes = [
-                            ['id' => 'desayuno', 'label' => 'Desayuno', 'icon' => 'fa-solid fa-sun'],
-                            ['id' => 'almuerzo', 'label' => 'Almuerzo', 'icon' => 'fa-solid fa-cloud-sun'],
-                            ['id' => 'cena', 'label' => 'Cena', 'icon' => 'fa-solid fa-moon'],
-                            ['id' => 'snack', 'label' => 'Snack', 'icon' => 'fa-solid fa-apple-whole'],
-                            ['id' => 'correccion', 'label' => 'Corrección', 'icon' => 'fa-solid fa-pills'],
+                            [
+                                'id'   => 'desayuno',
+                                'label'=> 'Desayuno',
+                                'icon' => 'fa-solid fa-mug-hot',
+                                'desc' => 'Primera comida del día',
+                            ],
+                            [
+                                'id'   => 'almuerzo',
+                                'label'=> 'Comida',
+                                'icon' => 'fa-solid fa-cloud-sun',
+                                'desc' => 'Comida del mediodía',
+                            ],
+                            [
+                                'id'   => 'cena',
+                                'label'=> 'Cena',
+                                'icon' => 'fa-solid fa-moon',
+                                'desc' => 'Última comida del día',
+                            ],
+                            [
+                                'id'   => 'snack',
+                                'label'=> 'Snack',
+                                'icon' => 'fa-solid fa-apple-whole',
+                                'desc' => 'Algo pequeño entre comidas',
+                            ],
+                            [
+                                'id'   => 'correccion',
+                                'label'=> 'Corrección',
+                                'icon' => 'fa-solid fa-cookie-bite',
+                                'desc' => 'Jugo o azúcar rápida para subir glucosa',
+                            ],
                         ];
                     @endphp
                     @foreach($mealTypes as $meal)
-                        <button type="button" 
-                                class="selector-btn {{ old('meal_type', 'desayuno') == $meal['id'] ? 'active' : '' }}" 
+                        <button type="button"
+                                class="selector-btn {{ old('meal_type', 'desayuno') == $meal['id'] ? 'active' : '' }}"
                                 onclick="setMealType('{{ $meal['id'] }}', this)">
                             <span class="selector-emoji"><i class="{{ $meal['icon'] }}"></i></span>
                             <span>{{ __($meal['label']) }}</span>
+                            <span style="display:block; font-size:0.6rem; color:inherit; opacity:0.65; line-height:1.3; margin-top:2px;">{{ $meal['desc'] }}</span>
                         </button>
                     @endforeach
                 </div>
                 <x-input-error :messages="$errors->get('meal_type')" />
 
-                <h3 class="mt-4 d-flex justify-content-between align-items-center w-100">
-                    <span>{{ __('Medicación') }} <span class="text-muted fw-normal" style="font-size: 0.8rem;">(Opcional)</span></span>
-                    <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted fs-6" data-bs-toggle="tooltip" title="Anota si tomaste alguna pastilla (ej. Metformina) o si te inyectaste Insulina."></i>
-                </h3>
+                <label class="d-flex justify-content-between align-items-center w-100 mb-3 mt-4">
+                    <span style="font-size: 1.1rem; font-weight: 700; color: var(--diab-text);">{{ __('Medicación') }} <span class="fw-normal text-muted" style="font-size: 0.8rem;">(Opcional)</span></span>
+                    <i class="fa-solid fa-circle-info info-icon opacity-50 text-muted" data-bs-toggle="tooltip" title="Si tomaste algún medicamento con esta comida, puedes anotarlo aquí. Es un registro personal, no una recomendación."></i>
+                </label>
                 <div class="mt-3">
                     <div class="tracking-field">
                         <label class="tracking-field-label">{{ __('Medicamento') }}</label>

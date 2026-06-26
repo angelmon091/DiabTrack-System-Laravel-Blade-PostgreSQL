@@ -61,6 +61,72 @@ class VitalSign extends Model
     }
 
     /**
+     * Rango glucémico objetivo por defecto (ayunas). Si el perfil del paciente
+     * conserva estos valores, se considera que el médico NO ha personalizado el
+     * rango, por lo que se ignora y se usan los umbrales clínicos por momento.
+     */
+    public const GLUCOSE_DEFAULT_MIN = 70;
+    public const GLUCOSE_DEFAULT_MAX = 180;
+
+    /**
+     * Clasifica una lectura de glucosa según el MOMENTO de medición, usando los
+     * mismos umbrales clínicos que la IA emplea para generar los tips.
+     *
+     * Devuelve: 'baja' | 'normal' | 'elevada' | null (si no hay valor).
+     *
+     * Umbrales clínicos por momento (metas de manejo ADA para diabéticos):
+     *  - Ayunas / Antes de Comer : Normal 70–130 | Elevada >130  (meta preprandial ADA 80–130)
+     *  - Después de Comer (1–2h) : Normal <180   | Elevada ≥180
+     *  - Al Dormir               : Normal 70–150 | Elevada >150
+     *  - <70 en cualquier momento → 'baja' (piso universal de hipoglucemia)
+     *
+     * El rango del médico (target min/max) se interpreta como un rango EN AYUNAS
+     * y SOLO se aplica si fue personalizado (distinto de 70/180); de lo contrario
+     * se ignora en favor de los umbrales clínicos.
+     */
+    public static function clasificarGlucosa(?int $valor, ?string $momento, ?int $targetMin = null, ?int $targetMax = null): ?string
+    {
+        if ($valor === null || $valor <= 0) {
+            return null;
+        }
+
+        if ($valor < 70) {
+            return 'baja';
+        }
+
+        $medicoPersonalizo = $targetMin !== null && $targetMax !== null
+            && !($targetMin === self::GLUCOSE_DEFAULT_MIN && $targetMax === self::GLUCOSE_DEFAULT_MAX);
+
+        $clasificarPorRangoMedico = function () use ($valor, $targetMin, $targetMax) {
+            if ($valor < $targetMin) return 'baja';
+            return $valor <= $targetMax ? 'normal' : 'elevada';
+        };
+
+        return match ($momento) {
+            'Ayunas', 'Antes de Comer' => $medicoPersonalizo ? $clasificarPorRangoMedico() : ($valor <= 130 ? 'normal' : 'elevada'),
+            'Después de Comer' => $valor < 180 ? 'normal' : 'elevada',
+            'Al Dormir'        => $valor <= 150 ? 'normal' : 'elevada',
+            default            => $medicoPersonalizo
+                ? $clasificarPorRangoMedico()
+                : (($valor >= self::GLUCOSE_DEFAULT_MIN && $valor <= self::GLUCOSE_DEFAULT_MAX) ? 'normal' : 'elevada'),
+        };
+    }
+
+    /**
+     * Mapea el estado clínico ('baja'|'normal'|'elevada') a metadatos de UI
+     * (color del tema, texto y icono) para mantener las vistas consistentes.
+     */
+    public static function glucoseStatusUi(?string $estado): array
+    {
+        return match ($estado) {
+            'elevada' => ['color' => 'danger',  'label' => 'Nivel Elevado', 'badge' => 'Alto',     'icon' => 'fa-triangle-exclamation'],
+            'baja'    => ['color' => 'warning', 'label' => 'Nivel Bajo',    'badge' => 'Bajo',     'icon' => 'fa-droplet-slash'],
+            'normal'  => ['color' => 'success', 'label' => 'En rango',      'badge' => 'En Rango', 'icon' => 'fa-circle-check'],
+            default   => ['color' => 'secondary', 'label' => 'Sin datos',   'badge' => '--',       'icon' => 'fa-circle-question'],
+        };
+    }
+
+    /**
      * Método de arranque del modelo.
      */
     protected static function booted()
