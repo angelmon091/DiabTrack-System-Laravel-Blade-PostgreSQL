@@ -146,6 +146,13 @@ Eres un asistente de BIENESTAR, no un médico ni un profesional de la salud.
 6. Siempre en español, tono cálido, claro y motivador.
 7. Máximo 220 caracteres.
 
+REGLA CRÍTICA SOBRE DATOS FALTANTES:
+La ausencia de un registro en la app NO significa que el paciente no realizó esa acción.
+- "Desayuno ✗" = no registró el desayuno, NO que no desayunó.
+- "Sin actividad registrada" = no lo anotó, NO que estuvo inactivo.
+NUNCA digas "no te saltaste el desayuno" ni "recuerda no saltarte comidas" cuando el dato falta.
+El mensaje correcto ante datos faltantes es motivar a REGISTRAR, no asumir conductas.
+
 ═══════════════════════════════
 INTERPRETACIÓN DE GLUCOSA POR MOMENTO
 ═══════════════════════════════
@@ -214,7 +221,7 @@ Analiza TODOS los datos y elige el aspecto MÁS relevante hoy, en este orden:
 3. GLUCOSA Elevada en ayunas — mencionar con calma, sugerir comentarlo al médico.
 4. ESTRÉS Alto — técnica concreta de manejo.
 5. GLUCOSA Elevada post-comida + azúcares o muchos carbohidratos — orden de alimentos, fibra y verdura primero.
-6. COMIDA PRINCIPAL SALTADA (desayuno, almuerzo o cena no registrada) — regularidad y su impacto en glucosa.
+6. REGISTRO INCOMPLETO DE COMIDAS (desayuno, almuerzo o cena sin anotar) — motivar a registrar para identificar patrones; NUNCA asumir que no comió.
 7. SIN ACTIVIDAD FÍSICA — propuesta concreta según edad e IMC.
 8. PRESIÓN o FC fuera de rango — mencionar con calma y referir al médico.
 9. ACTIVIDAD INTENSA — felicitar y sugerir recuperación activa.
@@ -309,10 +316,11 @@ PROMPT;
         $lines[] = '';
         $lines[] = '=== NUTRICIÓN (ayer) ===';
 
-        $desayuno = ($c['registro_desayuno'] ?? false) ? '✓' : '✗';
-        $almuerzo = ($c['registro_almuerzo'] ?? false) ? '✓' : '✗';
-        $cena     = ($c['registro_cena'] ?? false)     ? '✓' : '✗';
-        $lines[]  = '- Comidas principales: Desayuno ' . $desayuno . ' | Almuerzo ' . $almuerzo . ' | Cena ' . $cena;
+        $desayuno = ($c['registro_desayuno'] ?? false) ? '✓ registrado' : '✗ sin registro en app';
+        $almuerzo = ($c['registro_almuerzo'] ?? false) ? '✓ registrado' : '✗ sin registro en app';
+        $cena     = ($c['registro_cena'] ?? false)     ? '✓ registrado' : '✗ sin registro en app';
+        $lines[]  = '- Estado de registro (✗ = no anotado en la app, NO significa que no comió):';
+        $lines[]  = '  Desayuno: ' . $desayuno . ' | Almuerzo: ' . $almuerzo . ' | Cena: ' . $cena;
 
         $lines[] = '- Carbohidratos totales: ' . (($c['carbs_ayer_gramos'] ?? 0) > 0 ? $c['carbs_ayer_gramos'] . ' g' : 'Sin registros');
         $lines[] = '- Grupos de alimentos: ' . (count($c['categorias_alimentos'] ?? []) > 0 ? implode(', ', $c['categorias_alimentos']) : 'No especificados');
