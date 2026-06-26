@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PatientLink;
+use App\Models\PatientNotification;
 use App\Models\User;
 use App\Models\VitalSign;
 use App\Services\DashboardMetricsService;
@@ -74,6 +75,14 @@ class DoctorController extends Controller
         $link->update([
             'linked_user_id' => Auth::id(),
             'status' => 'active',
+        ]);
+
+        PatientNotification::create([
+            'user_id' => $link->patient_id,
+            'type'    => 'system',
+            'title'   => 'Nuevo médico vinculado',
+            'body'    => 'El Dr./Dra. ' . Auth::user()->name . ' se ha vinculado a tu cuenta.',
+            'icon'    => 'fa-solid fa-user-doctor',
         ]);
 
         return redirect()->route('doctor.dashboard')

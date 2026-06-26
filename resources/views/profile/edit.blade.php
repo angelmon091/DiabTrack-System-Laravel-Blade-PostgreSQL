@@ -31,6 +31,56 @@
                     @include('profile.partials.update-password-form')
                 </div>
 
+                <!-- Personas vinculadas (solo pacientes) -->
+                @if(auth()->user()->isPatient())
+                @php $linkedCarers = auth()->user()->linkedCarers()->get(); @endphp
+                @if($linkedCarers->isNotEmpty())
+                <div class="diab-card p-4 p-md-5 mb-4 animate-fade-in" style="animation-delay: 0.25s;">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div style="width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:rgba(0,180,216,0.1);color:var(--diab-primary);">
+                            <i class="fa-solid fa-user-group"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-0">Personas vinculadas</h5>
+                            <p class="text-muted small mb-0">Médicos y cuidadores con acceso a tus datos</p>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column gap-3">
+                        @foreach($linkedCarers as $carer)
+                        @php
+                            $role = $carer->roles->first()?->name ?? 'cuidador';
+                            $isDoctor = $role === 'médico';
+                            $icon  = $isDoctor ? 'fa-solid fa-user-doctor' : 'fa-solid fa-user-nurse';
+                            $label = $isDoctor ? 'Médico' : 'Cuidador';
+                            $color = $isDoctor ? '#6366f1' : '#0077b6';
+                            $bg    = $isDoctor ? 'rgba(99,102,241,0.1)' : 'rgba(0,119,182,0.1)';
+                        @endphp
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--diab-bg);">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                 style="width:44px;height:44px;background:{{ $bg }};color:{{ $color }};">
+                                <i class="{{ $icon }}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold" style="font-size:0.9rem;">{{ $carer->name }}</div>
+                                <div class="text-muted" style="font-size:0.78rem;">
+                                    <span class="badge rounded-pill me-1" style="font-size:0.65rem;background:{{ $bg }};color:{{ $color }};">{{ $label }}</span>
+                                    {{ $carer->email }}
+                                </div>
+                            </div>
+                            <form method="POST" action="{{ route('profile.unlink', $carer) }}" onsubmit="return confirm('¿Desvincular a {{ $carer->name }}? Ya no tendrá acceso a tus datos.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" style="font-size:0.78rem;">
+                                    <i class="fa-solid fa-link-slash me-1"></i>Desvincular
+                                </button>
+                            </form>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+                @endif
+
                 <!-- Delete Account -->
                 <div class="diab-card p-4 p-md-5 mb-5 animate-fade-in border-danger-subtle" style="animation-delay: 0.3s;">
                     <div class="section-icon bg-diab-danger-light text-diab-danger mb-4" style="width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">

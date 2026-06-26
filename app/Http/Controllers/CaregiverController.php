@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PatientLink;
+use App\Models\PatientNotification;
 use App\Models\User;
 use App\Models\VitalSign;
 use App\Services\DashboardMetricsService;
@@ -77,6 +78,14 @@ class CaregiverController extends Controller
             'linked_user_id' => Auth::id(),
             'status' => 'active',
             'relationship' => $request->relationship,
+        ]);
+
+        PatientNotification::create([
+            'user_id' => $link->patient_id,
+            'type'    => 'system',
+            'title'   => 'Nuevo cuidador vinculado',
+            'body'    => Auth::user()->name . ' se ha vinculado a tu cuenta como cuidador.',
+            'icon'    => 'fa-solid fa-user-nurse',
         ]);
 
         return redirect()->route('caregiver.dashboard')

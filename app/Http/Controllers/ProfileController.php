@@ -13,6 +13,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\JpegEncoder;
 use App\Models\EmailChangeRequest;
+use App\Models\PatientLink;
 use App\Mail\VerifyEmailChange;
 use App\Mail\EmailChangeAlert;
 use Illuminate\Support\Facades\Mail;
@@ -156,5 +157,14 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function unlinkCarer(Request $request, \App\Models\User $linkedUser): RedirectResponse
+    {
+        PatientLink::where('patient_id', Auth::id())
+            ->where('linked_user_id', $linkedUser->id)
+            ->delete();
+
+        return Redirect::route('profile.edit')->with('status', 'Vínculo eliminado correctamente.');
     }
 }

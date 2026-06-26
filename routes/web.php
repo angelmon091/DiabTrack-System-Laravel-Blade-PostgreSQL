@@ -11,6 +11,7 @@ use App\Http\Controllers\Tracking\ActivityLogController;
 use App\Http\Controllers\Tracking\NutritionLogController;
 use App\Http\Controllers\Tracking\SymptomLogController;
 use App\Services\TipService;
+use App\Http\Controllers\PatientNotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +24,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile/verify-email/{token}', [ProfileController::class, 'verifyEmail'])->name('profile.email.verify');
+    Route::delete('/profile/unlink/{linkedUser}', [ProfileController::class, 'unlinkCarer'])->name('profile.unlink');
+
+    // Notificaciones
+    Route::post('/notifications/{notification}/read', [PatientNotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [PatientNotificationController::class, 'markAllRead'])->name('notifications.read-all');
 
     // Onboarding Routes
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');

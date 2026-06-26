@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use App\Models\User;
 use App\Models\DailyTip;
 use App\Models\ApiUsageLog;
+use App\Models\PatientNotification;
 use App\Models\VitalSign;
 use App\Services\DailyTipSuggestionService;
 use App\Services\DashboardMetricsService;
@@ -106,10 +107,57 @@ class GenerateDailyTips extends Command
 
             DashboardMetricsService::forgetUserCache($patient->id);
 
+            $this->generateAiReminders($patient);
+
             $this->info("  ✓ Tip diario generado con éxito para el paciente {$patient->id}. Tokens: {$resultado['input_tokens']} entrada / {$resultado['output_tokens']} salida.");
         }
 
         $this->info('Proceso de generación de tips diarios completado.');
+    }
+
+    private function generateAiReminders(User $patient): void
+    {
+        $today = Carbon::today();
+
+        $hasGlucose   = $patient->vitalSigns()->whereDate('created_at', $today)->exists();
+        $hasMeals     = $patient->nutritionLogs()->whereDate('consumed_at', $today)->exists();
+        $hasActivity  = $patient->activityLogs()->whereDate('created_at', $today)->exists();
+
+        $reminders = [];
+
+        if (!$hasGlucose) {
+            $reminders[] = [
+                'title' => '¿Ya mediste tu glucosa hoy?',
+                'body'  => 'Registra tu nivel de glucosa para que pueda analizar tu día y darte un consejo personalizado mañana.',
+            ];
+        }
+
+        if (!$hasMeals) {
+            $reminders[] = [
+                'title' => 'Anota lo que comiste hoy',
+                'body'  => 'Tus registros de alimentación me ayudan a predecir cómo reacciona tu glucosa. ¡Cada comida cuenta!',
+            ];
+        }
+
+        if (!$hasActivity) {
+            $reminders[] = [
+                'title' => '¿Hiciste algo de movimiento hoy?',
+                'body'  => 'Registra tu actividad física, aunque sea una caminata corta. Influye más de lo que crees en tu glucosa.',
+            ];
+        }
+
+        // Máximo 1 recordatorio por día para no saturar
+        if (!empty($reminders)) {
+            $reminder = $reminders[0];
+            PatientNotification::create([
+                'user_id' => $patient->id,
+                'type'    => 'ai_reminder',
+                'title'   => $reminder['title'],
+                'body'    => $reminder['body'],
+                'icon'    => 'fa-solid fa-robot',
+            ]);
+            $this->line("  → Recordatorio IA creado: {$reminder['title']}");
+        }
     }
 
     private function buildPatientContext(User $patient): array

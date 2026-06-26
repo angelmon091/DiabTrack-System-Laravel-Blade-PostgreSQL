@@ -60,9 +60,62 @@
                     </nav>
 
                 <div class="user-section d-flex align-items-center">
-                        <a href="#" class="nav-item me-3 text-muted">
-                            <i class="fa-solid fa-bell notification fs-5"></i>
-                        </a>
+                        @auth
+                        @php
+                            $notifs       = \App\Models\PatientNotification::where('user_id', auth()->id())->latest()->take(8)->get();
+                            $notifUnread  = $notifs->whereNull('read_at')->count();
+                        @endphp
+                        <div class="dropdown me-3">
+                            <button class="btn p-0 border-0 bg-transparent position-relative nav-item text-muted" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="line-height:1;">
+                                <i class="fa-solid fa-bell fs-5"></i>
+                                @if($notifUnread > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;padding:3px 5px;">
+                                    {{ $notifUnread > 9 ? '9+' : $notifUnread }}
+                                </span>
+                                @endif
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0" id="notif-dropdown-menu" style="width:340px;max-width:95vw;border-radius:16px;overflow:hidden;">
+                                <div class="d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
+                                    <span class="fw-bold" style="font-size:0.95rem;">Notificaciones</span>
+                                    @if($notifUnread > 0)
+                                    <button class="btn btn-link btn-sm p-0 text-muted text-decoration-none" style="font-size:0.75rem;" onclick="markAllRead()">
+                                        Marcar todas como leídas
+                                    </button>
+                                    @endif
+                                </div>
+                                <div style="max-height:360px;overflow-y:auto;">
+                                    @forelse($notifs as $notif)
+                                    <div class="notif-item d-flex gap-3 px-4 py-3 border-bottom {{ $notif->read_at ? '' : 'notif-unread' }}"
+                                         id="notif-{{ $notif->id }}"
+                                         onclick="markRead({{ $notif->id }}, this)">
+                                        <div class="notif-icon flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle"
+                                             style="width:36px;height:36px;background:{{ $notif->type === 'ai_reminder' ? 'rgba(0,180,216,0.12)' : 'rgba(99,102,241,0.12)' }};">
+                                            <i class="{{ $notif->icon }} {{ $notif->type === 'ai_reminder' ? 'text-diab-primary' : 'text-indigo' }}" style="font-size:0.85rem;"></i>
+                                        </div>
+                                        <div class="flex-grow-1" style="min-width:0;">
+                                            <div class="d-flex align-items-center gap-2 mb-1">
+                                                <span class="fw-semibold" style="font-size:0.82rem;line-height:1.3;">{{ $notif->title }}</span>
+                                                @if($notif->type === 'ai_reminder')
+                                                <span class="badge rounded-pill" style="font-size:0.58rem;padding:2px 6px;background:rgba(0,180,216,0.15);color:var(--diab-primary);border:1px solid rgba(0,180,216,0.25);">✦ IA</span>
+                                                @endif
+                                                @if(!$notif->read_at)
+                                                <span class="ms-auto flex-shrink-0 rounded-circle bg-primary" style="width:7px;height:7px;display:inline-block;"></span>
+                                                @endif
+                                            </div>
+                                            <p class="mb-1 text-muted" style="font-size:0.78rem;line-height:1.4;">{{ $notif->body }}</p>
+                                            <span class="text-muted" style="font-size:0.7rem;">{{ $notif->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    </div>
+                                    @empty
+                                    <div class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-bell-slash mb-2" style="font-size:1.5rem;opacity:0.3;"></i>
+                                        <p class="small mb-0">Sin notificaciones</p>
+                                    </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                        @endauth
                         <div class="user-card border bg-white shadow-sm p-1 ps-3 rounded-pill d-flex align-items-center">
                             <div class="user-text d-none d-xl-block me-2">
                                 <span class="user-name fw-bold small d-block">{{ auth()->user()->name }}</span>
@@ -321,5 +374,42 @@
         });
     </script>
     @yield('scripts')
+    <script>
+    function markRead(id, el) {
+        if (!el.classList.contains('notif-unread')) return;
+        fetch('/notifications/' + id + '/read', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }
+        }).then(() => {
+            el.classList.remove('notif-unread');
+            el.querySelector('.bg-primary.rounded-circle')?.remove();
+            const badge = document.querySelector('#notifDropdown .badge');
+            if (badge) {
+                const n = parseInt(badge.textContent) - 1;
+                n <= 0 ? badge.remove() : badge.textContent = n;
+            }
+        });
+    }
+    function markAllRead() {
+        fetch('/notifications/read-all', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }
+        }).then(() => {
+            document.querySelectorAll('.notif-unread').forEach(el => {
+                el.classList.remove('notif-unread');
+                el.querySelector('.bg-primary.rounded-circle')?.remove();
+            });
+            document.querySelector('#notifDropdown .badge')?.remove();
+            document.querySelector('[onclick="markAllRead()"]')?.remove();
+        });
+    }
+    </script>
+    <style>
+    .notif-item { cursor: pointer; transition: background 0.15s; }
+    .notif-item:hover { background: rgba(0,0,0,0.02); }
+    .notif-unread { background: rgba(0,180,216,0.04); }
+    .notif-unread:hover { background: rgba(0,180,216,0.08); }
+    .text-indigo { color: #6366f1; }
+    </style>
 </body>
 </html>
