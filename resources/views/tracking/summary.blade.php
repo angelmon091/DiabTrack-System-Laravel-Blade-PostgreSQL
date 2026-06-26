@@ -116,6 +116,54 @@
                 padding: 1.25rem !important;
             }
         }
+    .period-btn {
+        padding: 0.35rem 1rem;
+        border: 1.5px solid rgba(0,0,0,0.1);
+        border-radius: 50px;
+        background: transparent;
+        color: var(--diab-text-secondary, #64748b);
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+        white-space: nowrap;
+    }
+    .period-btn:hover {
+        border-color: var(--diab-primary);
+        color: var(--diab-primary);
+    }
+    .period-btn.active {
+        background: var(--diab-primary);
+        border-color: var(--diab-primary);
+        color: #fff;
+    }
+    .btn-show-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.5rem 1.5rem;
+        border: 1.5px solid rgba(0, 180, 216, 0.35);
+        border-radius: 50px;
+        background: transparent;
+        color: var(--diab-primary);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+    }
+    .btn-show-more:hover {
+        background: var(--diab-primary-light, #e0f7fc);
+        border-color: var(--diab-primary);
+    }
+    .show-more-counter {
+        background: rgba(0, 180, 216, 0.12);
+        border-radius: 50px;
+        padding: 0.1rem 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
     </style>
 @endsection
 
@@ -322,9 +370,17 @@
         <!-- Detailed History Tabs -->
         <div class="diab-card shadow-sm border-0">
             <div class="px-4 pt-4 px-md-5 pt-md-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0">Explorador de Datos Históricos</h5>
-                    <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Aquí puedes ver una lista completa con todos los datos que has guardado."></i>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <h5 class="fw-bold mb-0">Explorador de Datos Históricos</h5>
+                        <i class="fa-solid fa-circle-info info-icon opacity-50" data-bs-toggle="tooltip" title="Filtra por período y explora tus registros históricos por categoría."></i>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap" id="period-filters">
+                        <button class="period-btn" data-period="hoy"    onclick="filterRows('hoy')">Hoy</button>
+                        <button class="period-btn" data-period="semana" onclick="filterRows('semana')">Semana</button>
+                        <button class="period-btn active" data-period="mes" onclick="filterRows('mes')">Mes</button>
+                        <button class="period-btn" data-period="todo"   onclick="filterRows('todo')">Todo</button>
+                    </div>
                 </div>
                 <ul class="nav nav-tabs nav-tabs-custom" id="historyTabs" role="tablist">
                     <li class="nav-item">
@@ -347,7 +403,7 @@
                     <!-- Vitals -->
                     <div class="tab-pane fade show active" id="vitals">
                         <div class="table-responsive">
-                            <table class="table history-table">
+                            <table class="table history-table" id="vitals-table">
                                 <thead>
                                     <tr>
                                         <th>Fecha</th>
@@ -361,8 +417,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($vitalsHistory as $vital)
-                                    <tr>
+                                    @forelse($vitalsHistory as $vital)
+                                    <tr class="history-row" data-date="{{ $vital->created_at->format('Y-m-d') }}">
                                         <td class="small fw-semibold">{{ $vital->created_at->format('d M, H:i') }}</td>
                                         <td>
                                             <span class="badge-glucose {{ $vital->glucose_level > 140 ? 'bg-danger-light text-danger' : ($vital->glucose_level < 70 ? 'bg-warning-light text-warning' : 'bg-success-light text-success') }}">
@@ -403,16 +459,24 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+                                    <tr><td colspan="8" class="text-center text-muted py-4 small">Sin registros aún.</td></tr>
+                                    @endforelse
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="text-center pt-2 pb-1" id="vitals-more-wrap">
+                            <button class="btn-show-more" id="vitals-more-btn" onclick="showMore('vitals-table','vitals-more-btn','vitals-counter')">
+                                <i class="fa-solid fa-chevron-down me-2"></i>Ver más
+                                <span class="show-more-counter" id="vitals-counter"></span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Nutrition -->
                     <div class="tab-pane fade" id="nutrition">
                         <div class="table-responsive">
-                            <table class="table history-table">
+                            <table class="table history-table" id="nutrition-table">
                                 <thead>
                                     <tr>
                                         <th>Fecha</th>
@@ -424,8 +488,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($nutritionHistory as $log)
-                                    <tr>
+                                    @forelse($nutritionHistory as $log)
+                                    <tr class="history-row" data-date="{{ \Carbon\Carbon::parse($log->consumed_at)->format('Y-m-d') }}">
                                         <td class="small fw-semibold">{{ \Carbon\Carbon::parse($log->consumed_at)->format('d M, H:i') }}</td>
                                         <td class="text-capitalize small">{{ $log->meal_type }}</td>
                                         <td class="fw-bold">{{ $log->carbs_grams }}g</td>
@@ -445,16 +509,24 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+                                    <tr><td colspan="6" class="text-center text-muted py-4 small">Sin registros aún.</td></tr>
+                                    @endforelse
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="text-center pt-2 pb-1">
+                            <button class="btn-show-more" id="nutrition-more-btn" onclick="showMore('nutrition-table','nutrition-more-btn','nutrition-counter')">
+                                <i class="fa-solid fa-chevron-down me-2"></i>Ver más
+                                <span class="show-more-counter" id="nutrition-counter"></span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Activity -->
                     <div class="tab-pane fade" id="activity">
                         <div class="table-responsive">
-                            <table class="table history-table">
+                            <table class="table history-table" id="activity-table">
                                 <thead>
                                     <tr>
                                         <th>Fecha</th>
@@ -465,8 +537,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($activityHistory as $act)
-                                    <tr>
+                                    @forelse($activityHistory as $act)
+                                    <tr class="history-row" data-date="{{ $act->created_at->format('Y-m-d') }}">
                                         <td class="small fw-semibold">{{ $act->created_at->format('d M') }}</td>
                                         <td class="text-capitalize fw-bold small">{{ $act->activity_type }}</td>
                                         <td><span class="badge bg-diab-primary-light text-diab-primary rounded-pill">{{ $act->duration_minutes }} min</span></td>
@@ -484,16 +556,24 @@
                                             {!! $energyIcons[$act->energy_level] ?? '<i class="fa-solid fa-battery-half text-info"></i>' !!}
                                         </td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+                                    <tr><td colspan="5" class="text-center text-muted py-4 small">Sin registros aún.</td></tr>
+                                    @endforelse
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="text-center pt-2 pb-1">
+                            <button class="btn-show-more" id="activity-more-btn" onclick="showMore('activity-table','activity-more-btn','activity-counter')">
+                                <i class="fa-solid fa-chevron-down me-2"></i>Ver más
+                                <span class="show-more-counter" id="activity-counter"></span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Symptoms -->
                     <div class="tab-pane fade" id="symptoms">
                         <div class="table-responsive">
-                            <table class="table history-table">
+                            <table class="table history-table" id="symptoms-table">
                                 <thead>
                                     <tr>
                                         <th>Fecha</th>
@@ -503,16 +583,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($symptomsHistory as $symptom)
-                                    <tr>
+                                    @forelse($symptomsHistory as $symptom)
+                                    <tr class="history-row" data-date="{{ \Carbon\Carbon::parse($symptom->logged_at)->format('Y-m-d') }}">
                                         <td class="small fw-semibold">{{ \Carbon\Carbon::parse($symptom->logged_at)->format('d M') }}</td>
                                         <td class="fw-bold small">{{ $symptom->name }}</td>
                                         <td class="text-capitalize small">{{ $symptom->category }}</td>
                                         <td class="small text-muted">{{ \Carbon\Carbon::parse($symptom->logged_at)->format('H:i') }}</td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+                                    <tr><td colspan="4" class="text-center text-muted py-4 small">Sin registros aún.</td></tr>
+                                    @endforelse
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="text-center pt-2 pb-1">
+                            <button class="btn-show-more" id="symptoms-more-btn" onclick="showMore('symptoms-table','symptoms-more-btn','symptoms-counter')">
+                                <i class="fa-solid fa-chevron-down me-2"></i>Ver más
+                                <span class="show-more-counter" id="symptoms-counter"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -660,5 +748,83 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    // ── Filtro por período + paginación ──
+    const PER_PAGE = 10;
+    const shownCount = {};
+    let activePeriod = 'mes';
+
+    const TABLES = [
+        { table: 'vitals-table',    btn: 'vitals-more-btn',    counter: 'vitals-counter' },
+        { table: 'nutrition-table', btn: 'nutrition-more-btn', counter: 'nutrition-counter' },
+        { table: 'activity-table',  btn: 'activity-more-btn',  counter: 'activity-counter' },
+        { table: 'symptoms-table',  btn: 'symptoms-more-btn',  counter: 'symptoms-counter' },
+    ];
+
+    function filterRows(period) {
+        activePeriod = period;
+        document.querySelectorAll('.period-btn').forEach(b =>
+            b.classList.toggle('active', b.dataset.period === period)
+        );
+        TABLES.forEach(t => applyFilterAndPage(t.table, t.btn, t.counter));
+    }
+
+    function applyFilterAndPage(tableId, btnId, counterId) {
+        const today = new Date(); today.setHours(23, 59, 59, 999);
+        let cutoff = null;
+        if (activePeriod === 'hoy')    { cutoff = new Date(); cutoff.setHours(0, 0, 0, 0); }
+        if (activePeriod === 'semana') { cutoff = new Date(today - 7  * 86400000); }
+        if (activePeriod === 'mes')    { cutoff = new Date(today - 30 * 86400000); }
+
+        const allRows = [...document.querySelectorAll('#' + tableId + ' tbody tr.history-row')];
+        const visible = allRows.filter(row => {
+            const d = new Date(row.dataset.date + 'T00:00:00');
+            const passes = !cutoff || d >= cutoff;
+            if (!passes) row.style.display = 'none';
+            return passes;
+        });
+
+        shownCount[tableId] = PER_PAGE;
+        visible.forEach((row, i) => { row.style.display = i < PER_PAGE ? '' : 'none'; });
+
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        if (visible.length <= PER_PAGE) { btn.style.display = 'none'; }
+        else { btn.style.display = ''; updateCounter(counterId, visible.length, PER_PAGE); }
+
+        // Mostrar fila vacía si no hay resultados en este período
+        const emptyRow = document.querySelector('#' + tableId + ' tbody tr.empty-period');
+        if (emptyRow) emptyRow.style.display = visible.length === 0 ? '' : 'none';
+    }
+
+    function showMore(tableId, btnId, counterId) {
+        const visible = [...document.querySelectorAll('#' + tableId + ' tbody tr.history-row')]
+            .filter(row => {
+                const today = new Date(); today.setHours(23, 59, 59, 999);
+                let cutoff = null;
+                if (activePeriod === 'hoy')    { cutoff = new Date(); cutoff.setHours(0, 0, 0, 0); }
+                if (activePeriod === 'semana') { cutoff = new Date(today - 7  * 86400000); }
+                if (activePeriod === 'mes')    { cutoff = new Date(today - 30 * 86400000); }
+                return !cutoff || new Date(row.dataset.date + 'T00:00:00') >= cutoff;
+            });
+
+        const shown = shownCount[tableId] || PER_PAGE;
+        const next  = shown + PER_PAGE;
+        visible.forEach((row, i) => { if (i >= shown && i < next) row.style.display = ''; });
+        shownCount[tableId] = next;
+
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        if (next >= visible.length) { btn.style.display = 'none'; }
+        else { updateCounter(counterId, visible.length, next); }
+    }
+
+    function updateCounter(counterId, total, shown) {
+        const el = document.getElementById(counterId);
+        if (el) el.textContent = '+' + Math.min(PER_PAGE, total - shown);
+    }
+
+    // Arrancar con período "Mes"
+    filterRows('mes');
 </script>
 @endsection
