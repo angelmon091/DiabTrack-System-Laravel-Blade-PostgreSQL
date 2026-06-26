@@ -7,11 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class DailyTipSuggestionService
 {
-    // Las alertas clínicas se manejan dentro del prompt de la IA para mantener tono cálido y personalización
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Punto de entrada principal
-    // ─────────────────────────────────────────────────────────────────────────
 
     public function generateAnthropic(array $context, ?string $apiKey = null, ?string $modelName = null): string
     {
@@ -251,5 +247,4 @@ PROMPT;
         return implode("\n", $lines);
     }
 
-    // extremeGlucoseAlert eliminado: la IA maneja todos los valores con tono cálido y personalizado.
 }
