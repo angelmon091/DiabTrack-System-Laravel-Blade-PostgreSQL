@@ -23,12 +23,11 @@ class CaregiverController extends Controller
         $selectedPatient = null;
         $metrics = [];
         $recentLogs = collect();
-        $pendingTips = collect();
 
         if ($patients->isNotEmpty()) {
             $selectedPatientId = $request->query('patient_id');
-            $selectedPatient = $selectedPatientId 
-                ? $patients->firstWhere('id', $selectedPatientId) 
+            $selectedPatient = $selectedPatientId
+                ? $patients->firstWhere('id', $selectedPatientId)
                 : $patients->first();
 
             if (!$selectedPatient) {
@@ -36,22 +35,15 @@ class CaregiverController extends Controller
             }
 
             $metrics = $metricsService->getDashboardMetrics($selectedPatient->id);
-            
+
             $recentLogs = VitalSign::where('user_id', $selectedPatient->id)
                 ->whereNotNull('glucose_level')
                 ->latest()
                 ->take(5)
                 ->get();
-
-            // Mostrar los últimos 3 consejos publicados (aprobados)
-            $pendingTips = \App\Models\DailyTip::where('user_id', $selectedPatient->id)
-                ->where('status', 'approved')
-                ->latest()
-                ->take(3)
-                ->get();
         }
 
-        return view('caregiver.dashboard', array_merge($metrics, compact('user', 'patients', 'selectedPatient', 'recentLogs', 'pendingTips')));
+        return view('caregiver.dashboard', array_merge($metrics, compact('user', 'patients', 'selectedPatient', 'recentLogs')));
     }
 
     /**

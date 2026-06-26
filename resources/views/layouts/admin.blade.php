@@ -93,6 +93,11 @@
                     <i class="fa-solid fa-shield-halved"></i>
                     <span class="d-none d-md-inline">Roles y Permisos</span>
                 </a>
+
+                <a href="{{ route('admin.api-usage.index') }}" class="admin-nav-item {{ request()->routeIs('admin.api-usage.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span class="d-none d-md-inline">Uso de APIs</span>
+                </a>
             </nav>
             
             <div class="mt-auto d-none d-lg-block pt-4 text-center">

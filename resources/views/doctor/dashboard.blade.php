@@ -227,37 +227,6 @@
                         </div>
                     </div>
 
-                    {{-- Consejos Diarios Sugeridos por IA (Publicados y limitados a 3) --}}
-                    <div class="diab-card p-4 mb-4 animate-fade-in" style="animation-delay: 0.35s; border-left: 5px solid var(--diab-primary);">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="act-icon gray me-3 shadow-none" style="background: var(--diab-primary-light); color: var(--diab-primary); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-robot"></i>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold mb-0 text-dark small text-uppercase letter-spacing-1">Consejos de Salud IA</h6>
-                                <span class="text-muted extra-small">Últimos consejos de salud aprobados para este paciente (máximo 3 al día).</span>
-                            </div>
-                        </div>
-
-                        @if($pendingTips->isEmpty())
-                            <p class="text-muted small mb-0"><i class="fa-solid fa-circle-check text-success me-1"></i>No hay consejos recientes aprobados para este paciente.</p>
-                        @else
-                            <div class="d-flex flex-column gap-3">
-                                @foreach($pendingTips as $tip)
-                                    <div class="p-3 rounded-4 bg-light border border-white shadow-sm d-flex flex-column gap-2">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <p class="mb-0 text-dark small fw-medium" style="line-height: 1.5;">"{{ $tip->tip_text }}"</p>
-                                            <span class="text-muted extra-small ms-2" style="white-space: nowrap;">{{ $tip->created_at->diffForHumans() }}</span>
-                                        </div>
-                                        @if(isset($tip->fuente))
-                                            <div class="text-muted extra-small">Fuente: {{ $tip->fuente }}</div>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-
                     {{-- Historial Clínico Reciente --}}
                     <div class="diab-card p-4 animate-fade-in" style="animation-delay: 0.4s;">
                         <h6 class="fw-bold mb-3 text-diab-text-secondary text-uppercase letter-spacing-1 small">Historial Clínico Reciente</h6>

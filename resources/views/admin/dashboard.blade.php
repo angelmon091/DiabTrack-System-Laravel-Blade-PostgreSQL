@@ -50,17 +50,19 @@
 
         <!-- Placeholder Cards -->
         <div class="col-12 col-md-6">
-            <div class="diab-card p-4 animate-fade-in" style="animation-delay: 0.4s; background: rgba(255,255,255,0.4) !important; border-style: dashed !important;">
-                <div class="d-flex align-items-center gap-4">
-                    <div class="glass-effect p-3 rounded-4 shadow-sm">
-                        <i class="fa-solid fa-lock text-muted fs-4"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold text-dark mb-0">Políticas de Seguridad</h6>
-                        <span class="badge bg-light text-muted rounded-pill small mt-1 border">Próximamente</span>
+            <a href="{{ route('admin.api-usage.index') }}" class="text-decoration-none h-100 d-block">
+                <div class="diab-card p-4 animate-fade-in h-100" style="animation-delay: 0.4s;">
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="glass-effect p-3 rounded-4 shadow-sm">
+                            <i class="fa-solid fa-microchip text-diab-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-0">Uso de APIs de IA</h6>
+                            <p class="text-muted extra-small mb-0">Tokens, costos y estadísticas por proveedor</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-12 col-md-6">

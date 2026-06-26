@@ -9,7 +9,7 @@ class DailyTipSuggestionService
 {
 
 
-    public function generateAnthropic(array $context, ?string $apiKey = null, ?string $modelName = null): string
+    public function generateAnthropic(array $context, ?string $apiKey = null, ?string $modelName = null): array
     {
 
         if (empty($apiKey)) {
@@ -55,7 +55,13 @@ class DailyTipSuggestionService
                 throw new \RuntimeException('Anthropic devolvió una respuesta vacía.');
             }
 
-            return $tip;
+            return [
+                'tip'           => $tip,
+                'provider'      => 'anthropic',
+                'model'         => $model,
+                'input_tokens'  => (int) $response->json('usage.input_tokens', 0),
+                'output_tokens' => (int) $response->json('usage.output_tokens', 0),
+            ];
 
         } catch (\Throwable $e) {
             Log::warning('GenerateDailyTips: error de Anthropic — ' . $e->getMessage());
@@ -63,7 +69,7 @@ class DailyTipSuggestionService
         }
     }
 
-    public function generateGemini(array $context, ?string $apiKey = null, ?string $modelName = null): string
+    public function generateGemini(array $context, ?string $apiKey = null, ?string $modelName = null): array
     {
 
         $key = $apiKey ?: config('services.gemini.key');
@@ -109,7 +115,13 @@ class DailyTipSuggestionService
                 throw new \RuntimeException('Gemini devolvió una respuesta vacía.');
             }
 
-            return $tip;
+            return [
+                'tip'           => $tip,
+                'provider'      => 'gemini',
+                'model'         => $model,
+                'input_tokens'  => (int) data_get($response->json(), 'usageMetadata.promptTokenCount', 0),
+                'output_tokens' => (int) data_get($response->json(), 'usageMetadata.candidatesTokenCount', 0),
+            ];
 
         } catch (\Throwable $e) {
             Log::warning('GenerateDailyTips: error de Gemini — ' . $e->getMessage());
@@ -117,60 +129,100 @@ class DailyTipSuggestionService
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // System Prompt — define el rol y los límites de la IA
-    // ─────────────────────────────────────────────────────────────────────────
-
     private function systemPrompt(): string
     {
-        return <<<PROMPT
-Eres un asistente de bienestar especializado en diabetes mellitus. Tu tarea es generar UN ÚNICO
-mensaje diario, breve, cálido y accionable para el paciente, basándote en sus datos del día anterior.
+        return <<<'PROMPT'
+Eres un asistente de bienestar especializado en diabetes mellitus. Tu tarea es generar UN ÚNICO mensaje diario, breve, cálido y accionable para el paciente, basándote en sus datos del día anterior.
 
 ═══════════════════════════════
-REGLAS ABSOLUTAS (sin excepciones)
+LÍMITES DE BIENESTAR — LEE PRIMERO
 ═══════════════════════════════
+Eres un asistente de BIENESTAR, no un médico ni un profesional de la salud.
 1. NUNCA menciones medicamentos, insulina, dosis ni tratamientos farmacológicos.
-2. NUNCA hagas diagnósticos. NUNCA uses lenguaje alarmista ni catastrófico.
-3. Responde SOLO el texto del mensaje: sin saludos, títulos ni explicaciones adicionales.
-4. Responde siempre en español, con tono cálido, claro y motivador.
-5. Máximo 220 caracteres. Sé conciso pero útil.
+2. NUNCA hagas diagnósticos ni interpretes síntomas como enfermedades.
+3. NUNCA uses lenguaje alarmista: prohibido "urgente", "peligroso", "crisis", "inmediatamente".
+4. Ante cualquier valor fuera de rango: el ÚNICO llamado a la acción médica permitido es sugerir con calma que vale la pena comentárselo al médico en su próxima visita.
+5. Responde SOLO el texto del mensaje: sin saludos, títulos ni explicaciones adicionales.
+6. Siempre en español, tono cálido, claro y motivador.
+7. Máximo 220 caracteres.
 
 ═══════════════════════════════
-MANEJO DE VALORES FUERA DE RANGO
+INTERPRETACIÓN DE GLUCOSA POR MOMENTO
 ═══════════════════════════════
-Si algún valor clínico está fuera del rango normal, menciónalo con calma y recomienda
-contactar al médico pronto, sin urgencias ni alarma. Ejemplo de tono correcto:
-"Tu glucosa estuvo un poco elevada ayer. Vale la pena comentárselo a tu médico en tu próxima visita."
-NUNCA uses palabras como "urgente", "peligroso", "crisis" o "inmediatamente".
+Los datos de glucosa ya vienen clasificados (Normal / Elevada / Baja). Úsalos directamente.
+Si hay múltiples lecturas, analiza el PATRÓN, no un valor aislado.
+
+Referencia clínica (para tu comprensión interna, no la repitas al paciente):
+- Ayunas           : Normal 70–100 mg/dL | Elevada >100 | Baja <70
+- Antes de Comer   : Normal 80–130 mg/dL | Elevada >130 | Baja <70
+- Después de Comer : Normal <140 mg/dL   | Elevada ≥140  | Baja <70
+- Al Dormir        : Normal 100–140 mg/dL| Elevada >140  | Baja <70
+- Sin momento      : usa el rango objetivo personal del paciente
+
+Glucosa "Elevada después de comer" puede ser esperada si hubo carbohidratos o azúcares → consejo: orden de alimentos, fibra primero.
+Glucosa "Elevada en ayunas" es más significativa → sugiere mencionarlo al médico con calma.
+Glucosa "Baja" de cualquier tipo → no saltarse comidas, tener un snack disponible.
 
 ═══════════════════════════════
-CÓMO PERSONALIZAR EL CONSEJO
+PERSONALIZACIÓN DEMOGRÁFICA
 ═══════════════════════════════
-Antes de responder, analiza TODOS los datos disponibles y elige el aspecto más relevante HOY.
-Rota entre estos temas según lo que los datos del paciente indiquen — nunca repitas el último consejo dado:
+Cruza siempre los datos del día con el perfil del paciente:
 
-- GLUCOSA: si estuvo alta → habla del orden de los alimentos, el tamaño de las porciones o reducir harinas;
-  si estuvo baja → habla de no saltarse comidas o de tener a mano un snack pequeño.
-- NUTRICIÓN: si comió muchos carbohidratos → sugiere añadir verdura o proteína al plato;
-  si no registró comidas → recuérdale el valor de registrar para detectar patrones.
-- ACTIVIDAD FÍSICA: si no hizo nada → propón algo muy concreto y fácil (5 min de estiramiento, bajar las escaleras);
-  si hizo mucho → felicítalo y sugiere recuperación activa.
-- ESTRÉS (≥7/10): conecta estrés con glucosa y propón una técnica concreta (respiración 4-7-8, pausa de 5 min).
-- SUEÑO (<6h): explica su impacto en la glucosa y da un hábito nocturno concreto.
-- SÍNTOMAS reportados: prioriza siempre este contexto con un consejo empático y práctico.
-- PRESIÓN ARTERIAL / FRECUENCIA CARDÍACA fuera de rango: recomienda mencionárselo al médico con calma.
-- AUTOCUIDADO: revisión de pies, hidratación de piel, salud ocular — específico y práctico.
-- MEDICIÓN: si los registros son inconsistentes, recuerda el valor de medir siempre a la misma hora.
+EDAD:
+- Menor de 30 años: hábitos a largo plazo, sin restricción de intensidad de ejercicio.
+- 30–60 años: equilibrio entre actividad y recuperación, hábitos sostenibles.
+- Mayor de 60 años: actividad de bajo impacto (caminar, estirar), constancia sobre intensidad; mayor precaución con glucosa baja.
 
-Si no hay datos suficientes en un área, elige la siguiente más relevante.
-NUNCA des consejos genéricos como "toma agua" o "sal a caminar" sin contexto que lo justifique.
+IMC (peso[kg] / altura[m]²):
+- Menor de 18.5: nunca sugerir restricción alimentaria; énfasis en nutrición suficiente y variada.
+- 18.5–24.9: reforzar hábitos actuales, mantenimiento.
+- 25–29.9: pequeños ajustes en porciones y más movimiento gradual.
+- 30 o más: cambios pequeños y sostenibles; NUNCA lenguaje de "debes bajar de peso" ni juicios sobre el cuerpo.
+
+TIPO DE DIABETES:
+- Tipo 1: énfasis en consistencia de medición y reconocimiento de patrones; no en peso ni en resistencia.
+- Tipo 2: actividad física, alimentación balanceada y regularidad de comidas como principales palancas.
+- LADA o No especificado: tratar con la misma cautela que Tipo 1.
+
+GÉNERO:
+- Femenino: si el contexto lo justifica, mencionar que factores hormonales pueden influir en los niveles de glucosa.
+- Masculino: mayor énfasis en riesgo cardiovascular si la presión o la FC aparece elevada.
+
+ESTRÉS (campo: Bajo / Medio / Alto):
+- Alto: conecta estrés con glucosa y propón una técnica concreta (respiración 4-7-8, pausa activa de 5 minutos).
+- Medio: menciona brevemente el impacto del estrés sin alarmar.
+- Bajo o sin registro: no menciones el estrés.
+
+INTENSIDAD DE EJERCICIO (campo: baja / media / alta):
+- alta: felicitar y sugerir recuperación activa (estirar, hidratación).
+- media: reforzar constancia.
+- baja o ninguna: proponer algo concreto y fácil según edad e IMC.
+
+ENERGÍA POST-ACTIVIDAD (campo: muy_baja / baja / normal / alta / muy_alta):
+- muy_baja o baja: sugiere no exigirse tanto la próxima vez y priorizar el descanso.
+- muy_alta o alta: refuerza que el ejercicio está funcionando.
+
+═══════════════════════════════
+PRIORIDAD PARA ELEGIR EL CONSEJO DEL DÍA
+═══════════════════════════════
+Analiza TODOS los datos y elige el aspecto MÁS relevante hoy, en este orden:
+
+1. SÍNTOMAS reportados — siempre prioritarios; respuesta empática y sugerir hablar con el médico.
+2. GLUCOSA Baja — no saltarse comidas, tener snack disponible.
+3. GLUCOSA Elevada en ayunas — mencionar con calma, sugerir comentarlo al médico.
+4. ESTRÉS Alto — técnica concreta de manejo.
+5. GLUCOSA Elevada post-comida + azúcares o muchos carbohidratos — orden de alimentos, fibra y verdura primero.
+6. COMIDA PRINCIPAL SALTADA (desayuno, almuerzo o cena no registrada) — regularidad y su impacto en glucosa.
+7. SIN ACTIVIDAD FÍSICA — propuesta concreta según edad e IMC.
+8. PRESIÓN o FC fuera de rango — mencionar con calma y referir al médico.
+9. ACTIVIDAD INTENSA — felicitar y sugerir recuperación activa.
+10. AUTOCUIDADO — revisión de pies, hidratación, salud ocular; específico y práctico.
+11. MEDICIÓN INCONSISTENTE — valor de medir siempre a la misma hora.
+
+NUNCA des consejos genéricos sin datos que los justifiquen.
+NUNCA repitas el tema del último consejo dado (viene indicado en el prompt del usuario).
 PROMPT;
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // User Prompt — inyecta todos los datos disponibles del paciente
-    // ─────────────────────────────────────────────────────────────────────────
 
     private function buildUserPrompt(array $c): string
     {
@@ -178,71 +230,120 @@ PROMPT;
 
         // ── Perfil clínico ──────────────────────────────────────────────────
         $lines[] = '=== PERFIL CLÍNICO ===';
+        $lines[] = '- Nombre: ' . ($c['nombre'] ?? 'No especificado');
         $lines[] = '- Tipo de diabetes: ' . ($c['tipo_diabetes'] ?? 'No especificado');
         $lines[] = '- Edad: ' . ($c['edad'] ? $c['edad'] . ' años' : 'No especificada');
         $lines[] = '- Género: ' . ($c['genero'] ?? 'No especificado');
-        $lines[] = '- IMC calculado: ' . ($c['imc'] ? $c['imc'] : 'Sin datos de peso/talla');
         $lines[] = '- Peso: ' . ($c['peso_kg'] ? $c['peso_kg'] . ' kg' : 'No registrado');
-        $lines[] = '- Rango glucosa objetivo: ' . ($c['rango_glucosa_min'] ?? 70) . '–' . ($c['rango_glucosa_max'] ?? 140) . ' mg/dL';
+        $lines[] = '- Altura: ' . ($c['altura_cm'] ? $c['altura_cm'] . ' cm' : 'No registrada');
+        $lines[] = '- IMC: ' . ($c['imc'] !== null ? $c['imc'] : 'Sin datos');
+        $lines[] = '- Rango glucosa objetivo personal: ' . ($c['rango_glucosa_min'] ?? 70) . '–' . ($c['rango_glucosa_max'] ?? 180) . ' mg/dL';
 
-        // ── Glucosa ─────────────────────────────────────────────────────────
+        // ── Glucosa: tabla individual clasificada (Bloque 1) ───────────────
         $lines[] = '';
         $lines[] = '=== GLUCOSA (últimas 48h) ===';
-        $lines[] = '- Promedio: ' . ($c['glucosa_promedio_48h'] !== null ? $c['glucosa_promedio_48h'] . ' mg/dL' : 'Sin registros');
-        $lines[] = '- Mínima: ' . ($c['glucosa_min_48h'] !== null ? $c['glucosa_min_48h'] . ' mg/dL' : 'Sin registros');
-        $lines[] = '- Máxima: ' . ($c['glucosa_max_48h'] !== null ? $c['glucosa_max_48h'] . ' mg/dL' : 'Sin registros');
-        $lines[] = '- Momento habitual de medición: ' . ($c['momento_medicion'] ?? 'No especificado');
+
+        if (!empty($c['lecturas_glucosa'])) {
+            $lines[] = '- Total de lecturas: ' . $c['total_lecturas'] . ' (' . $c['lecturas_fuera_rango'] . ' fuera de rango objetivo)';
+            $lines[] = '';
+            $lines[] = 'Hora  | Momento               | Valor      | Clasificación';
+            $lines[] = '------|------------------------|------------|---------------';
+            foreach ($c['lecturas_glucosa'] as $l) {
+                $lines[] = sprintf(
+                    '%s | %-22s | %s mg/dL | %s',
+                    $l['hora'],
+                    $l['momento'],
+                    $l['valor'],
+                    $l['clase']
+                );
+            }
+            if ($c['glucosa_promedio_48h'] !== null) {
+                $lines[] = '';
+                $lines[] = '- Promedio: ' . $c['glucosa_promedio_48h'] . ' mg/dL | Mín: ' . $c['glucosa_min_48h'] . ' mg/dL | Máx: ' . $c['glucosa_max_48h'] . ' mg/dL';
+            }
+        } else {
+            $lines[] = '- Sin lecturas de glucosa en las últimas 48h.';
+        }
+
         if ($c['hba1c'] ?? null) {
-            $lines[] = '- HbA1c más reciente: ' . $c['hba1c'] . '%';
+            $hba1cFecha = $c['hba1c_fecha'] ? ' (registrada el ' . $c['hba1c_fecha'] . ')' : '';
+            $lines[] = '- HbA1c más reciente: ' . $c['hba1c'] . '%' . $hba1cFecha;
         }
 
         // ── Otros signos vitales ────────────────────────────────────────────
         $lines[] = '';
         $lines[] = '=== OTROS SIGNOS VITALES ===';
+
         if (($c['presion_sistolica'] ?? null) && ($c['presion_diastolica'] ?? null)) {
-            $lines[] = '- Presión arterial: ' . $c['presion_sistolica'] . '/' . $c['presion_diastolica'] . ' mmHg';
+            $lines[] = '- Presión arterial (últimos 30 días): ' . $c['presion_sistolica'] . '/' . $c['presion_diastolica'] . ' mmHg';
         } else {
-            $lines[] = '- Presión arterial: Sin registro reciente';
-        }
-        $lines[] = '- Frecuencia cardíaca: ' . ($c['frecuencia_cardiaca'] ? $c['frecuencia_cardiaca'] . ' bpm' : 'Sin registro');
-        $lines[] = '- Nivel de estrés: ' . ($c['nivel_estres'] ? $c['nivel_estres'] . '/10' : 'Sin registro');
-        if ($c['nota_vital'] ?? null) {
-            $lines[] = '- Nota del paciente en último registro: "' . $c['nota_vital'] . '"';
+            $lines[] = '- Presión arterial: Sin registro en los últimos 30 días';
         }
 
-        // ── Actividad física ────────────────────────────────────────────────
+        $lines[] = '- Frecuencia cardíaca: ' . ($c['frecuencia_cardiaca'] ? $c['frecuencia_cardiaca'] . ' bpm (últimos 30 días)' : 'Sin registro en los últimos 30 días');
+        $lines[] = '- Nivel de estrés: ' . ($c['nivel_estres'] ?? 'No registrado');
+
+        if ($c['nota_vital'] ?? null) {
+            $lines[] = '- Nota del paciente: "' . $c['nota_vital'] . '"';
+        }
+
+        // ── Actividad física (Bloque 3: con hora de inicio) ────────────────
         $lines[] = '';
         $lines[] = '=== ACTIVIDAD FÍSICA (ayer) ===';
-        $lines[] = '- Minutos de actividad: ' . ($c['minutos_actividad_ayer'] > 0 ? $c['minutos_actividad_ayer'] . ' min' : 'Ninguna');
-        $lines[] = '- Tipos de ejercicio: ' . (count($c['tipos_actividad_ayer'] ?? []) > 0 ? implode(', ', $c['tipos_actividad_ayer']) : 'Ninguno');
-        $lines[] = '- Intensidad: ' . (count($c['intensidad_actividad'] ?? []) > 0 ? implode(', ', $c['intensidad_actividad']) : 'No especificada');
-        $lines[] = '- Energía post-actividad: ' . ($c['energia_post_actividad'] ?? 'No registrada');
 
-        // ── Nutrición ───────────────────────────────────────────────────────
+        if (($c['minutos_actividad_ayer'] ?? 0) > 0) {
+            $lines[] = '- Minutos de actividad: ' . $c['minutos_actividad_ayer'] . ' min';
+            $lines[] = '- Tipos de ejercicio: ' . (count($c['tipos_actividad_ayer'] ?? []) > 0 ? implode(', ', $c['tipos_actividad_ayer']) : 'No especificado');
+            $lines[] = '- Intensidad: ' . (count($c['intensidad_actividad'] ?? []) > 0 ? implode(', ', $c['intensidad_actividad']) : 'No especificada');
+            $lines[] = '- Energía post-actividad: ' . ($c['energia_post_actividad'] ?? 'No registrada');
+            if ($c['hora_ejercicio'] ?? null) {
+                $lines[] = '- Hora de inicio: ' . $c['hora_ejercicio'];
+            }
+        } else {
+            $lines[] = '- Sin actividad física registrada ayer.';
+        }
+
+        // ── Nutrición (Bloque 3: completitud + horario) ────────────────────
         $lines[] = '';
         $lines[] = '=== NUTRICIÓN (ayer) ===';
-        $lines[] = '- Carbohidratos consumidos: ' . ($c['carbs_ayer_gramos'] > 0 ? $c['carbs_ayer_gramos'] . ' g' : 'Sin registros');
-        $lines[] = '- Comidas registradas: ' . (count($c['tipos_comida_ayer'] ?? []) > 0 ? implode(', ', $c['tipos_comida_ayer']) : 'Ninguna');
+
+        $desayuno = ($c['registro_desayuno'] ?? false) ? '✓' : '✗';
+        $almuerzo = ($c['registro_almuerzo'] ?? false) ? '✓' : '✗';
+        $cena     = ($c['registro_cena'] ?? false)     ? '✓' : '✗';
+        $lines[]  = '- Comidas principales: Desayuno ' . $desayuno . ' | Almuerzo ' . $almuerzo . ' | Cena ' . $cena;
+
+        $lines[] = '- Carbohidratos totales: ' . (($c['carbs_ayer_gramos'] ?? 0) > 0 ? $c['carbs_ayer_gramos'] . ' g' : 'Sin registros');
         $lines[] = '- Grupos de alimentos: ' . (count($c['categorias_alimentos'] ?? []) > 0 ? implode(', ', $c['categorias_alimentos']) : 'No especificados');
+
+        if ($c['tiene_azucares'] ?? false) {
+            $lines[] = '- Consumo de azúcares/dulces: Sí';
+        }
+
+        if (!empty($c['comidas_con_hora'])) {
+            $horariosStr = collect($c['comidas_con_hora'])
+                ->map(fn($m) => ucfirst($m['comida']) . ' a las ' . $m['hora'])
+                ->implode(', ');
+            $lines[] = '- Horario de comidas: ' . $horariosStr;
+        }
 
         // ── Síntomas ────────────────────────────────────────────────────────
         $lines[] = '';
         $lines[] = '=== SÍNTOMAS RECIENTES (48h) ===';
         $lines[] = count($c['sintomas_recientes'] ?? []) > 0
             ? '- Síntomas reportados: ' . implode(', ', $c['sintomas_recientes'])
-            : '- Sin síntomas reportados';
+            : '- Sin síntomas reportados.';
 
-        // ── Último consejo dado (evitar repetición de tema) ─────────────────
+        // ── Último consejo dado (Bloque 2: fix — ahora llega el texto real) ─
         if (!empty($c['ultimo_consejo'])) {
             $lines[] = '';
-            $lines[] = '=== ÚLTIMO CONSEJO DADO (NO repetir este tema) ===';
-            $lines[] = $c['ultimo_consejo'];
+            $lines[] = '=== ÚLTIMO CONSEJO DADO (NO repetir el mismo tema) ===';
+            $lines[] = '"' . $c['ultimo_consejo'] . '"';
         }
 
         // ── Instrucción final ───────────────────────────────────────────────
         $lines[] = '';
-        $lines[] = 'Analiza los datos anteriores y genera UN mensaje breve, cálido y accionable de máximo 220 caracteres.';
-        $lines[] = 'Prioriza el dato más relevante hoy. Si algún valor está fuera de rango, menciónalo con calma y sugiere hablar con el médico. Sin saludos ni títulos.';
+        $lines[] = 'Analiza el patrón más relevante clínicamente cruzando el perfil demográfico (edad, género, IMC, tipo de diabetes) con los datos del día (glucosa por momento, alimentación, actividad, estrés, síntomas).';
+        $lines[] = 'Genera UN mensaje breve, cálido y accionable de máximo 220 caracteres. Recuerda: eres un asistente de bienestar. Si hay valores fuera de rango, menciona con calma que vale la pena comentárselo al médico en la próxima visita. Sin saludos, títulos ni diagnósticos.';
 
         return implode("\n", $lines);
     }

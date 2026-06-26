@@ -46,9 +46,13 @@ class DashboardMetricsService
      */
     public function getDailyTipForUser(int $userId): array
     {
+        $maxInactivityDays = (int) env('DAILY_TIPS_MAX_INACTIVITY_DAYS', 3);
+        $since = Carbon::now()->subDays($maxInactivityDays);
+
         $tipAprobado = \App\Models\DailyTip::query()
             ->where('user_id', $userId)
             ->where('status', 'approved')
+            ->where('created_at', '>=', $since)
             ->orderByDesc('id')
             ->first();
 
@@ -59,8 +63,6 @@ class DashboardMetricsService
             ];
         }
 
-        $maxInactivityDays = (int) env('DAILY_TIPS_MAX_INACTIVITY_DAYS', 3);
-        $since = Carbon::now()->subDays($maxInactivityDays);
         $user = \App\Models\User::find($userId);
 
         if ($user) {

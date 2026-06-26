@@ -77,9 +77,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/patient/{patient}/unlink', [DoctorController::class, 'unlinkPatient'])->name('patient.unlink');
     });
 
-    // Daily Tips Approval routes (Shared by Doctor and Caregiver)
-    Route::post('/tips/{tip}/approve', [\App\Http\Controllers\DailyTipController::class, 'approve'])->name('tips.approve');
-    Route::post('/tips/{tip}/reject', [\App\Http\Controllers\DailyTipController::class, 'reject'])->name('tips.reject');
 });
 
 require __DIR__.'/auth.php';
@@ -92,6 +89,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
+    Route::get('api-usage', [\App\Http\Controllers\Admin\ApiUsageController::class, 'index'])->name('api-usage.index');
 });
 
 if (app()->environment('local')) {
